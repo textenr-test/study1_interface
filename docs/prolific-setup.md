@@ -55,9 +55,9 @@ Create the paths below in Prolific **before** publishing, then paste each comple
 | redirects.complete | Successful completion | Approve according to the study's review setting |
 | redirects.screenedOut | Screened out | Built-in custom screen-out payment |
 | redirects.noConsent | No consent | Request a return; never reject for no consent |
-| redirects.failedAttention | Failed attention checks | Configure according to the preregistered review/exclusion plan |
+| redirects.failedAttention | Safety fallback | Normally unreachable because each check must be answered correctly before proceeding |
 
-The two attention checks are explicit instructed-response items after trials 12 and 26. The interface sends a participant to the failed-attention path only after **both** checks are failed. A single failure is logged but does not change the normal completion path.
+The two attention checks are explicit instructed-response items after trials 12 and 26. The first requires **+1** and the second requires **+3**. An incorrect attempt is logged in the researcher-only Events sheet, but the participant remains on the check until selecting the instructed response. Only a correct response advances the study.
 
 Comprehension checks appear before the main task, stay on the same page as the instructions, use multiple-choice responses, and allow two attempts. Participants who fail twice are sent to the early screen-out path; they are not rejected.
 
@@ -68,7 +68,7 @@ Comprehension checks appear before the main task, stay on the same page as the i
 3. Replace Code.gs with apps-script/Code.gs.
 4. Run setupStudyWorkbook() once and approve the requested spreadsheet permissions.
 5. In **Project Settings → Script properties**, add:
-   - STUDY_VERSION = 2026-08-19-v3
+   - STUDY_VERSION = 2026-08-19-v4
    - MAX_SLOTS = 30
    - SPREADSHEET_ID only if the script is not bound to the target spreadsheet.
 6. Select **Deploy → New deployment → Web app**.
