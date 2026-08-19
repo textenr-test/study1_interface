@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const stimuliDir = path.join(root, "stimuli");
+const manifestPath = path.join(stimuliDir, "index.json");
+const writeManifest = process.argv.includes("--write");
 const expectedFiles = [
   "D0_plain.html",
   "D1_derived.html",
@@ -48,21 +50,30 @@ for (const filename of files) {
   });
 }
 
-await fs.writeFile(
-  path.join(stimuliDir, "index.json"),
-  JSON.stringify({
+const nextManifest = {
     generated_at: new Date().toISOString(),
     source: "Google Drive/batch_output",
     document_count: manifest.length,
     enriched_conditions_per_document: 6,
     documents: manifest
-  }, null, 2) + "\n"
-);
+};
+
+if (writeManifest) {
+  await fs.writeFile(manifestPath, JSON.stringify(nextManifest, null, 2) + "\n");
+} else {
+  const currentManifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  const currentComparable = { ...currentManifest, generated_at: "" };
+  const nextComparable = { ...nextManifest, generated_at: "" };
+  if (JSON.stringify(currentComparable) !== JSON.stringify(nextComparable)) {
+    throw new Error("stimuli/index.json is stale; run npm run refresh-stimuli-manifest and commit the result");
+  }
+}
 
 const warnings = manifest.filter((item) => item.validation_status !== "pass").map((item) => item.doc_id);
 console.log(JSON.stringify({
   documents: manifest.length,
   html_files: manifest.length * expectedFiles.length,
   pass: manifest.length - warnings.length,
-  warnings
+  warnings,
+  manifest: writeManifest ? "updated" : "verified"
 }, null, 2));
