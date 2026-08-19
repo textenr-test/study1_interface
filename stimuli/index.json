@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T05:52:26.230Z",
+  "generated_at": "2026-08-19T06:37:14.890Z",
   "source": "Google Drive/batch_output",
   "document_count": 38,
   "enriched_conditions_per_document": 6,
@@ -55,7 +55,7 @@
           "retained_factor_count": 132
         }
       },
-      "sha256": "7fb187f4b39598f8ff83b33367c00033f6e2a7ae15b192ded64749a34aff6729"
+      "sha256": "42218fd9cefeb618a3a950e34e49fa7dc04a672506d285dc1f8b105fa09b21c8"
     },
     {
       "doc_id": "P1_DOC_B",
@@ -108,7 +108,7 @@
           "retained_factor_count": 59
         }
       },
-      "sha256": "bd912302381ea3142876c6e966fd306097660666504cc5111d0a784c5372054b"
+      "sha256": "12b3664f4e252dc284b47ffde3b3fb19f693135c6194a4aa5d1a27af87470190"
     },
     {
       "doc_id": "P2_DOC_A",
@@ -161,7 +161,7 @@
           "retained_factor_count": 71
         }
       },
-      "sha256": "128b8c3215602fd3fe325de1a6abb844fcaa3d1f2352be348438f2b053cf65e3"
+      "sha256": "bf293db2d770c979a56f291dd519d9d90b8ce4bd3a8ccb68665498fe456c8f98"
     },
     {
       "doc_id": "P2_DOC_B",
@@ -214,7 +214,7 @@
           "retained_factor_count": 59
         }
       },
-      "sha256": "2f3b736f1e2a6d0e8e693ebdb150c636dc815cfeb3c767fe6fc16b4b37503775"
+      "sha256": "2aeea991f97951bec5faa99195945acaf60d5f5312c23dbd039ffeecb0d1e79a"
     },
     {
       "doc_id": "P3_DOC_A",
@@ -267,7 +267,7 @@
           "retained_factor_count": 45
         }
       },
-      "sha256": "d2eb911e03dc40344ef97e7a3f8d8049e8353bf5e2aaf629a61d45c03eda3b88"
+      "sha256": "a1a65ecff71433300db04cc8b9069a0737c43e3d0028c58f95d2ae2f1a6ec060"
     },
     {
       "doc_id": "P3_DOC_B",
@@ -320,7 +320,7 @@
           "retained_factor_count": 36
         }
       },
-      "sha256": "15d149619d351b7722094ac82271ce6ea3c7cad9d9e0355628af43039bffb2fe"
+      "sha256": "88d4dbd9c790f7fec95ed1d8e64375c4bc6e78ee51d472c5e76e4781170adf72"
     },
     {
       "doc_id": "P4_DOC_A",
@@ -373,7 +373,7 @@
           "retained_factor_count": 26
         }
       },
-      "sha256": "3aee0c7ce7b1bd7d471058e556ee253d256c69d2a411396502c8440f9a3d3288"
+      "sha256": "80b1a081a8f19250b3ed6a7e6a665f3bde33312c1d4f84b3c10c33b6f9d861fc"
     },
     {
       "doc_id": "P4_DOC_B",
@@ -426,7 +426,7 @@
           "retained_factor_count": 50
         }
       },
-      "sha256": "41872281d65341c9fbd44d47528e618b7d0b82041f6158cba0be71846c690d7d"
+      "sha256": "1b9afbc6e5f274eeb0a3e5df94e3a4ad397379b2527614dad4fdf192656f91e6"
     },
     {
       "doc_id": "P5_DOC_A",
@@ -479,7 +479,7 @@
           "retained_factor_count": 68
         }
       },
-      "sha256": "5fcf877c095d358203d2d5217c277aa69d9cbd71c8e7ee29b07e0649df2f62be"
+      "sha256": "ff43bb220007685ae57d4fe432aee1ae5565568b04cc2425fce477f4ee86f9ae"
     },
     {
       "doc_id": "P5_DOC_B",
@@ -532,7 +532,7 @@
           "retained_factor_count": 64
         }
       },
-      "sha256": "45984ac70843b2102257e2ec17773a34212507ff097dd2b653a178cc3a085c1f"
+      "sha256": "166676e663aaf0eccaa8918d2533f64d6e0b98dda203aa1d415245fe2d1edbcc"
     },
     {
       "doc_id": "P6_DOC_A",
@@ -585,7 +585,7 @@
           "retained_factor_count": 82
         }
       },
-      "sha256": "6a1d3edc8e88ed96d1fce496c874f82a3cc8212b82cd4df6c4925a54fb318833"
+      "sha256": "529362e323ed04f1fdca132ebdcfda8bae80e6f10a48e2fc4adeefc5bb7e7aa0"
     },
     {
       "doc_id": "P6_DOC_B",
@@ -638,7 +638,7 @@
           "retained_factor_count": 73
         }
       },
-      "sha256": "bac72a6398b4541a878e8f710345ca7ad71be5b06bce8e1aa861d26b44ff70cd"
+      "sha256": "5ba8abaddeb52a3440d038830431b3c517ca087379e8b60b9e5aa530b8529f0d"
     },
     {
       "doc_id": "P7_DOC_A",
@@ -691,7 +691,7 @@
           "retained_factor_count": 78
         }
       },
-      "sha256": "a06e43dd3d3d603e7a123f5cb9e806770dcea73d760ecff1dcb1a5b94345aafe"
+      "sha256": "fefd0d491d2d4456b29c33166e6e5d0c696da04165d6807005db9fcf9c5dc0b4"
     },
     {
       "doc_id": "P7_DOC_B",
@@ -744,7 +744,7 @@
           "retained_factor_count": 41
         }
       },
-      "sha256": "ac35462d14c69a0b12f83fc346c24a2b992e72b5c3f07ddc89cd7058cadf9fd1"
+      "sha256": "23a5eea486201d15616eccc6ca8a33eaa62702abbc3c591afdf3d28e2995ab22"
     },
     {
       "doc_id": "P8_DOC_A",
@@ -797,7 +797,7 @@
           "retained_factor_count": 65
         }
       },
-      "sha256": "de557c4c31d562a199a1b2403d260460a28b076ddea45879ed0dc875846897b7"
+      "sha256": "6dfa49fbe6491bfe0895eb6b5039426e1404957c00ccceb6eac3d5dbf60ca756"
     },
     {
       "doc_id": "P8_DOC_B",
@@ -850,7 +850,7 @@
           "retained_factor_count": 49
         }
       },
-      "sha256": "7eec2b5b61b3b897c0e5f8aaf4284f88fd830892966205a680a88bcb870d6b98"
+      "sha256": "6b1ee9c6a1f6460490a1f46056933c0e27ae984562ed3ee95c4e8bbbcf3cdf9e"
     },
     {
       "doc_id": "P9_DOC_A",
@@ -903,7 +903,7 @@
           "retained_factor_count": 46
         }
       },
-      "sha256": "85821a3c95a4667827f2571b78769795347e1f7c7a6778b75e634a203fbf9a98"
+      "sha256": "e8d04feee6a5ff7e82cecfcee396c60cac6cfb7263923693cdcafdacfeb6739d"
     },
     {
       "doc_id": "P9_DOC_B",
@@ -956,7 +956,7 @@
           "retained_factor_count": 54
         }
       },
-      "sha256": "235232025a6afe69aace10195054c5ccc3124e4003c69f8b19c6ad718be85470"
+      "sha256": "a8845f0673a79b92bc07714a3b53eed5af5d60fb55d8c00f7e45ae641c1687a0"
     },
     {
       "doc_id": "P10_DOC_A",
@@ -1009,7 +1009,7 @@
           "retained_factor_count": 60
         }
       },
-      "sha256": "06dc5e16d26db4ff075c8d2ff0f2a709ce9937470430cc8bf879eb63d8d18ab1"
+      "sha256": "034885054a0717eb70564a2a97d2544dbbee853995159fcdbe52290bdb66dd21"
     },
     {
       "doc_id": "P10_DOC_B",
@@ -1062,7 +1062,7 @@
           "retained_factor_count": 45
         }
       },
-      "sha256": "d5136e3556e3dd9ef8b04e8985a3db131b138fadc3cd544c2ed7bd8acb693f45"
+      "sha256": "97be932d5f1a99eee1e7580df4170bd5e056a229f6c1cc95c25807e9bbbae4ba"
     },
     {
       "doc_id": "P11_DOC_A",
@@ -1115,7 +1115,7 @@
           "retained_factor_count": 50
         }
       },
-      "sha256": "29252718b56784d9184bb8ebb5935eab4fb3ed11db09267edc9c0547a11d892c"
+      "sha256": "820854c2a3a8b03489cded1a42c49ace64aab3f249d4e4546ef255ace353eb45"
     },
     {
       "doc_id": "P11_DOC_B",
@@ -1168,7 +1168,7 @@
           "retained_factor_count": 21
         }
       },
-      "sha256": "31589b5d2a8d92050f49cc46deb46a180717867d52e246b79ba456c4316f2b7d"
+      "sha256": "dea5eceb58cfd54f3eb410dd1a64345f84bc797a688387fc044bc7c890fb1d83"
     },
     {
       "doc_id": "P12_DOC_A",
@@ -1221,7 +1221,7 @@
           "retained_factor_count": 57
         }
       },
-      "sha256": "9bef37c0fff83c6d5ca6a05c4dfd3b33b9fe31dead568cca9ce734a7d68a420f"
+      "sha256": "622b0f5660bb62557c6bbb67b481a396ae46d140519510e5d6c2ef7444a953ee"
     },
     {
       "doc_id": "P12_DOC_B",
@@ -1274,7 +1274,7 @@
           "retained_factor_count": 43
         }
       },
-      "sha256": "6686cd35a628913cacae0eba961127e1b17b972d0314a2d019f86054c60d8744"
+      "sha256": "3ec167ee07ac0a707fa824e3bf5ce889cad288f6952a85c715e8d10e06aeef87"
     },
     {
       "doc_id": "P13_DOC_A",
@@ -1327,7 +1327,7 @@
           "retained_factor_count": 83
         }
       },
-      "sha256": "1ec9434945b084a36b960b7c875358f516f2b098d5acae4426a4643c8650a282"
+      "sha256": "f521a01990384754a782aa0a85ea23a76bc45f9cef0d4ef91936c85daebbf44f"
     },
     {
       "doc_id": "P13_DOC_B",
@@ -1380,7 +1380,7 @@
           "retained_factor_count": 93
         }
       },
-      "sha256": "def3fbebba86603eb1303e0a2b3488a069dcc29c43366b66847d4435f51b0b95"
+      "sha256": "81a7db9ccf81a2757928160c828d719d8519166f3fd20d0237d03217121ed9ea"
     },
     {
       "doc_id": "P14_DOC_A",
@@ -1433,7 +1433,7 @@
           "retained_factor_count": 30
         }
       },
-      "sha256": "f7591b1b2d61e5f8826ecac02d6148565dc27c06eb09d9711f030d38d031add5"
+      "sha256": "f6673a5b17592468a944b5a2346c8f1c517d3d7f0642e1e786a5ea83147301e8"
     },
     {
       "doc_id": "P14_DOC_B",
@@ -1486,7 +1486,7 @@
           "retained_factor_count": 33
         }
       },
-      "sha256": "5f8ccd2de15bc55249c2d45b960341504bb86b42d73c6ba6706fc0ecff1682f5"
+      "sha256": "73cfc4bc4d35ab36002b3e04f808900be2cfb394eb907b017e123b95dc3247fe"
     },
     {
       "doc_id": "P15_DOC_A",
@@ -1539,7 +1539,7 @@
           "retained_factor_count": 28
         }
       },
-      "sha256": "45179d2a4a51b7e669a8a51739019e61487d65649b9ad568a06a7fd8354fd7a4"
+      "sha256": "d9bc7f8c23100be6c0eebd1379063a9f0ca3eeb27e61ae52a28b543b8af02d93"
     },
     {
       "doc_id": "P15_DOC_B",
@@ -1592,7 +1592,7 @@
           "retained_factor_count": 11
         }
       },
-      "sha256": "343d82d68a5a61b769d8446d3da41acff92b78f3b11bc2c87d8dd98e513aa2ca"
+      "sha256": "740c22fd07371df595400999a10ae58e32a3dd8d095a8abe9a49c63c8859fc95"
     },
     {
       "doc_id": "P16_DOC_A",
@@ -1645,7 +1645,7 @@
           "retained_factor_count": 26
         }
       },
-      "sha256": "d07de3a57705d9cc3a37261166bf671b4b09e640a3756ccb386501526dead41d"
+      "sha256": "b5b012d193df898aabb55d1855add31b35b8aec0789228c88a8da20e79961ff9"
     },
     {
       "doc_id": "P16_DOC_B",
@@ -1698,7 +1698,7 @@
           "retained_factor_count": 43
         }
       },
-      "sha256": "f478cba8b5f9407ef481a566b004c950bdf0ac734d55f2884ef615734db5b15f"
+      "sha256": "a1b91d26843bd1e4561314a85279b0c82a58cef6519397f79c43356095edc59e"
     },
     {
       "doc_id": "P17_DOC_A",
@@ -1751,7 +1751,7 @@
           "retained_factor_count": 72
         }
       },
-      "sha256": "6bee92d78704b489987dec5d7996c83b956b0bc3409ebaaf9389383508e8a433"
+      "sha256": "2d4021be1e4bd9ba36a744b90f5171894e5b4bd7aee1559f526ca7b5300f6dca"
     },
     {
       "doc_id": "P17_DOC_B",
@@ -1804,7 +1804,7 @@
           "retained_factor_count": 66
         }
       },
-      "sha256": "ff581bc2dc2d2652a4b5eeb8354d1998b6e08778abea76e2c6935a969e3f78ef"
+      "sha256": "ad94db53c0ca5fcba092e46dc79a34d93797237fcc3851dd99b3173ef0b6a8fd"
     },
     {
       "doc_id": "P18_DOC_A",
@@ -1857,7 +1857,7 @@
           "retained_factor_count": 42
         }
       },
-      "sha256": "8a5757000ca1fac9778936e2c5e969a7008d1a621f24167c1bef3c7a465d5ce3"
+      "sha256": "5053a69d9e66d118ce7ac978e1bf6e7b646f8cde22d3b045abedb4730944fca8"
     },
     {
       "doc_id": "P18_DOC_B",
@@ -1910,7 +1910,7 @@
           "retained_factor_count": 34
         }
       },
-      "sha256": "18ad514b6b1607e26d777a47b5726cb5e9dd3b64e4f8a6f2df792188ec0c0fb6"
+      "sha256": "4d12d3290ef8f876e398f89dc675118e886db84913e4b22af5cd67de47aecafa"
     },
     {
       "doc_id": "P19_DOC_A",
@@ -1963,7 +1963,7 @@
           "retained_factor_count": 34
         }
       },
-      "sha256": "8c64d01031cc05b8d364215c57c436d0cf0ed46c963baa00de2956ffdadf1592"
+      "sha256": "738ad21b41e41eb809030b35f1618a26ee4bb38168de43284e213b8400234453"
     },
     {
       "doc_id": "P19_DOC_B",
@@ -2016,7 +2016,7 @@
           "retained_factor_count": 38
         }
       },
-      "sha256": "d360510a16f6ede97c1400eb76d2a3870f3fe7973fd8451aa26d8165c505598f"
+      "sha256": "5ed09699dfe31480c1ae990c67366d98ccd68d7f218ebe8b550ca9b5f09b9d6e"
     }
   ]
 }
