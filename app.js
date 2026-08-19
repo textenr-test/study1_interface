@@ -240,7 +240,9 @@ function renderWelcome() {
   setView(
     '<section class="card compact-card">' +
       '<h1>Study information</h1>' +
-      '<p>You will complete 38 brief visual comparisons on a laptop or desktop. The study takes about 10–12 minutes.</p>' +
+      '<p>You will complete 38 brief visual comparisons. The study takes about 10–12 minutes.</p>' +
+      '<div class="device-requirement" role="note"><strong>Device requirement</strong>' +
+        '<span>This study can only be completed on a laptop or desktop computer using a mouse or trackpad. Mobile phones and tablets are not supported.</span></div>' +
       '<h2>Before you agree</h2>' +
       '<ul class="consent-points">' +
         '<li>Participation is voluntary. You may stop at any time by closing this page and returning your submission on Prolific.</li>' +
