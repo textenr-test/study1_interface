@@ -1,6 +1,7 @@
 import { buildAssignment, hashString, mulberry32 } from "./assignment.js";
 import { containsKoreanLanguage } from "./eligibility.js";
 import { expectedAttentionResponse } from "./attention.js";
+import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js";
 
 const CONFIG = window.STUDY_CONFIG;
 const app = document.getElementById("app");
@@ -731,6 +732,10 @@ async function runStimulusTrial(trial, doc, attempt) {
   const stimulusPhase = document.getElementById("stimulus-phase");
   const leftFrame = document.getElementById("frame-left");
   const rightFrame = document.getElementById("frame-right");
+  const sourceWidth = doc.viewport_width || 900;
+  const sourceHeight = doc.viewport_height || 1200;
+  primeStimulusFrame(leftFrame, sourceWidth, sourceHeight);
+  primeStimulusFrame(rightFrame, sourceWidth, sourceHeight);
   const preparationStarted = performance.now();
   const invalidation = { hidden: false, resized: false };
   let timingPhase = "preload";
@@ -748,7 +753,17 @@ async function runStimulusTrial(trial, doc, attempt) {
       loadFrame(leftFrame, prepareSrcdoc(leftHtml)),
       loadFrame(rightFrame, prepareSrcdoc(rightHtml))
     ]);
-    const scale = fitStimuli(doc.viewport_width || 900, doc.viewport_height || 1200);
+    await nextFrame();
+    const leftMeasuredHeight = measureFrameContentHeight(leftFrame);
+    const rightMeasuredHeight = measureFrameContentHeight(rightFrame);
+    const leftContentHeight = resolveMeasuredHeight(leftMeasuredHeight, sourceHeight);
+    const rightContentHeight = resolveMeasuredHeight(rightMeasuredHeight, sourceHeight);
+    const fittedContentHeight = choosePairContentHeight({
+      leftMeasuredHeight,
+      rightMeasuredHeight,
+      sourceHeight
+    });
+    const scale = fitStimuli(sourceWidth, fittedContentHeight);
     const preloadMs = performance.now() - preparationStarted;
     document.getElementById("preparation-phase").classList.add("hidden");
     const fixation = document.getElementById("fixation-phase");
@@ -779,6 +794,10 @@ async function runStimulusTrial(trial, doc, attempt) {
       actualExposureMs,
       preloadMs,
       scale,
+      fittedContentHeight,
+      leftContentHeight,
+      rightContentHeight,
+      trimmedBottomWhitespacePx: Math.max(0, sourceHeight - fittedContentHeight),
       invalidation,
       fullscreen: Boolean(document.fullscreenElement),
       screen: collectScreenInfo()
@@ -812,7 +831,7 @@ class TrialTimingError extends Error {
 function stimulusPanel(side) {
   return '<div class="stimulus-panel" id="panel-' + side + '"><span class="stimulus-label">' + side.toUpperCase() +
     '</span><div class="stimulus-holder" id="holder-' + side + '"><iframe id="frame-' + side +
-    '" title="' + side + ' article version" sandbox="" tabindex="-1"></iframe></div></div>';
+    '" title="' + side + ' article version" sandbox="allow-same-origin" tabindex="-1"></iframe></div></div>';
 }
 
 function prepareSrcdoc(html) {
@@ -827,7 +846,12 @@ function prepareSrcdoc(html) {
 function loadFrame(frame, srcdoc) {
   return new Promise((resolve, reject) => {
     const timeout = window.setTimeout(() => reject(new Error("Stimulus rendering timed out.")), 12000);
-    frame.addEventListener("load", () => {
+    frame.addEventListener("load", async () => {
+      try {
+        await frame.contentDocument?.fonts?.ready;
+      } catch (_) {
+        // Font readiness is an enhancement; the iframe load event remains the fallback.
+      }
       window.clearTimeout(timeout);
       resolve();
     }, { once: true });
@@ -835,21 +859,54 @@ function loadFrame(frame, srcdoc) {
   });
 }
 
+function primeStimulusFrame(frame, width, height) {
+  frame.style.width = String(width) + "px";
+  frame.style.height = String(height) + "px";
+  frame.style.transform = "none";
+}
+
+function measureFrameContentHeight(frame) {
+  const frameDocument = frame.contentDocument;
+  const frameWindow = frame.contentWindow;
+  if (!frameDocument?.body || !frameWindow) return null;
+
+  const preferred = Array.from(frameDocument.querySelectorAll(
+    ".document-container, .doc, main, article, [role='document']"
+  ));
+  const candidates = preferred.length ? preferred : Array.from(frameDocument.body.children);
+  let contentBottom = 0;
+
+  candidates.forEach((element) => {
+    const style = frameWindow.getComputedStyle(element);
+    if (style.display === "none" || style.visibility === "hidden") return;
+    const rect = element.getBoundingClientRect();
+    if (!Number.isFinite(rect.bottom)) return;
+    contentBottom = Math.max(contentBottom, rect.bottom);
+  });
+
+  return contentBottom > 0 ? Math.ceil(contentBottom) : null;
+}
+
 function fitStimuli(width, height) {
   const panels = ["left", "right"].map((side) => document.getElementById("panel-" + side));
   const availableWidth = Math.min(...panels.map((panel) => panel.clientWidth - 24));
   const availableHeight = Math.min(...panels.map((panel) => panel.clientHeight - 24));
-  const scale = Math.min(1, availableWidth / width, availableHeight / height);
+  const fit = calculateStimulusFit({
+    sourceWidth: width,
+    contentHeight: height,
+    availableWidth,
+    availableHeight
+  });
   ["left", "right"].forEach((side) => {
     const holder = document.getElementById("holder-" + side);
     const frame = document.getElementById("frame-" + side);
-    holder.style.width = String(width * scale) + "px";
-    holder.style.height = String(height * scale) + "px";
+    holder.style.width = String(fit.renderedWidth) + "px";
+    holder.style.height = String(fit.renderedHeight) + "px";
     frame.style.width = String(width) + "px";
     frame.style.height = String(height) + "px";
-    frame.style.transform = "scale(" + String(scale) + ")";
+    frame.style.transform = "scale(" + String(fit.scale) + ")";
   });
-  return scale;
+  return fit.scale;
 }
 
 function renderTrialRetry(trial, doc, attempt, message) {
@@ -932,6 +989,10 @@ function renderRating(trial, doc, metrics) {
       stimulusScale: metrics.scale,
       sourceViewportWidth: doc.viewport_width,
       sourceViewportHeight: doc.viewport_height,
+      fittedContentHeight: metrics.fittedContentHeight,
+      leftContentHeight: metrics.leftContentHeight,
+      rightContentHeight: metrics.rightContentHeight,
+      trimmedBottomWhitespacePx: metrics.trimmedBottomWhitespacePx,
       fullscreen: metrics.fullscreen,
       displayInfo: metrics.screen,
       respondedAt: nowIso()
