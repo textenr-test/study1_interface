@@ -122,6 +122,19 @@ p { margin-bottom: 16px; }
 .notice.error { border-color: var(--danger); color: var(--danger); }
 .notice.success { border-color: var(--success); color: var(--success); }
 
+.device-requirement {
+  display: grid;
+  gap: 4px;
+  border: 1px solid #b9cdf8;
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  background: #eef4ff;
+  padding: 16px 18px;
+  margin: 22px 0 26px;
+}
+.device-requirement strong { color: var(--accent-dark); font-size: 14px; }
+.device-requirement span { font-size: 15px; line-height: 1.5; }
+
 .check-row, .radio-row {
   display: flex;
   align-items: flex-start;
