@@ -34,7 +34,8 @@ const HEADERS = Object.freeze({
     "spatial_rating", "normalized_enriched_rating", "response_time_ms", "planned_fixation_ms",
     "planned_exposure_ms", "actual_exposure_ms", "preload_ms", "attempt_count", "stimulus_scale",
     "source_viewport_width", "source_viewport_height", "fullscreen", "display_info_json", "responded_at",
-    "study_version"
+    "study_version", "fitted_content_height", "left_content_height", "right_content_height",
+    "trimmed_bottom_whitespace_px"
   ],
   Events: [
     "event_id", "participant_id", "session_id", "study_id", "participant_slot", "event_type",
@@ -47,9 +48,7 @@ function setupStudyWorkbook() {
   const spreadsheet = getSpreadsheet_();
   Object.keys(HEADERS).forEach(function(name) {
     const sheet = getOrCreateSheet_(spreadsheet, name);
-    if (sheet.getLastRow() === 0) {
-      sheet.getRange(1, 1, 1, HEADERS[name].length).setValues([HEADERS[name]]);
-    }
+    ensureHeaders_(sheet, HEADERS[name]);
     sheet.setFrozenRows(1);
     const header = sheet.getRange(1, 1, 1, HEADERS[name].length);
     header.setFontWeight("bold").setBackground("#202020").setFontColor("#ffffff");
@@ -347,7 +346,11 @@ function appendTrial_(spreadsheet, payload, identity) {
     fullscreen: record.fullscreen,
     display_info_json: jsonCell_(record.displayInfo),
     responded_at: record.respondedAt,
-    study_version: payload.studyVersion
+    study_version: payload.studyVersion,
+    fitted_content_height: record.fittedContentHeight,
+    left_content_height: record.leftContentHeight,
+    right_content_height: record.rightContentHeight,
+    trimmed_bottom_whitespace_px: record.trimmedBottomWhitespacePx
   };
   appendObjectRow_(sheet, HEADERS.Trials, row);
 }
@@ -401,7 +404,20 @@ function getOrCreateSheet_(spreadsheet, name) {
 }
 
 function ensureHeaders_(sheet, headers) {
-  if (sheet.getLastRow() === 0) sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  if (sheet.getLastRow() === 0) {
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    return;
+  }
+  const existing = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  for (let index = 0; index < existing.length; index += 1) {
+    if (existing[index] !== headers[index]) {
+      throw new Error("Unexpected header order in " + sheet.getName() + " at column " + String(index + 1) + ".");
+    }
+  }
+  if (existing.length < headers.length) {
+    const additions = headers.slice(existing.length);
+    sheet.getRange(1, existing.length + 1, 1, additions.length).setValues([additions]);
+  }
 }
 
 function readTable_(sheet) {
