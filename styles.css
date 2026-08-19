@@ -4,7 +4,7 @@
   --faint: #98a2b3;
   --line: #dedbd2;
   --line-strong: #b9c4d6;
-  --paper: #fffdf8;
+  --paper: #f7f9fa;
   --wash: #f7f9fa;
   --wash-dark: #ebe8df;
   --accent: #2563eb;
@@ -41,7 +41,7 @@ button { cursor: pointer; }
   gap: 14px;
   padding: 12px 28px;
   border-bottom: 1px solid var(--line);
-  background: rgba(255, 253, 248, 0.95);
+  background: rgba(247, 249, 250, 0.96);
   position: sticky;
   top: 0;
   z-index: 20;
@@ -86,15 +86,6 @@ h1 { font-size: clamp(30px, 4.2vw, 48px); line-height: 1.08; letter-spacing: -0.
 h2 { font-size: 24px; line-height: 1.2; letter-spacing: -0.025em; margin-bottom: 14px; }
 h3 { font-size: 16px; margin-bottom: 8px; }
 p { margin-bottom: 16px; }
-
-.eyebrow {
-  margin-bottom: 12px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 11px;
-  font-weight: 750;
-}
 
 .lede { font-size: 18px; line-height: 1.55; max-width: 66ch; }
 .muted { color: var(--muted); }
@@ -242,11 +233,11 @@ select, textarea, input[type="text"] {
 
 .trial-phase { width: 100%; height: 100%; min-height: 100vh; }
 .phase-overlay { position: absolute; inset: 0; z-index: 6; }
-.fixation-phase { display: grid; place-items: center; background: #f7f7f5; }
+.fixation-phase { display: grid; place-items: center; background: #f7f9fa; }
 .fixation-cross { font-size: 52px; font-weight: 300; line-height: 1; }
 
-.stimulus-phase { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 18px; background: #dfdfdd; }
-.stimulus-panel { position: relative; overflow: hidden; background: #fafafa; border: 1px solid #bdbdbd; }
+.stimulus-phase { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 18px; background: #f7f9fa; }
+.stimulus-panel { position: relative; overflow: hidden; background: #f7f9fa; border: 1px solid #bdbdbd; }
 .stimulus-label {
   position: absolute;
   top: 10px;
@@ -254,7 +245,7 @@ select, textarea, input[type="text"] {
   translate: -50% 0;
   z-index: 3;
   border: 1px solid #aaa;
-  background: rgba(255,255,255,.94);
+  background: rgba(247,249,250,.96);
   padding: 5px 12px;
   border-radius: 999px;
   font-size: 11px;
@@ -262,7 +253,7 @@ select, textarea, input[type="text"] {
   letter-spacing: .08em;
 }
 .stimulus-holder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); overflow: hidden; }
-.stimulus-holder iframe { border: 0; display: block; transform-origin: top left; pointer-events: none; background: #fafafa; }
+.stimulus-holder iframe { border: 0; display: block; transform-origin: top left; pointer-events: none; background: #f7f9fa; }
 
 .rating-phase { display: grid; place-items: center; padding: 30px; background: var(--wash); }
 .rating-card { width: min(980px, 100%); text-align: center; }
