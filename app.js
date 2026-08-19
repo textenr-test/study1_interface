@@ -71,7 +71,8 @@ function createInitialState() {
 function saveLocal() {
   if (!state.consentedAt && state.status !== "complete") return;
   try {
-    localStorage.setItem(storageKey, JSON.stringify(state));
+    const recoveryState = { ...state, responses: [], events: [] };
+    localStorage.setItem(storageKey, JSON.stringify(recoveryState));
   } catch (error) {
     console.warn("Local save failed", error);
   }
@@ -333,10 +334,10 @@ function renderColorTest() {
   setView(
     '<section class="card wide-card">' +
       '<p class="eyebrow">Step 2 of 3</p><h1>Color-vision eligibility check</h1>' +
-      '<p>Some article versions use color. Enter the number you see in each dot pattern. This brief display-specific check is for study eligibility only and is not a medical diagnosis.</p>' +
+      '<p>Some article versions use color. Enter the number you see in the dot pattern. This brief display-specific check is for study eligibility only and is not a medical diagnosis.</p>' +
       '<form id="color-form">' +
         '<div class="plate-grid">' +
-          plateCard(0, "Plate A") + plateCard(1, "Plate B") +
+          plateCard(0, "Plate 2") +
         "</div>" +
         '<div id="color-error" class="notice error hidden" role="alert"></div>' +
         '<div class="actions right"><button class="button" type="submit">Check and continue</button></div>' +
@@ -344,14 +345,13 @@ function renderColorTest() {
     "</section>"
   );
   const plateDefinitions = [
-    { answer: "12", seed: 117, foreground: ["#1458b8", "#256ed0", "#0c489d"], background: ["#f1cf73", "#f5dc96", "#e9bf54"] },
-    { answer: "6", seed: 306, foreground: ["#b53d2e", "#d3543f", "#982f24"], background: ["#8fc5a1", "#a9d6b5", "#78b68d"] }
+    { plate: 2, answer: "6", seed: 306, foreground: ["#b53d2e", "#d3543f", "#982f24"], background: ["#8fc5a1", "#a9d6b5", "#78b68d"] }
   ];
   plateDefinitions.forEach((definition, index) => drawPlate(document.getElementById("plate-" + index), definition));
   document.getElementById("color-form").addEventListener("submit", (event) => {
     event.preventDefault();
     const responses = plateDefinitions.map((definition, index) => ({
-      plate: index + 1,
+      plate: definition.plate,
       expected: definition.answer,
       response: document.getElementById("plate-answer-" + index).value.trim()
     }));
@@ -419,16 +419,16 @@ function renderInstructions(errorMessage = "") {
   setHeader("Task instructions");
   setView(
     '<section class="card wide-card">' +
-      '<p class="eyebrow">Step 3 of 3</p><h1>Judge the immediate visual impression</h1>' +
+      '<p class="eyebrow">Step 3 of 3</p><h1>Instruction &amp; Comprehension Test</h1>' +
       '<p class="lede">For every trial, focus on the cross. Two versions of the same article will then appear side by side for ' +
         escapeHtml(String(CONFIG.timings.exposureMs)) + ' ms.</p>' +
-      '<div class="instruction-diagram" aria-label="Trial sequence">' +
-        '<div class="instruction-step"><strong>+</strong><span>Fixation · 750 ms</span></div>' +
-        '<div class="instruction-step"><strong>▥ ▥</strong><span>Two article versions · 500 ms</span></div>' +
-        '<div class="instruction-step"><strong>−3 … +3</strong><span>Rate left vs. right</span></div>' +
-        '<div class="instruction-step"><strong>→</strong><span>Continue</span></div>' +
-      "</div>" +
-      '<div class="notice"><strong>Your task:</strong> Which version would make you more willing to continue reading, based only on your immediate visual first impression? Do not try to read every word. There is no objectively correct preference.</div>' +
+      '<ol class="instruction-flow" aria-label="Trial sequence">' +
+        '<li><strong>Focus on the cross</strong><span>750 ms</span></li>' +
+        '<li><strong>View both versions</strong><span>500 ms</span></li>' +
+        '<li><strong>Rate left versus right</strong><span>−3 to +3</span></li>' +
+        '<li><strong>Continue</strong><span>Next trial</span></li>' +
+      "</ol>" +
+      '<div class="task-callout"><strong>Your task</strong><p>Which version would motivate you more to continue reading, based on its visual appearance? Do not try to read every word. There is no objectively correct preference.</p></div>' +
       '<p>Keep this page full screen, keep the tab active, and do not resize the window during a trial. If timing is interrupted, that trial will be repeated automatically.</p>' +
       '<hr class="rule">' +
       '<h2>Comprehension check</h2><p>The instructions remain visible above. You have two chances.</p>' +
@@ -441,7 +441,7 @@ function renderInstructions(errorMessage = "") {
         "</fieldset></div>" +
         '<div class="question"><fieldset><legend>What should your rating represent?</legend>' +
           comprehensionOption("judgment", "accuracy", "Which version contains more accurate information") +
-          comprehensionOption("judgment", "first_impression", "Which version makes me more willing to continue reading at first glance") +
+          comprehensionOption("judgment", "first_impression", "Which version would motivate me more to continue reading, based on its visual appearance") +
           comprehensionOption("judgment", "memory", "Which version I remember word for word") +
         "</fieldset></div>" +
         '<div class="actions right"><button class="button" type="submit">Check answers</button></div>' +
@@ -562,7 +562,7 @@ function renderBackendError(error) {
 function renderPracticeIntro() {
   setHeader("Practice");
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Practice</p><h1>Try two practice trials</h1>' +
+    '<section class="card compact-card"><h1>Try two practice trials</h1>' +
       '<p>The practice uses the same timing and response scale as the main study. Practice responses are not included in the main analysis.</p>' +
       '<div class="notice">Please set browser zoom to 100%, maximize the window, and close unrelated tabs or programs that may interrupt the display.</div>' +
       '<div class="actions"><button class="button" id="start-practice">Enter full screen and begin</button></div></section>'
@@ -641,7 +641,7 @@ function runPracticeTrial() {
 function renderMainIntro() {
   setHeader("Main study");
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Main study</p><h1>38 comparisons</h1>' +
+    '<section class="card compact-card"><h1>Main Study</h1>' +
       '<p>A short break appears halfway through. Two clearly labeled attention checks are included. Your progress is saved after every response.</p>' +
       '<div class="actions"><button class="button" id="begin-main">Begin main study</button></div></section>'
   );
@@ -869,15 +869,15 @@ function renderRating(trial, doc, metrics) {
   const ratingShownAt = performance.now();
   setView(
     '<div class="trial-shell"><div class="rating-phase"><section class="card rating-card">' +
-      '<p class="eyebrow">' + (trial.practice ? "Practice" : "Your first impression") + "</p>" +
-      '<h1>Which version would make you more willing to continue reading?</h1>' +
+      (trial.practice ? '<p class="eyebrow">Practice</p>' : "") +
+      '<h1>Which version would motivate you more to continue reading, based on its visual appearance?</h1>' +
       '<p class="muted">Choose a direction and strength. Select 0 if there was no difference.</p>' +
       '<div class="rating-scale" role="group" aria-label="Preference from left to right">' +
         [-3, -2, -1, 0, 1, 2, 3].map((value) => '<button class="rating-option" data-value="' + value + '" aria-label="' +
           spatialLabel(value) + '">' + (value > 0 ? "+" : "") + value + "</button>").join("") +
       "</div>" +
       '<div class="rating-anchors"><span>LEFT much more</span><span>No difference</span><span>RIGHT much more</span></div>' +
-      '<div class="actions right"><button class="button" id="submit-rating" disabled>Submit rating</button></div>' +
+      '<div class="actions center"><button class="button" id="submit-rating" disabled>Submit rating</button></div>' +
     "</section></div></div>",
     { fullBleed: true }
   );
@@ -937,7 +937,6 @@ function renderRating(trial, doc, metrics) {
       displayInfo: metrics.screen,
       respondedAt: nowIso()
     };
-    state.responses.push(record);
     state.trialCursor += 1;
     state.status = "in_progress";
     saveLocal();
@@ -1034,15 +1033,13 @@ function renderSubmit() {
   setHeader("Ready to submit", true);
   const failures = state.attentionChecks.filter((item) => !item.passed).length;
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Complete</p><h1>Your responses are ready.</h1>' +
+    '<section class="card compact-card"><h1>You completed the task.</h1>' +
       '<p>You completed ' + escapeHtml(String(state.trialCursor)) + ' comparisons. Select Submit to save the final record and return to Prolific.</p>' +
       '<div class="notice">Keep this page open until the Prolific page appears.</div>' +
-      '<div class="actions"><button class="button" id="final-submit">Submit study</button>' +
-      (isPreview ? '<button class="button secondary" id="download-preview">Download preview log</button>' : "") +
-      "</div><p class=\"small muted\">Attention checks failed: " + escapeHtml(String(failures)) + " of 2.</p></section>"
+      '<div class="actions"><button class="button" id="final-submit">Submit study</button></div>' +
+      '<p class="small muted">Attention checks failed: ' + escapeHtml(String(failures)) + " of 2.</p></section>"
   );
   document.getElementById("final-submit").addEventListener("click", submitFinal);
-  document.getElementById("download-preview")?.addEventListener("click", downloadPreviewLog);
 }
 
 async function submitFinal() {
@@ -1103,25 +1100,13 @@ function renderPreviewComplete() {
   setHeader("Preview complete", true);
   setView(
     '<section class="card compact-card"><p class="eyebrow">Researcher preview</p><h1>Preview completed successfully.</h1>' +
-      '<p>No Prolific redirect occurred and no remote data was written in preview mode.</p>' +
-      '<div class="actions"><button class="button" id="download-preview">Download preview log</button>' +
-      '<button class="button secondary" id="reset-preview">Reset preview</button></div></section>'
+      '<p>No Prolific redirect occurred, no remote data was written, and no participant-facing log is available in preview mode.</p>' +
+      '<div class="actions"><button class="button" id="reset-preview">Reset preview</button></div></section>'
   );
-  document.getElementById("download-preview").addEventListener("click", downloadPreviewLog);
   document.getElementById("reset-preview").addEventListener("click", () => {
     localStorage.removeItem(storageKey);
     window.location.reload();
   });
-}
-
-function downloadPreviewLog() {
-  const blob = new Blob([JSON.stringify({ configVersion: CONFIG.version, state }, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "reader-study-preview-" + String(state.slot || 1) + ".json";
-  link.click();
-  URL.revokeObjectURL(url);
 }
 
 function renderResume() {
