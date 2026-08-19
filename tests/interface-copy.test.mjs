@@ -14,6 +14,9 @@ assert.doesNotMatch(app, /downloadPreviewLog|Download preview log|Your first imp
 assert.doesNotMatch(app, /class="eyebrow"/);
 assert.match(app, /sandbox="allow-same-origin"/);
 assert.match(app, /measureFrameContentHeight/);
+assert.match(app, /This study can only be completed on a laptop or desktop computer using a mouse or trackpad\./);
+assert.match(app, /Mobile phones and tablets are not supported\./);
+assert.match(css, /\.device-requirement/);
 assert.match(css, /--wash: #f7f9fa;/);
 assert.match(css, /--paper: #f7f9fa;/);
 assert.doesNotMatch(css, /\.eyebrow/);
