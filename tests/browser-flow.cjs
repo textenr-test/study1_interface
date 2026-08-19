@@ -23,8 +23,7 @@ const path = require("node:path");
   await page.check('input[name="vision"][value="yes"]');
   await page.click('#eligibility-form button[type="submit"]');
 
-  await page.fill("#plate-answer-0", "12");
-  await page.fill("#plate-answer-1", "6");
+  await page.fill("#plate-answer-0", "6");
   await page.screenshot({ path: "/tmp/reader-study-color.png", fullPage: true });
   await page.click('#color-form button[type="submit"]');
 
@@ -74,14 +73,14 @@ const path = require("node:path");
     return JSON.parse(localStorage.getItem(key));
   });
   if (stored.trialCursor !== 38) throw new Error("Expected 38 trials, found " + stored.trialCursor);
-  if (stored.responses.length !== 38) throw new Error("Expected 38 response records");
+  if (stored.responses.length !== 0) throw new Error("Completed response logs must not persist in participant storage");
   if (stored.attentionChecks.length !== 2) throw new Error("Expected two attention checks");
   if (errors.length) throw new Error(errors.join("\n"));
 
   console.log(JSON.stringify({
     status: stored.status,
     completedTrials: stored.trialCursor,
-    responseRecords: stored.responses.length,
+    locallyStoredResponseRecords: stored.responses.length,
     attentionChecks: stored.attentionChecks.length,
     screenshots: [
       path.resolve("/tmp/reader-study-consent.png"),
