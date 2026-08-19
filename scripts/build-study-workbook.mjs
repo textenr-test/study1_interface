@@ -20,7 +20,8 @@ const trialHeaders = [
   "spatial_rating", "normalized_enriched_rating", "response_time_ms", "planned_fixation_ms",
   "planned_exposure_ms", "actual_exposure_ms", "preload_ms", "attempt_count", "stimulus_scale",
   "source_viewport_width", "source_viewport_height", "fullscreen", "display_info_json", "responded_at",
-  "study_version"
+  "study_version", "fitted_content_height", "left_content_height", "right_content_height",
+  "trimmed_bottom_whitespace_px"
 ];
 const eventHeaders = [
   "event_id", "participant_id", "session_id", "study_id", "participant_slot", "event_type",
@@ -38,7 +39,7 @@ const readmeRows = [
   ["Source warnings", "Review P6_DOC_A, P13_DOC_A, and P13_DOC_B before analysis; source pipeline status is warning."],
   ["Collector", "Deploy apps-script/Code.gs as a bound Google Apps Script web app."],
   ["Access", "Keep spreadsheet sharing restricted to authorized research personnel."],
-  ["Study version", "2026-08-19-v4"]
+  ["Study version", "2026-08-19-v5"]
 ];
 
 const workbook = Workbook.create();
