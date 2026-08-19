@@ -43,7 +43,6 @@ window.STUDY_CONFIG = Object.freeze({
     allowedPointer: "fine"
   },
   stimulusLanguage: "Korean",
-  requiredReadingLanguage: "Korean",
   dataEndpoint: "",
   googleSheetUrl: "",
   redirects: {
