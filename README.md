@@ -21,7 +21,7 @@ The page is safe to deploy for researcher preview, but live Prolific entry is in
 4. redirects.noConsent
 5. redirects.failedAttention
 
-The Drive batch_output excerpts currently contain Korean text in all 38 documents. The interface is English and the eligibility flow therefore requires comfortable Korean reading. Do not recruit an English-monolingual sample with these stimuli. For that population, translate the source documents and rerun the derivation pipeline before replacing the 38 stimulus JSON files.
+The Drive batch_output excerpts contain Korean text in all 38 documents, while the interface is English. The current eligibility flow intentionally screens out participants who report Korean as a native or comfortably used language. This supports a visual-first-impression task without Korean-language comprehension, but the choice must remain aligned with the approved protocol and analysis plan.
 
 ## Local checks
 
