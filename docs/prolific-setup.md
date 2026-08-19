@@ -68,7 +68,7 @@ Comprehension checks appear before the main task, stay on the same page as the i
 3. Replace Code.gs with apps-script/Code.gs.
 4. Run setupStudyWorkbook() once and approve the requested spreadsheet permissions.
 5. In **Project Settings → Script properties**, add:
-   - STUDY_VERSION = 2026-08-19-v4
+   - STUDY_VERSION = 2026-08-19-v5
    - MAX_SLOTS = 30
    - SPREADSHEET_ID only if the script is not bound to the target spreadsheet.
 6. Select **Deploy → New deployment → Web app**.
