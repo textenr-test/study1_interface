@@ -12,6 +12,8 @@ assert.match(app, /<h1>Main Study<\/h1>/);
 assert.match(app, /<h1>You completed the task\.<\/h1>/);
 assert.doesNotMatch(app, /downloadPreviewLog|Download preview log|Your first impression|Your responses are ready/);
 assert.doesNotMatch(app, /class="eyebrow"/);
+assert.match(app, /sandbox="allow-same-origin"/);
+assert.match(app, /measureFrameContentHeight/);
 assert.match(css, /--wash: #f7f9fa;/);
 assert.match(css, /--paper: #f7f9fa;/);
 assert.doesNotMatch(css, /\.eyebrow/);
