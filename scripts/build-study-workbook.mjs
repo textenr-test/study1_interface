@@ -34,11 +34,11 @@ const readmeRows = [
   ["Expected ratings per pair", 5],
   ["Rating direction", "normalized_enriched_rating: −3 = enriched much less preferred; 0 = no difference; +3 = enriched much more preferred."],
   ["Participant identifiers", "Prolific participant, study, and session IDs only. Do not add direct identifiers."],
-  ["Attention checks", "Two explicit checks. A single failure is not sufficient for exclusion in this study."],
+  ["Attention checks", "Two explicit checks require +1 then +3. Incorrect attempts are logged; only the instructed response advances the study."],
   ["Source warnings", "Review P6_DOC_A, P13_DOC_A, and P13_DOC_B before analysis; source pipeline status is warning."],
   ["Collector", "Deploy apps-script/Code.gs as a bound Google Apps Script web app."],
   ["Access", "Keep spreadsheet sharing restricted to authorized research personnel."],
-  ["Study version", "2026-08-19-v3"]
+  ["Study version", "2026-08-19-v4"]
 ];
 
 const workbook = Workbook.create();
