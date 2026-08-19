@@ -36,7 +36,7 @@ Fast flow check:
 
     http://localhost:4173/?preview=1&slot=1&fast=1
 
-Preview mode never writes remote data and never redirects to Prolific.
+Preview mode never writes remote data, never redirects to Prolific, and does not expose a downloadable participant log.
 
 ## Repository structure
 
@@ -52,6 +52,7 @@ Preview mode never writes remote data and never redirects to Prolific.
 
 - Do not place OAuth credentials, Google API keys, researcher tokens, or private admin secrets in this public repository.
 - The Google Sheet should remain restricted to authorized researchers. The Apps Script exposes append/resume/confirmation operations only; it has no public export endpoint.
+- Full trial and event records are retained in the researcher-only Google Sheet. Participant recovery storage excludes completed response and event histories; only progress and any temporarily unsent queue are retained locally.
 - GitHub Pages is public. Anyone who knows the URL can download the stimuli. Use a private study host instead if stimulus embargo or access control is required.
 - Prolific IDs are pseudonymous identifiers. Keep exports restricted and follow the approved retention and deletion plan.
 
