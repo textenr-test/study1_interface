@@ -11,7 +11,10 @@ assert.match(app, /Which version would motivate you more to continue reading, ba
 assert.match(app, /<h1>Main Study<\/h1>/);
 assert.match(app, /<h1>You completed the task\.<\/h1>/);
 assert.doesNotMatch(app, /downloadPreviewLog|Download preview log|Your first impression|Your responses are ready/);
+assert.doesNotMatch(app, /class="eyebrow"/);
 assert.match(css, /--wash: #f7f9fa;/);
+assert.match(css, /--paper: #f7f9fa;/);
+assert.doesNotMatch(css, /\.eyebrow/);
 assert.match(css, /\.actions\.center \{ justify-content: center; \}/);
 
 console.log("Interface copy and privacy controls verified.");
