@@ -1,0 +1,9 @@
+{
+  "name": "text-enrichment-reader-study",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/assignment.test.mjs && node scripts/verify-stimuli.mjs",
+    "serve": "python3 -m http.server 4173"
+  }
+}

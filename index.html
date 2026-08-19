@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Visual First-Impression Study</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header" id="site-header">
+    <a class="study-mark" href="./" aria-label="Study home">TE</a>
+    <div class="header-copy">
+      <span id="header-title">Visual First-Impression Study</span>
+      <span id="header-status" aria-live="polite"></span>
+    </div>
+    <div class="progress-wrap" id="progress-wrap" hidden>
+      <span id="progress-label">0 / 38</span>
+      <progress id="progress" max="38" value="0"></progress>
+    </div>
+  </header>
+  <main id="app" tabindex="-1">
+    <section class="card compact-card" aria-busy="true">
+      <p class="eyebrow">Loading</p>
+      <h1>Preparing the study…</h1>
+      <p class="muted">Please keep this tab open.</p>
+    </section>
+  </main>
+  <noscript>
+    <div class="card compact-card"><h1>JavaScript is required</h1><p>This experiment cannot run without JavaScript. Please enable it and reopen the study from Prolific.</p></div>
+  </noscript>
+  <script src="study-config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

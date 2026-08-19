@@ -1,0 +1,2022 @@
+{
+  "generated_at": "2026-08-19T05:52:26.230Z",
+  "source": "Google Drive/batch_output",
+  "document_count": 38,
+  "enriched_conditions_per_document": 6,
+  "documents": [
+    {
+      "doc_id": "P1_DOC_A",
+      "original_filename": "P1_DOC_A.docx",
+      "source_document_id": "19fa6de1-8dc3-4835-a189-d2e8796fb214",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.16902174988620394,
+          "ink_mass_ratio": 0.13358665320904828,
+          "retained_factor_count": 7
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.3380434997724079,
+          "ink_mass_ratio": 0.33470878109600427,
+          "retained_factor_count": 13
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.5070652496586119,
+          "ink_mass_ratio": 0.5070652496586119,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.6713768331057413,
+          "ink_mass_ratio": 0.6714955767974826,
+          "retained_factor_count": 50
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8356884165528706,
+          "ink_mass_ratio": 0.8350650121712284,
+          "retained_factor_count": 81
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 132
+        }
+      },
+      "sha256": "7fb187f4b39598f8ff83b33367c00033f6e2a7ae15b192ded64749a34aff6729"
+    },
+    {
+      "doc_id": "P1_DOC_B",
+      "original_filename": "P1_DOC_B.docx",
+      "source_document_id": "fce84f38-049a-4f6c-90fd-1191ccc77cb9",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2373228933631618,
+          "ink_mass_ratio": 0.23937360178970918,
+          "retained_factor_count": 6
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.4746457867263236,
+          "ink_mass_ratio": 0.46001118568232663,
+          "retained_factor_count": 13
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.7119686800894854,
+          "ink_mass_ratio": 0.7119686800894854,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.807979120059657,
+          "ink_mass_ratio": 0.805089485458613,
+          "retained_factor_count": 35
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9039895600298284,
+          "ink_mass_ratio": 0.9068791946308725,
+          "retained_factor_count": 45
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 59
+        }
+      },
+      "sha256": "bd912302381ea3142876c6e966fd306097660666504cc5111d0a784c5372054b"
+    },
+    {
+      "doc_id": "P2_DOC_A",
+      "original_filename": "P2_DOC_A.docx",
+      "source_document_id": "ff8bd05e-121e-41b4-a2f5-06898562218e",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2802626496716879,
+          "ink_mass_ratio": 0.3390498261877173,
+          "retained_factor_count": 5
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.5605252993433758,
+          "ink_mass_ratio": 0.5409038238702202,
+          "retained_factor_count": 11
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.8407879490150637,
+          "ink_mass_ratio": 0.8407879490150637,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8938586326767092,
+          "ink_mass_ratio": 0.8943221320973349,
+          "retained_factor_count": 54
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9469293163383545,
+          "ink_mass_ratio": 0.9450753186558517,
+          "retained_factor_count": 61
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 71
+        }
+      },
+      "sha256": "128b8c3215602fd3fe325de1a6abb844fcaa3d1f2352be348438f2b053cf65e3"
+    },
+    {
+      "doc_id": "P2_DOC_B",
+      "original_filename": "P2_DOC_B.docx",
+      "source_document_id": "2de1d17d-57c3-4e4b-8ff3-5e09cae2b8f0",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.206710379666218,
+          "ink_mass_ratio": 0.23835164357983418,
+          "retained_factor_count": 3
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.413420759332436,
+          "ink_mass_ratio": 0.41518954361891536,
+          "retained_factor_count": 11
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.620131138998654,
+          "ink_mass_ratio": 0.620131138998654,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.7467540926657693,
+          "ink_mass_ratio": 0.7353423943723133,
+          "retained_factor_count": 26
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8733770463328847,
+          "ink_mass_ratio": 0.8737678579182769,
+          "retained_factor_count": 45
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 59
+        }
+      },
+      "sha256": "2f3b736f1e2a6d0e8e693ebdb150c636dc815cfeb3c767fe6fc16b4b37503775"
+    },
+    {
+      "doc_id": "P3_DOC_A",
+      "original_filename": "Pasted Text",
+      "source_document_id": "18778b32-bf46-4737-8fcd-80c1c23b0eeb",
+      "viewport_width": 900,
+      "viewport_height": 1025,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.08903565738204039,
+          "ink_mass_ratio": 0.008873592713925888,
+          "retained_factor_count": 1
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.17807131476408078,
+          "ink_mass_ratio": 0.09216704965531025,
+          "retained_factor_count": 2
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.26710697214612117,
+          "ink_mass_ratio": 0.26710697214612117,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.5114046480974141,
+          "ink_mass_ratio": 0.513288040763313,
+          "retained_factor_count": 7
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.7557023240487071,
+          "ink_mass_ratio": 0.7298037029831047,
+          "retained_factor_count": 20
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 45
+        }
+      },
+      "sha256": "d2eb911e03dc40344ef97e7a3f8d8049e8353bf5e2aaf629a61d45c03eda3b88"
+    },
+    {
+      "doc_id": "P3_DOC_B",
+      "original_filename": "Pasted Text",
+      "source_document_id": "97c3543a-2392-4c17-a1b5-1df07d2a05d4",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.14919288158447078,
+          "ink_mass_ratio": 0.18040909264371038,
+          "retained_factor_count": 3
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.29838576316894155,
+          "ink_mass_ratio": 0.24695343009425924,
+          "retained_factor_count": 5
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.44757864475341236,
+          "ink_mass_ratio": 0.44757864475341236,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.6317190965022749,
+          "ink_mass_ratio": 0.6054342157149581,
+          "retained_factor_count": 10
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8158595482511375,
+          "ink_mass_ratio": 0.7955427219416636,
+          "retained_factor_count": 17
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 36
+        }
+      },
+      "sha256": "15d149619d351b7722094ac82271ce6ea3c7cad9d9e0355628af43039bffb2fe"
+    },
+    {
+      "doc_id": "P4_DOC_A",
+      "original_filename": "Pasted Text",
+      "source_document_id": "a16f413a-4c54-4b25-9a0d-454b3bcfda0c",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2629768605378361,
+          "ink_mass_ratio": 0.294914051011612,
+          "retained_factor_count": 4
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.5259537210756722,
+          "ink_mass_ratio": 0.5059834693981036,
+          "retained_factor_count": 9
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.7889305816135084,
+          "ink_mass_ratio": 0.7889305816135084,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8592870544090055,
+          "ink_mass_ratio": 0.8551036965671112,
+          "retained_factor_count": 21
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9296435272045027,
+          "ink_mass_ratio": 0.9178540641955276,
+          "retained_factor_count": 23
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 26
+        }
+      },
+      "sha256": "3aee0c7ce7b1bd7d471058e556ee253d256c69d2a411396502c8440f9a3d3288"
+    },
+    {
+      "doc_id": "P4_DOC_B",
+      "original_filename": "P4_DOC_B.docx",
+      "source_document_id": "e358f75d-35ef-4240-bdd9-576597bf3943",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.23150082974632558,
+          "ink_mass_ratio": 0.23295810182287408,
+          "retained_factor_count": 7
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.46300165949265115,
+          "ink_mass_ratio": 0.4604562481342745,
+          "retained_factor_count": 15
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.6945024892389767,
+          "ink_mass_ratio": 0.6945024892389767,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.7963349928259845,
+          "ink_mass_ratio": 0.7907017053935117,
+          "retained_factor_count": 36
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8981674964129922,
+          "ink_mass_ratio": 0.8895009003630341,
+          "retained_factor_count": 42
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 50
+        }
+      },
+      "sha256": "41872281d65341c9fbd44d47528e618b7d0b82041f6158cba0be71846c690d7d"
+    },
+    {
+      "doc_id": "P5_DOC_A",
+      "original_filename": "P5_DOC_A.docx",
+      "source_document_id": "10691985-b2d9-4548-92e0-419f718923d7",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.12867789636973712,
+          "ink_mass_ratio": 0.1485912286913855,
+          "retained_factor_count": 2
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.25735579273947423,
+          "ink_mass_ratio": 0.2727334041512806,
+          "retained_factor_count": 4
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.3860336891092114,
+          "ink_mass_ratio": 0.3860336891092114,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.5906891260728075,
+          "ink_mass_ratio": 0.5365794369411143,
+          "retained_factor_count": 22
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.7953445630364038,
+          "ink_mass_ratio": 0.7746415543977383,
+          "retained_factor_count": 37
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 68
+        }
+      },
+      "sha256": "5fcf877c095d358203d2d5217c277aa69d9cbd71c8e7ee29b07e0649df2f62be"
+    },
+    {
+      "doc_id": "P5_DOC_B",
+      "original_filename": "P5_DOC_B.docx",
+      "source_document_id": "36f78c2a-3a51-4dfa-ba5e-65d552d89009",
+      "viewport_width": 900,
+      "viewport_height": 1591,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.13045546438339875,
+          "ink_mass_ratio": 0.11594719942918304,
+          "retained_factor_count": 1
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.2609109287667975,
+          "ink_mass_ratio": 0.24442066040353597,
+          "retained_factor_count": 8
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.3913663931501963,
+          "ink_mass_ratio": 0.3913663931501963,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.5942442621001308,
+          "ink_mass_ratio": 0.5958298648273677,
+          "retained_factor_count": 18
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.7971221310500654,
+          "ink_mass_ratio": 0.8100249732429541,
+          "retained_factor_count": 37
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 64
+        }
+      },
+      "sha256": "45984ac70843b2102257e2ec17773a34212507ff097dd2b653a178cc3a085c1f"
+    },
+    {
+      "doc_id": "P6_DOC_A",
+      "original_filename": "P6_DOC_A.docx",
+      "source_document_id": "690ba15c-3fec-4483-b463-bdbb44c92c83",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "warning",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2933506085345738,
+          "ink_mass_ratio": 0.3789044816659121,
+          "retained_factor_count": 5
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.5867012170691476,
+          "ink_mass_ratio": 0.5871669190302992,
+          "retained_factor_count": 31
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.8800518256037214,
+          "ink_mass_ratio": 0.8800518256037214,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.9200345504024809,
+          "ink_mass_ratio": 0.9181639374970731,
+          "retained_factor_count": 77
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9600172752012405,
+          "ink_mass_ratio": 0.9546916220477357,
+          "retained_factor_count": 78
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 82
+        }
+      },
+      "sha256": "6a1d3edc8e88ed96d1fce496c874f82a3cc8212b82cd4df6c4925a54fb318833"
+    },
+    {
+      "doc_id": "P6_DOC_B",
+      "original_filename": "P6_DOC_B.docx",
+      "source_document_id": "8fbb3db5-313a-4d21-bfb3-6b6a5ddc5a62",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2780438732575456,
+          "ink_mass_ratio": 0.28205084731394275,
+          "retained_factor_count": 10
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.5560877465150912,
+          "ink_mass_ratio": 0.5990624019803155,
+          "retained_factor_count": 36
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.8341316197726368,
+          "ink_mass_ratio": 0.8341316197726368,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8894210798484246,
+          "ink_mass_ratio": 0.8966183738693296,
+          "retained_factor_count": 59
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9447105399242123,
+          "ink_mass_ratio": 0.947355481896559,
+          "retained_factor_count": 63
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 73
+        }
+      },
+      "sha256": "bac72a6398b4541a878e8f710345ca7ad71be5b06bce8e1aa861d26b44ff70cd"
+    },
+    {
+      "doc_id": "P7_DOC_A",
+      "original_filename": "P7_DOC_A.docx",
+      "source_document_id": "35300d3b-071f-4eb2-aa02-21b610737c2e",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.24630250939294554,
+          "ink_mass_ratio": 0.22022844648848347,
+          "retained_factor_count": 14
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.4926050187858911,
+          "ink_mass_ratio": 0.48222565687789803,
+          "retained_factor_count": 19
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.7389075281788366,
+          "ink_mass_ratio": 0.7389075281788366,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8259383521192244,
+          "ink_mass_ratio": 0.8226335431824179,
+          "retained_factor_count": 44
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9129691760596121,
+          "ink_mass_ratio": 0.9033060655181513,
+          "retained_factor_count": 60
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 78
+        }
+      },
+      "sha256": "a06e43dd3d3d603e7a123f5cb9e806770dcea73d760ecff1dcb1a5b94345aafe"
+    },
+    {
+      "doc_id": "P7_DOC_B",
+      "original_filename": "P7_DOC_B.docx",
+      "source_document_id": "bb41eb01-c1f6-4c40-a764-79a79f9beb69",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.15393576302213346,
+          "ink_mass_ratio": 0.16475287069395905,
+          "retained_factor_count": 3
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.30787152604426693,
+          "ink_mass_ratio": 0.3145282076884673,
+          "retained_factor_count": 9
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.4618072890664004,
+          "ink_mass_ratio": 0.4618072890664004,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.6412048593776003,
+          "ink_mass_ratio": 0.6392910634048927,
+          "retained_factor_count": 26
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8206024296888002,
+          "ink_mass_ratio": 0.8315027458811782,
+          "retained_factor_count": 35
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 41
+        }
+      },
+      "sha256": "ac35462d14c69a0b12f83fc346c24a2b992e72b5c3f07ddc89cd7058cadf9fd1"
+    },
+    {
+      "doc_id": "P8_DOC_A",
+      "original_filename": "P8_DOC_A.docx",
+      "source_document_id": "b94fa865-36cd-441b-b3a2-7740529af102",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.0680886700227533,
+          "ink_mass_ratio": 0.08374292418105327,
+          "retained_factor_count": 2
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.1361773400455066,
+          "ink_mass_ratio": 0.1390024465808954,
+          "retained_factor_count": 3
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.20426601006825992,
+          "ink_mass_ratio": 0.20426601006825992,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.4695106733788399,
+          "ink_mass_ratio": 0.4891908740339765,
+          "retained_factor_count": 21
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.73475533668942,
+          "ink_mass_ratio": 0.7296825710087995,
+          "retained_factor_count": 34
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 65
+        }
+      },
+      "sha256": "de557c4c31d562a199a1b2403d260460a28b076ddea45879ed0dc875846897b7"
+    },
+    {
+      "doc_id": "P8_DOC_B",
+      "original_filename": "P8_DOC_B.docx",
+      "source_document_id": "8cd8424f-7f8e-4ef7-9cba-86918b64de22",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.07327752822467776,
+          "ink_mass_ratio": 0.05774229236367514,
+          "retained_factor_count": 1
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.14655505644935551,
+          "ink_mass_ratio": 0.14219639310611415,
+          "retained_factor_count": 3
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.2198325846740333,
+          "ink_mass_ratio": 0.2198325846740333,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.4798883897826889,
+          "ink_mass_ratio": 0.49930021460085583,
+          "retained_factor_count": 11
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.7399441948913444,
+          "ink_mass_ratio": 0.7451248283859617,
+          "retained_factor_count": 28
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 49
+        }
+      },
+      "sha256": "7eec2b5b61b3b897c0e5f8aaf4284f88fd830892966205a680a88bcb870d6b98"
+    },
+    {
+      "doc_id": "P9_DOC_A",
+      "original_filename": "P9_DOC_A.docx",
+      "source_document_id": "b1e8c8c6-c5ca-41e0-848a-611e20bc7cde",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.18788274633931215,
+          "ink_mass_ratio": 0.15449414680712098,
+          "retained_factor_count": 1
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.3757654926786243,
+          "ink_mass_ratio": 0.3759943728961163,
+          "retained_factor_count": 9
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.5636482390179365,
+          "ink_mass_ratio": 0.5636482390179365,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.7090988260119576,
+          "ink_mass_ratio": 0.7222873507393948,
+          "retained_factor_count": 22
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8545494130059788,
+          "ink_mass_ratio": 0.8696220126944784,
+          "retained_factor_count": 30
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 46
+        }
+      },
+      "sha256": "85821a3c95a4667827f2571b78769795347e1f7c7a6778b75e634a203fbf9a98"
+    },
+    {
+      "doc_id": "P9_DOC_B",
+      "original_filename": "P9_DOC_B.docx",
+      "source_document_id": "134b65e5-8805-40bf-bc7d-01644a8b0612",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.16916899860848061,
+          "ink_mass_ratio": 0.18259923586581123,
+          "retained_factor_count": 3
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.33833799721696123,
+          "ink_mass_ratio": 0.3323328374543715,
+          "retained_factor_count": 9
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.5075069958254419,
+          "ink_mass_ratio": 0.5075069958254419,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.6716713305502946,
+          "ink_mass_ratio": 0.6711798205660884,
+          "retained_factor_count": 26
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8358356652751473,
+          "ink_mass_ratio": 0.8357373632783061,
+          "retained_factor_count": 34
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 54
+        }
+      },
+      "sha256": "235232025a6afe69aace10195054c5ccc3124e4003c69f8b19c6ad718be85470"
+    },
+    {
+      "doc_id": "P10_DOC_A",
+      "original_filename": "P10_DOC_A.docx",
+      "source_document_id": "f746ea11-45b1-4c00-b018-f9b7c67dea25",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.25546002366637244,
+          "ink_mass_ratio": 0.30089467096218164,
+          "retained_factor_count": 5
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.5109200473327449,
+          "ink_mass_ratio": 0.5146615229926332,
+          "retained_factor_count": 13
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.7663800709991174,
+          "ink_mass_ratio": 0.7663800709991174,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8442533806660782,
+          "ink_mass_ratio": 0.859643362813699,
+          "retained_factor_count": 38
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9221266903330392,
+          "ink_mass_ratio": 0.9238195883692774,
+          "retained_factor_count": 48
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 60
+        }
+      },
+      "sha256": "06dc5e16d26db4ff075c8d2ff0f2a709ce9937470430cc8bf879eb63d8d18ab1"
+    },
+    {
+      "doc_id": "P10_DOC_B",
+      "original_filename": "P10_DOC_C.docx",
+      "source_document_id": "442d239a-1ffa-468c-97a3-9f93c63589a4",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.25512415629450735,
+          "ink_mass_ratio": 0.2340702210663199,
+          "retained_factor_count": 5
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.5102483125890147,
+          "ink_mass_ratio": 0.5378041984023778,
+          "retained_factor_count": 6
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.7653724688835222,
+          "ink_mass_ratio": 0.7653724688835222,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8435816459223481,
+          "ink_mass_ratio": 0.8411666357049973,
+          "retained_factor_count": 27
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.921790822961174,
+          "ink_mass_ratio": 0.9281070035296303,
+          "retained_factor_count": 34
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 45
+        }
+      },
+      "sha256": "d5136e3556e3dd9ef8b04e8985a3db131b138fadc3cd544c2ed7bd8acb693f45"
+    },
+    {
+      "doc_id": "P11_DOC_A",
+      "original_filename": "P11_DOC_A.docx",
+      "source_document_id": "aee315e5-1340-4098-9574-3f160765751a",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.28001429417461876,
+          "ink_mass_ratio": 0.27502396042079424,
+          "retained_factor_count": 4
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.5600285883492375,
+          "ink_mass_ratio": 0.5671327426253046,
+          "retained_factor_count": 9
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.8400428825238564,
+          "ink_mass_ratio": 0.8400428825238564,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8933619216825709,
+          "ink_mass_ratio": 0.8998321823492198,
+          "retained_factor_count": 31
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9466809608412855,
+          "ink_mass_ratio": 0.9484159604814056,
+          "retained_factor_count": 39
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 50
+        }
+      },
+      "sha256": "29252718b56784d9184bb8ebb5935eab4fb3ed11db09267edc9c0547a11d892c"
+    },
+    {
+      "doc_id": "P11_DOC_B",
+      "original_filename": "P11_DOC_B.docx",
+      "source_document_id": "39aa6297-7c9c-4f37-b0ac-2be236c987f0",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.17522945260171535,
+          "ink_mass_ratio": 0.19530479384493982,
+          "retained_factor_count": 2
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.3504589052034307,
+          "ink_mass_ratio": 0.35129498633148265,
+          "retained_factor_count": 4
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.5256883578051461,
+          "ink_mass_ratio": 0.5256883578051461,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.6837922385367641,
+          "ink_mass_ratio": 0.6930924668150946,
+          "retained_factor_count": 11
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.841896119268382,
+          "ink_mass_ratio": 0.8490826593016374,
+          "retained_factor_count": 17
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 21
+        }
+      },
+      "sha256": "31589b5d2a8d92050f49cc46deb46a180717867d52e246b79ba456c4316f2b7d"
+    },
+    {
+      "doc_id": "P12_DOC_A",
+      "original_filename": "P12_DOC_A.docx",
+      "source_document_id": "9dadee66-4e95-4ea0-938d-92d7711e1fdf",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.24953715764428008,
+          "ink_mass_ratio": 0.2531756369509717,
+          "retained_factor_count": 4
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.49907431528856017,
+          "ink_mass_ratio": 0.4914604282811442,
+          "retained_factor_count": 13
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.7486114729328402,
+          "ink_mass_ratio": 0.7486114729328402,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8324076486218935,
+          "ink_mass_ratio": 0.8341426561767311,
+          "retained_factor_count": 33
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9162038243109467,
+          "ink_mass_ratio": 0.9157349033501798,
+          "retained_factor_count": 38
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 57
+        }
+      },
+      "sha256": "9bef37c0fff83c6d5ca6a05c4dfd3b33b9fe31dead568cca9ce734a7d68a420f"
+    },
+    {
+      "doc_id": "P12_DOC_B",
+      "original_filename": "P12_DOC_B.docx",
+      "source_document_id": "b72ad186-0a2b-42d1-b898-45a7c794fcf3",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2394692279197756,
+          "ink_mass_ratio": 0.17134994972746997,
+          "retained_factor_count": 4
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.4789384558395512,
+          "ink_mass_ratio": 0.4892244800762026,
+          "retained_factor_count": 11
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.7184076837593268,
+          "ink_mass_ratio": 0.7184076837593268,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8122717891728846,
+          "ink_mass_ratio": 0.8129200402180241,
+          "retained_factor_count": 24
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9061358945864423,
+          "ink_mass_ratio": 0.8987802296660846,
+          "retained_factor_count": 30
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 43
+        }
+      },
+      "sha256": "6686cd35a628913cacae0eba961127e1b17b972d0314a2d019f86054c60d8744"
+    },
+    {
+      "doc_id": "P13_DOC_A",
+      "original_filename": "P13_DOC_A.docx",
+      "source_document_id": "2a894e00-f61f-4b9d-b280-047eb79f8d64",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "warning",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2694937713090992,
+          "ink_mass_ratio": 0.27182700467710136,
+          "retained_factor_count": 14
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.5389875426181984,
+          "ink_mass_ratio": 0.4871778510856873,
+          "retained_factor_count": 24
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.8084813139272976,
+          "ink_mass_ratio": 0.8084813139272976,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8723208759515317,
+          "ink_mass_ratio": 0.8730865678498734,
+          "retained_factor_count": 45
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9361604379757659,
+          "ink_mass_ratio": 0.9345333426917899,
+          "retained_factor_count": 60
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 83
+        }
+      },
+      "sha256": "1ec9434945b084a36b960b7c875358f516f2b098d5acae4426a4643c8650a282"
+    },
+    {
+      "doc_id": "P13_DOC_B",
+      "original_filename": "P13_DOC_B.docx",
+      "source_document_id": "9f94e44d-467e-4d5d-92e8-52640706f80a",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "warning",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.10013101703413552,
+          "ink_mass_ratio": 0.10078418113393131,
+          "retained_factor_count": 13
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.20026203406827103,
+          "ink_mass_ratio": 0.17080721477380353,
+          "retained_factor_count": 22
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.30039305110240655,
+          "ink_mass_ratio": 0.30039305110240655,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.5335953674016043,
+          "ink_mass_ratio": 0.5360508161669642,
+          "retained_factor_count": 25
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.7667976837008021,
+          "ink_mass_ratio": 0.7466818303194934,
+          "retained_factor_count": 52
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 93
+        }
+      },
+      "sha256": "def3fbebba86603eb1303e0a2b3488a069dcc29c43366b66847d4435f51b0b95"
+    },
+    {
+      "doc_id": "P14_DOC_A",
+      "original_filename": "P14_DOC_A.docx",
+      "source_document_id": "effb505d-65e3-43a4-b921-5c566846ed30",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2769589110892746,
+          "ink_mass_ratio": 0.33016704880445463,
+          "retained_factor_count": 4
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.5539178221785492,
+          "ink_mass_ratio": 0.5397969210612512,
+          "retained_factor_count": 7
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.830876733267824,
+          "ink_mass_ratio": 0.830876733267824,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8872511555118826,
+          "ink_mass_ratio": 0.9033737307566329,
+          "retained_factor_count": 14
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9436255777559414,
+          "ink_mass_ratio": 0.9426793318047821,
+          "retained_factor_count": 24
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 30
+        }
+      },
+      "sha256": "f7591b1b2d61e5f8826ecac02d6148565dc27c06eb09d9711f030d38d031add5"
+    },
+    {
+      "doc_id": "P14_DOC_B",
+      "original_filename": "P14_DOC_B.docx",
+      "source_document_id": "86367a67-ae0c-4b37-bbe6-2b8c7c1b9248",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2132739781464994,
+          "ink_mass_ratio": 0.20882233913395384,
+          "retained_factor_count": 1
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.4265479562929988,
+          "ink_mass_ratio": 0.45770942938081743,
+          "retained_factor_count": 4
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.6398219344394982,
+          "ink_mass_ratio": 0.6398219344394982,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.7598812896263322,
+          "ink_mass_ratio": 0.7834884662080129,
+          "retained_factor_count": 15
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.879940644813166,
+          "ink_mass_ratio": 0.8785916632942129,
+          "retained_factor_count": 26
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 33
+        }
+      },
+      "sha256": "5f8ccd2de15bc55249c2d45b960341504bb86b42d73c6ba6706fc0ecff1682f5"
+    },
+    {
+      "doc_id": "P15_DOC_A",
+      "original_filename": "P15_DOC_A.docx",
+      "source_document_id": "841840f6-0332-4841-bde4-71335901768a",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.1799548615908986,
+          "ink_mass_ratio": 0.1526875777255769,
+          "retained_factor_count": 5
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.3599097231817972,
+          "ink_mass_ratio": 0.38344617935608677,
+          "retained_factor_count": 9
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.5398645847726958,
+          "ink_mass_ratio": 0.5398645847726958,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.6932430565151305,
+          "ink_mass_ratio": 0.6743125604532264,
+          "retained_factor_count": 17
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8466215282575653,
+          "ink_mass_ratio": 0.8332181843305236,
+          "retained_factor_count": 20
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 28
+        }
+      },
+      "sha256": "45179d2a4a51b7e669a8a51739019e61487d65649b9ad568a06a7fd8354fd7a4"
+    },
+    {
+      "doc_id": "P15_DOC_B",
+      "original_filename": "P15_DOC_B.docx",
+      "source_document_id": "7d89abf3-afba-48ea-b8a1-145f16f0a756",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2748338081671415,
+          "ink_mass_ratio": 0.24615384615384617,
+          "retained_factor_count": 1
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.549667616334283,
+          "ink_mass_ratio": 0.5606837606837607,
+          "retained_factor_count": 4
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.8245014245014245,
+          "ink_mass_ratio": 0.8245014245014245,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8830009496676163,
+          "ink_mass_ratio": 0.8501424501424502,
+          "retained_factor_count": 7
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9415004748338082,
+          "ink_mass_ratio": 0.9373219373219374,
+          "retained_factor_count": 9
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 11
+        }
+      },
+      "sha256": "343d82d68a5a61b769d8446d3da41acff92b78f3b11bc2c87d8dd98e513aa2ca"
+    },
+    {
+      "doc_id": "P16_DOC_A",
+      "original_filename": "P16_DOC_A.docx",
+      "source_document_id": "5e6a4dec-d837-4b62-a71f-bf0ec6186a9d",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.25878830522047613,
+          "ink_mass_ratio": 0.253818636679619,
+          "retained_factor_count": 4
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.5175766104409523,
+          "ink_mass_ratio": 0.5930745809483361,
+          "retained_factor_count": 5
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.7763649156614285,
+          "ink_mass_ratio": 0.7763649156614285,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.8509099437742856,
+          "ink_mass_ratio": 0.8508444421906265,
+          "retained_factor_count": 8
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.9254549718871428,
+          "ink_mass_ratio": 0.9261205524952935,
+          "retained_factor_count": 17
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 26
+        }
+      },
+      "sha256": "d07de3a57705d9cc3a37261166bf671b4b09e640a3756ccb386501526dead41d"
+    },
+    {
+      "doc_id": "P16_DOC_B",
+      "original_filename": "P16_DOC_B.docx",
+      "source_document_id": "91f4e609-cca8-4ce7-a4cf-074766522fb7",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.16476559757588477,
+          "ink_mass_ratio": 0.13299750245114852,
+          "retained_factor_count": 2
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.32953119515176954,
+          "ink_mass_ratio": 0.3014004833705209,
+          "retained_factor_count": 4
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.4942967927276543,
+          "ink_mass_ratio": 0.4942967927276543,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.6628645284851029,
+          "ink_mass_ratio": 0.6658953450369791,
+          "retained_factor_count": 12
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8314322642425515,
+          "ink_mass_ratio": 0.8257646978127283,
+          "retained_factor_count": 19
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 43
+        }
+      },
+      "sha256": "f478cba8b5f9407ef481a566b004c950bdf0ac734d55f2884ef615734db5b15f"
+    },
+    {
+      "doc_id": "P17_DOC_A",
+      "original_filename": "P17_DOC_A.docx",
+      "source_document_id": "690ea38b-08f2-49f2-a5b5-08230fae7b5b",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.17559894002487697,
+          "ink_mass_ratio": 0.173057162944135,
+          "retained_factor_count": 6
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.35119788004975394,
+          "ink_mass_ratio": 0.33719106592396303,
+          "retained_factor_count": 10
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.5267968200746309,
+          "ink_mass_ratio": 0.5267968200746309,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.6845312133830872,
+          "ink_mass_ratio": 0.6914174463252394,
+          "retained_factor_count": 31
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8422656066915436,
+          "ink_mass_ratio": 0.8433832675355579,
+          "retained_factor_count": 44
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 72
+        }
+      },
+      "sha256": "6bee92d78704b489987dec5d7996c83b956b0bc3409ebaaf9389383508e8a433"
+    },
+    {
+      "doc_id": "P17_DOC_B",
+      "original_filename": "P17_DOC_B.docx",
+      "source_document_id": "963e2bf4-9358-4a8c-b852-80ebadbe6bd1",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.2115638251694547,
+          "ink_mass_ratio": 0.2505008514474607,
+          "retained_factor_count": 6
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.4231276503389094,
+          "ink_mass_ratio": 0.4852749674446559,
+          "retained_factor_count": 19
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.6346914755083641,
+          "ink_mass_ratio": 0.6346914755083641,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.7564609836722428,
+          "ink_mass_ratio": 0.7627466693378744,
+          "retained_factor_count": 29
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8782304918361213,
+          "ink_mass_ratio": 0.8752879895822899,
+          "retained_factor_count": 46
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 66
+        }
+      },
+      "sha256": "ff581bc2dc2d2652a4b5eeb8354d1998b6e08778abea76e2c6935a969e3f78ef"
+    },
+    {
+      "doc_id": "P18_DOC_A",
+      "original_filename": "P18_DOC_A.docx",
+      "source_document_id": "e733dd01-1b24-4799-be59-03fe74f3310d",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.21014402069059016,
+          "ink_mass_ratio": 0.2053155210712386,
+          "retained_factor_count": 2
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.4202880413811803,
+          "ink_mass_ratio": 0.4086912993148328,
+          "retained_factor_count": 7
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.6304320620717705,
+          "ink_mass_ratio": 0.6304320620717705,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.7536213747145136,
+          "ink_mass_ratio": 0.7585489472202234,
+          "retained_factor_count": 29
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8768106873572568,
+          "ink_mass_ratio": 0.8669555423458374,
+          "retained_factor_count": 37
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 42
+        }
+      },
+      "sha256": "8a5757000ca1fac9778936e2c5e969a7008d1a621f24167c1bef3c7a465d5ce3"
+    },
+    {
+      "doc_id": "P18_DOC_B",
+      "original_filename": "P18_DOC_B.docx",
+      "source_document_id": "b630f42e-1f3c-478f-999c-f64016af3222",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.09448126606249155,
+          "ink_mass_ratio": 0.07540917083727851,
+          "retained_factor_count": 3
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.1889625321249831,
+          "ink_mass_ratio": 0.24414987150006764,
+          "retained_factor_count": 5
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.28344379818747467,
+          "ink_mass_ratio": 0.28344379818747467,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.5222958654583164,
+          "ink_mass_ratio": 0.5112944677397538,
+          "retained_factor_count": 8
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.7611479327291581,
+          "ink_mass_ratio": 0.7784390639794401,
+          "retained_factor_count": 17
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 34
+        }
+      },
+      "sha256": "18ad514b6b1607e26d777a47b5726cb5e9dd3b64e4f8a6f2df792188ec0c0fb6"
+    },
+    {
+      "doc_id": "P19_DOC_A",
+      "original_filename": "P19_DOC_A.docx",
+      "source_document_id": "d3fb7c69-98d4-46e7-a338-e8d451ce0ab4",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.19626542337760194,
+          "ink_mass_ratio": 0.1837181609009809,
+          "retained_factor_count": 4
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.3925308467552039,
+          "ink_mass_ratio": 0.3957938077745933,
+          "retained_factor_count": 10
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.5887962701328059,
+          "ink_mass_ratio": 0.5887962701328059,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.7258641800885373,
+          "ink_mass_ratio": 0.7266176886126023,
+          "retained_factor_count": 21
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8629320900442686,
+          "ink_mass_ratio": 0.8832902757033867,
+          "retained_factor_count": 25
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 34
+        }
+      },
+      "sha256": "8c64d01031cc05b8d364215c57c436d0cf0ed46c963baa00de2956ffdadf1592"
+    },
+    {
+      "doc_id": "P19_DOC_B",
+      "original_filename": "P19_DOC_B.docx",
+      "source_document_id": "6b0d1f2b-c2f3-4000-99a9-21c706900b83",
+      "viewport_width": 900,
+      "viewport_height": 2158,
+      "validation_status": "pass",
+      "condition_meta": {
+        "D0_plain": {
+          "display_order": 0,
+          "target_ink_mass_ratio": 0,
+          "ink_mass_ratio": 0,
+          "retained_factor_count": 0
+        },
+        "D1_derived": {
+          "display_order": 1,
+          "target_ink_mass_ratio": 0.21050765501832372,
+          "ink_mass_ratio": 0.24761363323766472,
+          "retained_factor_count": 2
+        },
+        "D2_derived": {
+          "display_order": 2,
+          "target_ink_mass_ratio": 0.42101531003664744,
+          "ink_mass_ratio": 0.4181941553499546,
+          "retained_factor_count": 7
+        },
+        "W_writer_optimal": {
+          "display_order": 3,
+          "target_ink_mass_ratio": 0.6315229650549712,
+          "ink_mass_ratio": 0.6315229650549712,
+          "retained_factor_count": null
+        },
+        "D3_derived": {
+          "display_order": 4,
+          "target_ink_mass_ratio": 0.7543486433699808,
+          "ink_mass_ratio": 0.7515977883125339,
+          "retained_factor_count": 19
+        },
+        "D4_derived": {
+          "display_order": 5,
+          "target_ink_mass_ratio": 0.8771743216849903,
+          "ink_mass_ratio": 0.876624150673501,
+          "retained_factor_count": 27
+        },
+        "D5_maximal": {
+          "display_order": 6,
+          "target_ink_mass_ratio": 1,
+          "ink_mass_ratio": 1,
+          "retained_factor_count": 38
+        }
+      },
+      "sha256": "d360510a16f6ede97c1400eb76d2a3870f3fe7973fd8451aa26d8165c505598f"
+    }
+  ]
+}
