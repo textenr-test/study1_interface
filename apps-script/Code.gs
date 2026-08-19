@@ -62,7 +62,7 @@ function setupStudyWorkbook() {
       ["Participant identifiers", "Prolific participant, study, and session IDs only; do not add direct identifiers."],
       ["Rating direction", "normalized_enriched_rating: −3 means enriched much less preferred, 0 no difference, +3 enriched much more preferred."],
       ["Trial balance", "30 completed slots × 38 trials = 1,140 trial rows; 228 document-condition pairs × 5 ratings."],
-      ["Attention policy", "Two explicit checks; a single failure is not sufficient for exclusion in this >5-minute study."],
+      ["Attention policy", "Two explicit checks require +1 then +3. Incorrect attempts are logged; only the instructed response advances the study."],
       ["Screen-out timing", "Eligibility, device, color-vision, and comprehension paths occur before participant-slot allocation."],
       ["Stimulus warnings", "P6_DOC_A, P13_DOC_A, and P13_DOC_B have source-pipeline validation_status=warning and must be reviewed before analysis."],
       ["Spreadsheet access", "Keep this file restricted to authorized research personnel."],
