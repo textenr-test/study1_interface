@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/assignment.test.mjs && node tests/eligibility.test.mjs && node scripts/verify-stimuli.mjs",
+    "test": "node tests/assignment.test.mjs && node tests/eligibility.test.mjs && node tests/interface-copy.test.mjs && node scripts/verify-stimuli.mjs",
     "refresh-stimuli-manifest": "node scripts/verify-stimuli.mjs --write",
     "serve": "python3 -m http.server 4173"
   }
