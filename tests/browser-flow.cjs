@@ -40,12 +40,15 @@ const path = require("node:path");
   await page.click("#begin-main");
 
   let safety = 0;
+  let attentionIndex = 0;
   while (safety < 80) {
     safety += 1;
     if (await page.locator("#post-form").count()) break;
     if (await page.locator("#submit-attention").count()) {
-      await page.click('.rating-option[data-value="0"]');
+      const expected = attentionIndex === 0 ? "1" : "3";
+      await page.click('.rating-option[data-value="' + expected + '"]');
       await page.click("#submit-attention");
+      attentionIndex += 1;
       continue;
     }
     if (await page.locator("#continue-after-break").count()) {
