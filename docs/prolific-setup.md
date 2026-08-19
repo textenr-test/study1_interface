@@ -14,7 +14,7 @@ All 38 current Drive batch_output documents are in Korean and the interface is E
 
 **Study description**
 
-> In this study, you will briefly view two differently formatted versions of the same online article excerpt and rate which version makes you more willing to continue reading based on its immediate visual appearance. The task includes a short eligibility section, two practice trials, 38 timed comparisons, a short halfway break, and two clearly labeled attention checks. It takes about 10–12 minutes.
+> In this study, you will briefly view two differently formatted versions of the same online article excerpt and rate which version would motivate you more to continue reading based on its visual appearance. The task includes a short eligibility section, two practice trials, 38 timed comparisons, a short halfway break, and two clearly labeled attention checks. It takes about 10–12 minutes.
 
 **Eligibility and device notice**
 
@@ -68,7 +68,7 @@ Comprehension checks appear before the main task, stay on the same page as the i
 3. Replace Code.gs with apps-script/Code.gs.
 4. Run setupStudyWorkbook() once and approve the requested spreadsheet permissions.
 5. In **Project Settings → Script properties**, add:
-   - STUDY_VERSION = 2026-08-19-v1
+   - STUDY_VERSION = 2026-08-19-v3
    - MAX_SLOTS = 30
    - SPREADSHEET_ID only if the script is not bound to the target spreadsheet.
 6. Select **Deploy → New deployment → Web app**.
