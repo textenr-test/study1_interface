@@ -1,5 +1,6 @@
 import { buildAssignment, hashString, mulberry32 } from "./assignment.js";
 import { containsKoreanLanguage } from "./eligibility.js";
+import { expectedAttentionResponse } from "./attention.js";
 
 const CONFIG = window.STUDY_CONFIG;
 const app = document.getElementById("app");
@@ -204,7 +205,6 @@ function renderConfigurationError(problems) {
   setHeader("Researcher configuration required");
   setView(
     '<section class="card compact-card">' +
-      '<p class="eyebrow">Study unavailable</p>' +
       '<h1>This study is not ready to start.</h1>' +
       '<p>Please return to Prolific and message the researcher. No response data has been collected.</p>' +
       '<div class="notice error">' + problems.map(escapeHtml).join("<br>") + "</div>" +
@@ -267,7 +267,7 @@ function renderWelcome() {
 function declineConsent() {
   setHeader("No consent");
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Study closed</p>' +
+    '<section class="card compact-card">' +
       '<h1>No data was collected.</h1><p>Please return to Prolific. Your place will be reopened for another participant.</p>' +
       '<div class="actions"><button class="button" id="return-button">Return to Prolific</button></div></section>'
   );
@@ -292,7 +292,7 @@ function renderEligibility() {
   setHeader("Eligibility check");
   setView(
     '<section class="card compact-card">' +
-      '<p class="eyebrow">Step 1 of 3</p><h1>Quick eligibility check</h1>' +
+      '<h1>Quick eligibility check</h1>' +
       '<p>Please answer the following questions before beginning the task.</p>' +
       '<form id="eligibility-form" class="question-stack">' +
         '<div class="question"><label for="frequency"><strong>How often do you voluntarily read creator-led newsletters, blogs, or similar text-based online publications?</strong></label>' +
@@ -333,7 +333,7 @@ function renderColorTest() {
   setHeader("Color-vision check");
   setView(
     '<section class="card wide-card">' +
-      '<p class="eyebrow">Step 2 of 3</p><h1>Color-vision eligibility check</h1>' +
+      '<h1>Color-vision eligibility check</h1>' +
       '<p>Some article versions use color. Enter the number you see in the dot pattern. This brief display-specific check is for study eligibility only and is not a medical diagnosis.</p>' +
       '<form id="color-form">' +
         '<div class="plate-grid">' +
@@ -419,7 +419,7 @@ function renderInstructions(errorMessage = "") {
   setHeader("Task instructions");
   setView(
     '<section class="card wide-card">' +
-      '<p class="eyebrow">Step 3 of 3</p><h1>Instruction &amp; Comprehension Test</h1>' +
+      '<h1>Instruction &amp; Comprehension Test</h1>' +
       '<p class="lede">For every trial, focus on the cross. Two versions of the same article will then appear side by side for ' +
         escapeHtml(String(CONFIG.timings.exposureMs)) + ' ms.</p>' +
       '<ol class="instruction-flow" aria-label="Trial sequence">' +
@@ -481,7 +481,7 @@ async function handleComprehension(event) {
 async function allocateParticipantSlot() {
   setHeader("Assigning study materials");
   setView(
-    '<section class="card compact-card" aria-busy="true"><p class="eyebrow">Please wait</p>' +
+    '<section class="card compact-card" aria-busy="true">' +
       '<h1>Preparing your study set…</h1><p class="muted">Do not refresh this page.</p></section>'
   );
   try {
@@ -551,7 +551,7 @@ function renderBackendError(error) {
   saveLocal();
   setHeader("Connection problem");
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Study paused</p><h1>We could not reserve your study materials.</h1>' +
+    '<section class="card compact-card"><h1>We could not reserve your study materials.</h1>' +
       '<p>Your progress on this device is safe. Check your connection and try again. If this continues, return the submission and message the researcher.</p>' +
       '<div class="notice error">' + escapeHtml(error.message || "Unknown connection error") + "</div>" +
       '<div class="actions"><button class="button" id="retry-allocation">Try again</button></div></section>'
@@ -701,7 +701,7 @@ function renderStimulusLoadError(error) {
   recordEvent("stimulus_load_error", { message: error.message, trialCursor: state.trialCursor });
   setHeader("Connection problem", true);
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Study paused</p><h1>A document did not load.</h1>' +
+    '<section class="card compact-card"><h1>A document did not load.</h1>' +
       '<p>Your progress is saved. Check the connection, then try this trial again.</p>' +
       '<div class="notice error">' + escapeHtml(error.message) + "</div>" +
       '<div class="actions"><button class="button" id="retry-trial">Try again</button></div></section>'
@@ -722,7 +722,7 @@ async function runStimulusTrial(trial, doc, attempt) {
       '<div class="stimulus-phase trial-phase" id="stimulus-phase" style="visibility:hidden" aria-hidden="true">' +
         stimulusPanel("left") + stimulusPanel("right") +
       "</div>" +
-      '<div class="fixation-phase phase-overlay" id="preparation-phase"><div><p class="eyebrow">Preparing trial</p><p class="muted">Keep your eyes near the center.</p></div></div>' +
+      '<div class="fixation-phase phase-overlay" id="preparation-phase"><p class="muted">Keep your eyes near the center.</p></div>' +
       '<div class="fixation-phase phase-overlay hidden" id="fixation-phase" aria-label="Fixation cross"><div class="fixation-cross">+</div></div>' +
     "</div>",
     { fullBleed: true }
@@ -855,7 +855,7 @@ function fitStimuli(width, height) {
 function renderTrialRetry(trial, doc, attempt, message) {
   setHeader(trial.practice ? "Practice" : "Main study", !trial.practice);
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Trial repeated</p><h1>The timed display was interrupted.</h1>' +
+    '<section class="card compact-card"><h1>The timed display was interrupted.</h1>' +
       '<p>This attempt will not be analyzed. Keep the tab active and the window unchanged, then repeat the same trial.</p>' +
       '<div class="notice">' + escapeHtml(message) + "</div>" +
       '<div class="actions"><button class="button" id="repeat-trial">Repeat trial</button></div></section>'
@@ -869,7 +869,6 @@ function renderRating(trial, doc, metrics) {
   const ratingShownAt = performance.now();
   setView(
     '<div class="trial-shell"><div class="rating-phase"><section class="card rating-card">' +
-      (trial.practice ? '<p class="eyebrow">Practice</p>' : "") +
       '<h1>Which version would motivate you more to continue reading, based on its visual appearance?</h1>' +
       '<p class="muted">Choose a direction and strength. Select 0 if there was no difference.</p>' +
       '<div class="rating-scale" role="group" aria-label="Preference from left to right">' +
@@ -953,18 +952,22 @@ function spatialLabel(value) {
 }
 
 function renderAttentionCheck(afterTrial) {
+  const instructedResponse = expectedAttentionResponse(afterTrial, CONFIG.attentionAfterTrials);
+  const displayResponse = "+" + String(instructedResponse);
   setHeader("Attention check", true);
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Attention check</p><h1>Please follow the instruction below.</h1>' +
-      '<div class="attention-box"><strong>This is an attention check. To show that you are reading carefully, select “No difference (0)” below.</strong></div>' +
+    '<section class="card compact-card"><h1>Please follow the instruction below.</h1>' +
+      '<div class="attention-box"><strong>This is an attention check. To show that you are reading carefully, select “' + displayResponse + '” below.</strong></div>' +
       '<div class="rating-scale" role="group" aria-label="Attention-check response">' +
         [-3, -2, -1, 0, 1, 2, 3].map((value) => '<button class="rating-option" data-value="' + value + '">' +
           (value > 0 ? "+" : "") + value + "</button>").join("") +
       "</div>" +
       '<div class="rating-anchors"><span>LEFT much more</span><span>No difference</span><span>RIGHT much more</span></div>' +
+      '<div class="notice error hidden" id="attention-error" role="alert"></div>' +
       '<div class="actions right"><button class="button" id="submit-attention" disabled>Submit</button></div></section>'
   );
   let selected = null;
+  let attempt = 0;
   document.querySelectorAll(".rating-option").forEach((button) => {
     button.addEventListener("click", () => {
       selected = Number(button.dataset.value);
@@ -973,17 +976,29 @@ function renderAttentionCheck(afterTrial) {
     });
   });
   document.getElementById("submit-attention").addEventListener("click", () => {
+    attempt += 1;
+    const passed = selected === instructedResponse;
     const result = {
-      eventId: makeEventId("attention", String(afterTrial)),
+      eventId: makeEventId("attention", String(afterTrial) + ":" + String(attempt)),
       afterTrial,
-      instructedResponse: 0,
+      attempt,
+      instructedResponse,
       response: selected,
-      passed: selected === 0,
+      passed,
       answeredAt: nowIso()
     };
+    queueRemote("event", { event: Object.assign({ type: "attention_check" }, result) });
+    if (!passed) {
+      const error = document.getElementById("attention-error");
+      error.textContent = "That response was incorrect. Please select " + displayResponse + " as instructed.";
+      error.classList.remove("hidden");
+      selected = null;
+      document.querySelectorAll(".rating-option").forEach((item) => item.classList.remove("selected"));
+      document.getElementById("submit-attention").disabled = true;
+      return;
+    }
     state.attentionChecks.push(result);
     saveLocal();
-    queueRemote("event", { event: Object.assign({ type: "attention_check" }, result) });
     continueMain();
   });
 }
@@ -991,7 +1006,7 @@ function renderAttentionCheck(afterTrial) {
 function renderBreak() {
   setHeader("Halfway break", true);
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Halfway point</p><h1>Take a short break.</h1>' +
+    '<section class="card compact-card"><h1>Take a short break.</h1>' +
       '<p>You have completed 19 of 38 comparisons. Rest your eyes briefly, then continue when ready.</p>' +
       '<div class="actions"><button class="button" id="continue-after-break">Continue</button></div></section>'
   );
@@ -1006,7 +1021,7 @@ function renderBreak() {
 function renderPostStudy() {
   setHeader("Final questions", true);
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Almost done</p><h1>Final check</h1>' +
+    '<section class="card compact-card"><h1>Final check</h1>' +
       '<form id="post-form" class="question-stack">' +
         '<div class="question"><fieldset><legend>Did you experience a technical problem that may have affected the timed displays?</legend>' +
           '<label class="radio-row"><input type="radio" name="technical" value="no" required><span>No</span></label>' +
@@ -1031,13 +1046,11 @@ function renderPostStudy() {
 
 function renderSubmit() {
   setHeader("Ready to submit", true);
-  const failures = state.attentionChecks.filter((item) => !item.passed).length;
   setView(
     '<section class="card compact-card"><h1>You completed the task.</h1>' +
       '<p>You completed ' + escapeHtml(String(state.trialCursor)) + ' comparisons. Select Submit to save the final record and return to Prolific.</p>' +
       '<div class="notice">Keep this page open until the Prolific page appears.</div>' +
-      '<div class="actions"><button class="button" id="final-submit">Submit study</button></div>' +
-      '<p class="small muted">Attention checks failed: ' + escapeHtml(String(failures)) + " of 2.</p></section>"
+      '<div class="actions"><button class="button" id="final-submit">Submit study</button></div></section>'
   );
   document.getElementById("final-submit").addEventListener("click", submitFinal);
 }
@@ -1087,7 +1100,7 @@ async function submitFinal() {
     saveLocal();
     setHeader("Save interrupted", true);
     setView(
-      '<section class="card compact-card"><p class="eyebrow">Connection problem</p><h1>Your final save was not confirmed.</h1>' +
+      '<section class="card compact-card"><h1>Your final save was not confirmed.</h1>' +
         '<p>Your responses remain stored on this device. Check the connection and retry; do not close the page.</p>' +
         '<div class="notice error">' + escapeHtml(error.message) + "</div>" +
         '<div class="actions"><button class="button" id="retry-final">Retry final save</button></div></section>'
@@ -1099,7 +1112,7 @@ async function submitFinal() {
 function renderPreviewComplete() {
   setHeader("Preview complete", true);
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Researcher preview</p><h1>Preview completed successfully.</h1>' +
+    '<section class="card compact-card"><h1>Preview completed successfully.</h1>' +
       '<p>No Prolific redirect occurred, no remote data was written, and no participant-facing log is available in preview mode.</p>' +
       '<div class="actions"><button class="button" id="reset-preview">Reset preview</button></div></section>'
   );
@@ -1112,7 +1125,7 @@ function renderPreviewComplete() {
 function renderResume() {
   setHeader("Saved progress found");
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Resume study</p><h1>Continue where you left off?</h1>' +
+    '<section class="card compact-card"><h1>Continue where you left off?</h1>' +
       '<p>This device has saved progress for ' + escapeHtml(String(state.trialCursor)) + ' of ' +
       escapeHtml(String(CONFIG.trialCount)) + ' main comparisons.</p>' +
       '<div class="actions"><button class="button" id="resume-button">Resume</button>' +
@@ -1141,7 +1154,7 @@ function renderResume() {
 function renderAlreadyComplete() {
   setHeader("Already complete");
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Submission complete</p><h1>This session was already completed.</h1>' +
+    '<section class="card compact-card"><h1>This session was already completed.</h1>' +
       '<p>Return to Prolific to view the submission.</p>' +
       '<div class="actions"><button class="button" id="return-complete">Return to Prolific</button>' +
       (isPreview ? '<button class="button secondary" id="reset-preview">Reset preview</button>' : "") +
@@ -1164,7 +1177,7 @@ async function terminateEarly(status, reason, redirectKey) {
   }
   setHeader("Eligibility result");
   setView(
-    '<section class="card compact-card"><p class="eyebrow">Screened out</p><h1>This study is not a match for you.</h1>' +
+    '<section class="card compact-card"><h1>This study is not a match for you.</h1>' +
       '<p>Thank you for completing the brief eligibility section. You will now return to Prolific, where the configured screen-out payment will be applied.</p>' +
       '<div class="actions"><button class="button" id="screenout-return">Return to Prolific</button></div></section>'
   );
