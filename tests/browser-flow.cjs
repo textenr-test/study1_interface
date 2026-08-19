@@ -18,13 +18,13 @@ const path = require("node:path");
   await page.click("#consent-button");
 
   await page.selectOption("#frequency", "weekly");
-  await page.check('input[name="language"][value="yes"]');
+  await page.fill("#native-language", "English");
+  await page.fill("#spoken-languages", "Spanish");
   await page.check('input[name="vision"][value="yes"]');
   await page.click('#eligibility-form button[type="submit"]');
 
   await page.fill("#plate-answer-0", "12");
   await page.fill("#plate-answer-1", "6");
-  await page.fill("#plate-answer-2", "29");
   await page.screenshot({ path: "/tmp/reader-study-color.png", fullPage: true });
   await page.click('#color-form button[type="submit"]');
 
