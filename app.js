@@ -1,8 +1,9 @@
 import { buildAssignment, hashString, mulberry32 } from "./assignment.js";
+import { containsKoreanLanguage } from "./eligibility.js";
 
 const CONFIG = window.STUDY_CONFIG;
 const app = document.getElementById("app");
-const headerStatus = document.getElementById("header-status");
+const siteHeader = document.getElementById("site-header");
 const progressWrap = document.getElementById("progress-wrap");
 const progress = document.getElementById("progress");
 const progressLabel = document.getElementById("progress-label");
@@ -95,7 +96,7 @@ function setView(html, options = {}) {
 }
 
 function setHeader(status, showProgress = false) {
-  headerStatus.textContent = status || "";
+  siteHeader.hidden = !showProgress;
   progressWrap.hidden = !showProgress;
   if (showProgress) {
     progress.max = CONFIG.trialCount;
@@ -233,25 +234,19 @@ function init() {
 }
 
 function renderWelcome() {
-  setHeader(isPreview ? "Researcher preview" : "Study information");
-  const languageNotice = CONFIG.stimulusLanguage === "English"
-    ? ""
-    : '<div class="notice"><strong>Language requirement:</strong> The interface is in English, but the article excerpts are in ' +
-      escapeHtml(CONFIG.stimulusLanguage) + '. You must be comfortable reading ' +
-      escapeHtml(CONFIG.requiredReadingLanguage) + '-language online articles.</div>';
+  setHeader("Study information");
   setView(
-    '<section class="card wide-card">' +
-      '<p class="eyebrow">Reader study · about 10–12 minutes</p>' +
-      '<h1>How do visual text treatments shape a first impression?</h1>' +
-      '<p class="lede">You will briefly see two versions of the same article excerpt and rate which one makes you more willing to continue reading.</p>' +
-      '<div class="details-grid">' +
-        '<div class="detail"><strong>38 comparisons</strong><span>Each appears for about half a second.</span></div>' +
-        '<div class="detail"><strong>Desktop only</strong><span>Use a laptop or desktop at 100% browser zoom.</span></div>' +
-        '<div class="detail"><strong>Visual judgment</strong><span>Base your answer on your immediate first impression.</span></div>' +
-      "</div>" +
-      languageNotice +
+    '<section class="card compact-card">' +
+      '<h1>Study information</h1>' +
+      '<p>You will complete 38 brief visual comparisons on a laptop or desktop. The study takes about 10–12 minutes.</p>' +
       '<h2>Before you agree</h2>' +
-      '<p>Participation is voluntary. You may stop at any time by closing this page and returning your submission on Prolific. We record your Prolific participant, study, and session IDs; your responses and response times; display and browser information needed to evaluate timing quality; and study-quality checks. We do not ask for your name, email address, or other direct identifiers.</p>' +
+      '<ul class="consent-points">' +
+        '<li>Participation is voluntary. You may stop at any time by closing this page and returning your submission on Prolific.</li>' +
+        '<li>We record your Prolific participant, study, and session IDs.</li>' +
+        '<li>We record your responses, response times, and study-quality checks.</li>' +
+        '<li>We record display and browser information needed to evaluate timing quality.</li>' +
+        '<li>We do not ask for your name, email address, or other direct identifiers.</li>' +
+      '</ul>' +
       '<p>Your pseudonymous data will be used for research on online reading and text formatting. ' + escapeHtml(CONFIG.researcherContact) + "</p>" +
       '<hr class="rule">' +
       '<label class="check-row"><input id="consent-check" type="checkbox"><span><strong>I am at least 18 years old, I have read the information above, and I consent to participate.</strong></span></label>' +
@@ -297,13 +292,14 @@ function renderEligibility() {
   setView(
     '<section class="card compact-card">' +
       '<p class="eyebrow">Step 1 of 3</p><h1>Quick eligibility check</h1>' +
-      '<p>These questions appear before the main task so you do not spend time on a study that is not suitable for your device or reading habits.</p>' +
+      '<p>Please answer the following questions before beginning the task.</p>' +
       '<form id="eligibility-form" class="question-stack">' +
         '<div class="question"><label for="frequency"><strong>How often do you voluntarily read creator-led newsletters, blogs, or similar text-based online publications?</strong></label>' +
           '<select id="frequency" required><option value="">Select one</option><option value="daily">Daily</option><option value="several_weekly">Several times a week</option><option value="weekly">About once a week</option><option value="less_weekly">Less than once a week</option><option value="never">Never</option></select></div>' +
-        '<div class="question"><fieldset><legend>Can you comfortably read ' + escapeHtml(CONFIG.requiredReadingLanguage) + '-language online articles?</legend>' +
-          '<label class="radio-row"><input type="radio" name="language" value="yes" required><span>Yes</span></label>' +
-          '<label class="radio-row"><input type="radio" name="language" value="no"><span>No</span></label></fieldset></div>' +
+        '<div class="question"><label for="native-language"><strong>What is your native language?</strong></label>' +
+          '<input id="native-language" type="text" autocomplete="off" required placeholder="e.g., English"></div>' +
+        '<div class="question"><label for="spoken-languages"><strong>What other languages can you use comfortably?</strong></label>' +
+          '<input id="spoken-languages" type="text" autocomplete="off" required placeholder="List languages separated by commas, or enter None"></div>' +
         '<div class="question"><fieldset><legend>Do you have normal or corrected-to-normal vision?</legend>' +
           '<label class="radio-row"><input type="radio" name="vision" value="yes" required><span>Yes</span></label>' +
           '<label class="radio-row"><input type="radio" name="vision" value="no"><span>No</span></label></fieldset></div>' +
@@ -316,13 +312,15 @@ function renderEligibility() {
     const form = new FormData(event.currentTarget);
     state.eligibility = {
       readingFrequency: document.getElementById("frequency").value,
-      requiredLanguage: form.get("language"),
+      nativeLanguage: document.getElementById("native-language").value.trim(),
+      spokenLanguages: document.getElementById("spoken-languages").value.trim(),
       normalOrCorrectedVision: form.get("vision"),
       answeredAt: nowIso()
     };
     saveLocal();
     const eligibleFrequency = ["daily", "several_weekly", "weekly"].includes(state.eligibility.readingFrequency);
-    if (!eligibleFrequency || state.eligibility.requiredLanguage !== "yes" || state.eligibility.normalOrCorrectedVision !== "yes") {
+    const reportsKorean = containsKoreanLanguage(state.eligibility.nativeLanguage) || containsKoreanLanguage(state.eligibility.spokenLanguages);
+    if (!eligibleFrequency || reportsKorean || state.eligibility.normalOrCorrectedVision !== "yes") {
       terminateEarly("screened_out", "eligibility_criteria", "screenedOut");
       return;
     }
@@ -338,7 +336,7 @@ function renderColorTest() {
       '<p>Some article versions use color. Enter the number you see in each dot pattern. This brief display-specific check is for study eligibility only and is not a medical diagnosis.</p>' +
       '<form id="color-form">' +
         '<div class="plate-grid">' +
-          plateCard(0, "Plate A") + plateCard(1, "Plate B") + plateCard(2, "Plate C") +
+          plateCard(0, "Plate A") + plateCard(1, "Plate B") +
         "</div>" +
         '<div id="color-error" class="notice error hidden" role="alert"></div>' +
         '<div class="actions right"><button class="button" type="submit">Check and continue</button></div>' +
@@ -346,9 +344,8 @@ function renderColorTest() {
     "</section>"
   );
   const plateDefinitions = [
-    { answer: "12", seed: 117, foreground: ["#40536c", "#4a5d73", "#384b62"], background: ["#d6bf7b", "#e0c98a", "#cdb572"] },
-    { answer: "6", seed: 306, foreground: ["#c86d4c", "#d17951", "#bd6245"], background: ["#79a06d", "#86a977", "#709562"] },
-    { answer: "29", seed: 529, foreground: ["#b97445", "#c47f4e", "#ad693e"], background: ["#72a076", "#7eaa80", "#69956e"] }
+    { answer: "12", seed: 117, foreground: ["#1458b8", "#256ed0", "#0c489d"], background: ["#f1cf73", "#f5dc96", "#e9bf54"] },
+    { answer: "6", seed: 306, foreground: ["#b53d2e", "#d3543f", "#982f24"], background: ["#8fc5a1", "#a9d6b5", "#78b68d"] }
   ];
   plateDefinitions.forEach((definition, index) => drawPlate(document.getElementById("plate-" + index), definition));
   document.getElementById("color-form").addEventListener("submit", (event) => {
@@ -384,7 +381,7 @@ function drawPlate(canvas, definition) {
   const maskCtx = mask.getContext("2d");
   maskCtx.clearRect(0, 0, mask.width, mask.height);
   maskCtx.fillStyle = "#000";
-  maskCtx.font = definition.answer.length > 1 ? "800 112px Arial" : "800 142px Arial";
+  maskCtx.font = definition.answer.length > 1 ? "900 132px Arial" : "900 164px Arial";
   maskCtx.textAlign = "center";
   maskCtx.textBaseline = "middle";
   maskCtx.fillText(definition.answer, mask.width / 2, mask.height / 2 + 4);
@@ -396,10 +393,10 @@ function drawPlate(canvas, definition) {
   ctx.beginPath();
   ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width * 0.48, 0, Math.PI * 2);
   ctx.clip();
-  for (let i = 0; i < 650; i += 1) {
+  for (let i = 0; i < 500; i += 1) {
     const x = random() * canvas.width;
     const y = random() * canvas.height;
-    const radius = 2.8 + random() * 5.7;
+    const radius = 3.8 + random() * 6.8;
     const pixel = (Math.floor(y) * canvas.width + Math.floor(x)) * 4 + 3;
     const inDigit = maskData[pixel] > 80;
     const colors = inDigit ? definition.foreground : definition.background;
