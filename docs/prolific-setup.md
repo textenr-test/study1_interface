@@ -2,14 +2,9 @@
 
 This checklist is written for the August 2026 Prolific study builder and should be rechecked immediately before publication.
 
-## 1. Resolve the stimulus-language decision
+## 1. Confirm the stimulus-language eligibility decision
 
-All 38 current Drive batch_output documents are in Korean. The interface is English.
-
-- **Current valid population:** English-interface participants who are comfortable reading Korean online articles.
-- **English-monolingual population:** not launch-ready. Translate the source documents, preserve the same content across all conditions, rerun the derivation/rendering pipeline, and replace the stimulus packages first.
-
-Do not silently remove the Korean-reading eligibility item while the current stimuli remain deployed.
+All 38 current Drive batch_output documents are in Korean and the interface is English. The current eligibility flow asks for native and comfortably used languages, then screens out anyone who reports Korean. This is intended to isolate immediate visual impressions from Korean-language comprehension. Confirm that this exclusion is consistent with the approved protocol, preregistration, Prolific description, and analysis plan before launch.
 
 ## 2. Suggested Prolific study details
 
@@ -23,7 +18,7 @@ Do not silently remove the Korean-reading eligibility item while the current sti
 
 **Eligibility and device notice**
 
-> Laptop or desktop only; no phones or tablets. Use a maximized browser window at 100% zoom and be prepared to enter full-screen mode. You must have normal or corrected-to-normal vision, pass a brief display-specific color-vision check, read creator-led newsletters/blogs or similar text publications at least weekly, and be comfortable reading Korean-language online articles. Study instructions are in English. No audio, camera, microphone, or download is required.
+> Laptop or desktop only; no phones or tablets. Use a maximized browser window at 100% zoom and be prepared to enter full-screen mode. You must have normal or corrected-to-normal vision, pass a brief display-specific color-vision check, read creator-led newsletters/blogs or similar text publications at least weekly, and not speak Korean. Study instructions are in English. No audio, camera, microphone, or download is required.
 
 **Participant-facing data note**
 
@@ -34,7 +29,7 @@ Do not silently remove the Korean-reading eligibility item while the current sti
 1. Set **Data collection type** to **External Study Link**.
 2. Select **Desktop** only in device compatibility.
 3. Repeat the desktop-only requirement in the public description. Prolific's device setting is an indicator and the experiment validates it again at the start.
-4. Use Prolific prescreeners where exact matches exist. Keep the in-study custom questions for the study-specific weekly-reading and Korean-reading criteria.
+4. Use Prolific prescreeners where exact matches exist. Keep the in-study custom questions for the study-specific weekly-reading and language-exclusion criteria.
 5. Enable **Custom screening** and budget screen-out slots separately from the 30 completed places.
 
 ## 4. Study URL and parameters
