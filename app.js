@@ -427,7 +427,7 @@ function renderInstructions(errorMessage = "") {
         escapeHtml(String(CONFIG.timings.exposureMs)) + ' ms.</p>' +
       '<ol class="instruction-flow" aria-label="Trial sequence">' +
         '<li><strong>Focus on the cross</strong><span>750 ms</span></li>' +
-        '<li><strong>View both versions</strong><span>500 ms</span></li>' +
+        '<li><strong>View both versions</strong><span>1,000 ms</span></li>' +
         '<li><strong>Rate left versus right</strong><span>−3 to +3</span></li>' +
         '<li><strong>Continue</strong><span>Next trial</span></li>' +
       "</ol>" +
@@ -439,7 +439,7 @@ function renderInstructions(errorMessage = "") {
       '<form id="comprehension-form" class="question-stack">' +
         '<div class="question"><fieldset><legend>How long will the two article versions be visible?</legend>' +
           comprehensionOption("duration", "until_answer", "Until I answer") +
-          comprehensionOption("duration", "half_second", "About half a second") +
+          comprehensionOption("duration", "one_second", "About one second") +
           comprehensionOption("duration", "ten_seconds", "About ten seconds") +
         "</fieldset></div>" +
         '<div class="question"><fieldset><legend>What should your rating represent?</legend>' +
@@ -467,7 +467,7 @@ async function handleComprehension(event) {
     duration: form.get("duration"),
     judgment: form.get("judgment")
   };
-  state.comprehension.passed = form.get("duration") === "half_second" && form.get("judgment") === "first_impression";
+  state.comprehension.passed = form.get("duration") === "one_second" && form.get("judgment") === "first_impression";
   state.comprehension.answeredAt = nowIso();
   saveLocal();
   if (state.comprehension.passed) {
