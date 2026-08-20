@@ -39,7 +39,7 @@ const readmeRows = [
   ["Source warnings", "Review P6_DOC_A, P13_DOC_A, and P13_DOC_B before analysis; source pipeline status is warning."],
   ["Collector", "Deploy apps-script/Code.gs as a bound Google Apps Script web app."],
   ["Access", "Keep spreadsheet sharing restricted to authorized research personnel."],
-  ["Study version", "2026-08-19-v5"]
+  ["Study version", "2026-08-20-v6"]
 ];
 
 const workbook = Workbook.create();
