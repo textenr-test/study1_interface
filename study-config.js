@@ -1,5 +1,5 @@
 window.STUDY_CONFIG = Object.freeze({
-  version: "2026-08-19-v5",
+  version: "2026-08-20-v6",
   title: "Visual First-Impression Study",
   targetParticipants: 30,
   trialCount: 38,
@@ -32,7 +32,7 @@ window.STUDY_CONFIG = Object.freeze({
   ],
   timings: {
     fixationMs: 750,
-    exposureMs: 500,
+    exposureMs: 1000,
     redirectDelayMs: 900
   },
   attentionAfterTrials: [12, 26],
