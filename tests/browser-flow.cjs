@@ -27,7 +27,7 @@ const path = require("node:path");
   await page.screenshot({ path: "/tmp/reader-study-color.png", fullPage: true });
   await page.click('#color-form button[type="submit"]');
 
-  await page.check('input[name="duration"][value="half_second"]');
+  await page.check('input[name="duration"][value="one_second"]');
   await page.check('input[name="judgment"][value="first_impression"]');
   await page.click('#comprehension-form button[type="submit"]');
 
