@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/assignment.test.mjs && node tests/eligibility.test.mjs && node tests/attention.test.mjs && node tests/study-flow.test.mjs && node tests/stimulus-fit.test.mjs && node tests/interface-copy.test.mjs && node tests/log-schema.test.mjs && node tests/collector-validation.test.mjs && node scripts/verify-stimuli.mjs",
+    "test": "node tests/assignment.test.mjs && node tests/eligibility.test.mjs && node tests/attention.test.mjs && node tests/exit-routing.test.mjs && node tests/study-flow.test.mjs && node tests/stimulus-fit.test.mjs && node tests/interface-copy.test.mjs && node tests/log-schema.test.mjs && node tests/collector-validation.test.mjs && node scripts/verify-stimuli.mjs",
     "generate-assignments": "node scripts/generate-assignments.mjs",
     "import-final-output": "node scripts/import-final-output.mjs",
     "refresh-stimuli-manifest": "node scripts/verify-stimuli.mjs --write",

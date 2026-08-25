@@ -1,8 +1,9 @@
-import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-25-optional-break";
-import { containsKoreanLanguage } from "./eligibility.js?v=2026-08-25-optional-break";
-import { expectedAttentionResponse } from "./attention.js?v=2026-08-25-optional-break";
-import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-25-optional-break";
-import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-25-optional-break";
+import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-25-v7-prolific-paths";
+import { containsKoreanLanguage } from "./eligibility.js?v=2026-08-25-v7-prolific-paths";
+import { expectedAttentionResponse } from "./attention.js?v=2026-08-25-v7-prolific-paths";
+import { resolveEarlyExitRoute } from "./exit-routing.js?v=2026-08-25-v7-prolific-paths";
+import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-25-v7-prolific-paths";
+import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-25-v7-prolific-paths";
 
 const CONFIG = window.STUDY_CONFIG;
 const app = document.getElementById("app");
@@ -59,6 +60,7 @@ function createInitialState() {
     eligibility: null,
     colorTest: null,
     comprehension: { attempts: 0, passed: false },
+    earlyExit: null,
     screen: null,
     practiceIndex: 0,
     practiceComplete: false,
@@ -203,7 +205,7 @@ function configProblems() {
       problems.push("The Prolific URL parameters are missing.");
     }
     if (!CONFIG.dataEndpoint) problems.push("The data endpoint has not been configured.");
-    ["complete", "screenedOut", "noConsent"].forEach((key) => {
+    ["complete", "screenedOut", "incompatibleDevice", "failedComprehension", "noConsent"].forEach((key) => {
       if (!CONFIG.redirects[key]) problems.push("The Prolific " + key + " redirect has not been configured.");
     });
   }
@@ -230,6 +232,11 @@ function init() {
   }
 
   const saved = loadLocal();
+  if (saved?.earlyExit?.reason) {
+    state = Object.assign(createInitialState(), saved);
+    renderEarlyExit(saved.earlyExit.reason);
+    return;
+  }
   if (saved && ["eligible", "in_progress", "ready_to_submit", "upload_error"].includes(saved.status)) {
     state = Object.assign(createInitialState(), saved);
     renderResume();
@@ -293,7 +300,7 @@ function acceptConsent() {
   saveLocal();
   recordEvent("consent_given");
   if (!isPreview && !deviceIsEligible(state.screen)) {
-    terminateEarly("screened_out", "incompatible_device", "screenedOut");
+    terminateEarly("incompatible_device");
     return;
   }
   renderEligibility();
@@ -333,7 +340,7 @@ function renderEligibility() {
     const eligibleFrequency = ["daily", "several_weekly", "weekly"].includes(state.eligibility.readingFrequency);
     const reportsKorean = containsKoreanLanguage(state.eligibility.nativeLanguage) || containsKoreanLanguage(state.eligibility.spokenLanguages);
     if (!eligibleFrequency || reportsKorean || state.eligibility.normalOrCorrectedVision !== "yes") {
-      terminateEarly("screened_out", "eligibility_criteria", "screenedOut");
+      terminateEarly("eligibility_criteria");
       return;
     }
     renderColorTest();
@@ -370,7 +377,7 @@ function renderColorTest() {
     state.colorTest = { responses, correct, passed: correct === plateDefinitions.length, answeredAt: nowIso() };
     saveLocal();
     if (!state.colorTest.passed) {
-      terminateEarly("screened_out", "color_vision_check", "screenedOut");
+      terminateEarly("color_vision_check");
       return;
     }
     renderInstructions();
@@ -482,7 +489,7 @@ async function handleComprehension(event) {
     return;
   }
   if (state.comprehension.attempts >= 2) {
-    terminateEarly("screened_out", "failed_comprehension_twice", "screenedOut");
+    terminateEarly("failed_comprehension_twice");
     return;
   }
   renderInstructions("One or more answers were incorrect. Please re-read the instructions and try once more.");
@@ -1340,21 +1347,28 @@ function renderAlreadyComplete() {
   });
 }
 
-async function terminateEarly(status, reason, redirectKey) {
-  state.status = status;
+async function terminateEarly(reason) {
+  const route = resolveEarlyExitRoute(reason);
+  state.status = route.status;
+  state.earlyExit = { reason, redirectKey: route.redirectKey, recordedAt: nowIso() };
   state.completedAt = nowIso();
   saveLocal();
   if (CONFIG.dataEndpoint && !isPreview) {
-    queueRemote("screenout", { reason, outcome: status });
+    queueRemote("screenout", { reason, outcome: route.status });
     try { await flushUploads(); } catch (error) { console.warn(error); }
   }
+  renderEarlyExit(reason);
+}
+
+function renderEarlyExit(reason) {
+  const route = resolveEarlyExitRoute(reason);
   setHeader("Eligibility result");
   setView(
-    '<section class="card compact-card"><h1>This study is not a match for you.</h1>' +
-      '<p>Thank you for completing the brief eligibility section. You will now return to Prolific, where the configured screen-out payment will be applied.</p>' +
+    '<section class="card compact-card"><h1>' + escapeHtml(route.heading) + "</h1>" +
+      "<p>" + escapeHtml(route.message) + "</p>" +
       '<div class="actions"><button class="button" id="screenout-return">Return to Prolific</button></div></section>'
   );
-  const destination = CONFIG.redirects[redirectKey] || CONFIG.redirects.screenedOut;
+  const destination = CONFIG.redirects[route.redirectKey];
   document.getElementById("screenout-return").addEventListener("click", () => redirectTo(destination));
   window.setTimeout(() => redirectTo(destination), timings.redirectDelayMs);
 }
@@ -1502,12 +1516,12 @@ function jsonp(endpoint, query, timeoutMs = 10000) {
 }
 
 function redirectTo(url) {
-  if (url) {
-    window.location.assign(url);
-    return;
-  }
   if (isPreview) {
     renderPreviewComplete();
+    return;
+  }
+  if (url) {
+    window.location.assign(url);
     return;
   }
   renderConfigurationError(["The required Prolific redirect URL is missing."]);

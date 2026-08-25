@@ -6,7 +6,7 @@ Static GitHub Pages experiment for a 30-reader Prolific study. Study version: `2
 
 - 38 Korean-language documents and six enriched conditions: D1, D2, W, D3, D4, and D5.
 - Every participant completes 114 main trials in three sets of 38 and sees three distinct enriched versions of every document.
-- Two required 60-second breaks follow trials 38 and 76. A clearly labeled attention check appears once per set after trials 12, 50, and 88; the required responses are +1, +3, and +1.
+- Two optional breaks follow trials 38 and 76. A 60-second countdown is recommended, but participants can continue immediately. A clearly labeled attention check appears once per set after trials 12, 50, and 88; the required responses are +1, +3, and +1.
 - Every trial uses a 750 ms fixation, a 1,000 ms simultaneous baseline/enriched display, and a −3…+3 left-to-right rating that is normalized to the enriched version.
 - The longer member of each pair determines one shared scale. Only unused bottom whitespace is excluded from fitting; document text is never cropped.
 
@@ -39,18 +39,22 @@ The browser queues each response immediately. A trial leaves the local retry que
 - `Participants`: allocation, resumable progress, and screening/quality summaries.
 - `Events`: attention attempts, breaks, timing interruptions, connectivity, screen-outs, and completion.
 
-Before either break, the browser blocks until the server confirms every global trial index through 38 or 76. Final completion requires all indices 1–114, exactly 38 rows per set, three passed attention checks, two completed breaks, and the final event.
+Before either break screen, the browser blocks until the server confirms every global trial index through 38 or 76. Final completion requires all indices 1–114, exactly 38 rows per set, three passed attention checks, two acknowledged break screens, and the final event.
 
 `logs/final-trial-log-template.csv` and `logs/final-trial-log-template.json` are the pre-saved final schemas. `setupStudyWorkbook()` also creates empty `text-enrichment-final-log.csv` and `.json` files next to the private spreadsheet; they are refreshed after each completed participant. The collector exposes no public read or export route.
 
 ## Launch status
 
-Researcher preview works without remote writes. Live Prolific entry remains intentionally blocked until these values are filled in `study-config.js`:
+Researcher preview works without remote writes or Prolific redirects. Live Prolific entry requires all of these values in `study-config.js`; they are configured for the current Prolific draft:
 
 1. `dataEndpoint`
 2. `redirects.complete`
 3. `redirects.screenedOut`
-4. `redirects.noConsent`
+4. `redirects.incompatibleDevice`
+5. `redirects.failedComprehension`
+6. `redirects.noConsent`
+
+Eligibility and color-vision failures use the paid `screenedOut` path. An incompatible device and two failed instruction-check attempts use distinct `Request a return` paths. Declining consent uses the `noConsent` return path. Successful participants reach `complete` only after the server confirms the full 114-trial record.
 
 The interface screens out anyone who reports Korean as a native or comfortably used language. Keep this exclusion aligned with the approved protocol, preregistration, recruitment copy, and analysis plan.
 

@@ -54,11 +54,11 @@ window.STUDY_CONFIG = Object.freeze({
   dataEndpoint: "https://script.google.com/macros/s/AKfycbwCkDi4hN8c3k5TyoazXkReX0tgZ5pwGtAD0cgwMQA9ib2-d4gI9L7lwGsgdk2xAKr89Q/exec",
   googleSheetUrl: "",
   redirects: {
-    complete: "",
-    screenedOut: "",
-    noConsent: "",
-    failedAttention: "",
-    returnSubmission: ""
+    complete: "https://app.prolific.com/submissions/complete?cc=CW2P6FV4",
+    screenedOut: "https://app.prolific.com/submissions/complete?cc=C1JJDH8M",
+    incompatibleDevice: "https://app.prolific.com/submissions/complete?cc=CG4A1FAO",
+    failedComprehension: "https://app.prolific.com/submissions/complete?cc=COI7JSKM",
+    noConsent: "https://app.prolific.com/submissions/complete?cc=CYE28F39"
   },
   researcherContact: "Please contact the researcher through Prolific messaging.",
   supportNote: "If a technical problem prevents completion, message the researcher on Prolific and return the submission rather than submitting incomplete data."

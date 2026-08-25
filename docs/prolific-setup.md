@@ -14,7 +14,7 @@ All 38 documents imported from Google Drive `final output` are in Korean and the
 
 **Study description**
 
-> You will briefly view two differently formatted versions of the same online article and rate which visual appearance would motivate you more to continue reading. The task contains two practice trials and 114 timed comparisons in three sets of 38, with two required 60-second breaks and one clearly labeled attention check per set. Allow approximately 20–25 minutes; the final estimate and reward should be based on a realistic pilot.
+> You will briefly view two differently formatted versions of the same online article and rate which visual appearance would motivate you more to continue reading. The task contains two practice trials and 114 timed comparisons in three sets of 38, with two optional breaks and one clearly labeled attention check per set. A 60-second rest is recommended at each break, but you may continue immediately. Allow approximately 20–25 minutes; the final estimate and reward should be based on a realistic pilot.
 
 **Eligibility and device notice**
 
@@ -28,9 +28,14 @@ All 38 documents imported from Google Drive `final output` are in Korean and the
 
 1. Use an external study link and enable desktop compatibility only.
 2. Repeat the laptop/desktop requirement in the public description; the interface validates it again.
-3. Configure custom screening and the appropriate paid screen-out path before publishing.
-4. Create successful-completion, screen-out, and no-consent return paths.
-5. Paste the full URLs into `redirects.complete`, `redirects.screenedOut`, and `redirects.noConsent` in `study-config.js`.
+3. Configure custom screening and the paid `Screened out` path before publishing.
+4. Create five completion paths and select the indicated processing action:
+   - Successful completion → `Manually review` → `redirects.complete`
+   - Screened out → fixed screen-out payment → `redirects.screenedOut`
+   - Incompatible device → `Request a return` → `redirects.incompatibleDevice`
+   - Instruction check not passed → `Request a return` → `redirects.failedComprehension`
+   - No consent → `Request a return` → `redirects.noConsent`
+5. Paste each full redirect URL, rather than only its completion code, into `study-config.js`.
 
 Live URL:
 
@@ -47,8 +52,8 @@ Never use `preview=1` in the live Prolific URL.
 - Attention checks appear after global trials 12, 50, and 88 and require +1, +3, and +1 respectively.
 - Incorrect attention responses are logged, but the task remains locked until the instructed value is selected.
 - A server checkpoint must confirm trials 1–38 before the first break and 1–76 before the second break.
-- Each break is locked for at least 60 seconds and its start/completion is logged.
-- Final completion requires all 114 trial indices, 38 rows in each set, all three attention checks, both breaks, and the final event.
+- Each break recommends 60 seconds but may be skipped immediately. Its start, elapsed time, skip status, and acknowledgement are logged.
+- Final completion requires all 114 trial indices, 38 rows in each set, all three attention checks, both acknowledged break screens, and the final event.
 
 ## 5. Create the private collector workbook
 
@@ -109,14 +114,14 @@ The stimulus test must confirm 38 packages, 266 complete HTML files, the `Google
 ## 7. End-to-end prelaunch checks
 
 1. Complete fast researcher previews for slots 1, 6, 7, 12, 25, and 30.
-2. Complete at least one full-duration preview without `fast=1`, including both 60-second breaks.
+2. Complete at least one full-duration preview without `fast=1`, including both optional break screens and both the skip and full-wait behaviors.
 3. In a staging collector, verify one response appears in both `Trials` and `TrialJSON` with the same `event_id`.
 4. Verify the first checkpoint reports 38/38 and the second 76/76 before the break begins.
 5. Change tabs during a timed display and confirm that attempt is discarded and repeated.
 6. Close and reopen the same Prolific session and confirm allocation, set position, break state, and unsent queue resume correctly.
 7. Confirm final completion reports 114 trials and set counts `[38, 38, 38]`.
 8. Confirm the private CSV and JSON exports contain the completed participant’s 114 rows.
-9. Test consent decline, eligibility screen-out, missing-parameter, device-failure, and successful-completion routes.
+9. Test all five routes: consent decline, paid eligibility/color screen-out, incompatible device return, instruction-check return, and successful completion.
 10. Pilot the full study before fixing the advertised duration and reward; recheck Prolific’s current payment and screening guidance at launch time.
 
 Keep the Sheet, exported logs, and any downloaded analysis files restricted according to the approved retention plan.
