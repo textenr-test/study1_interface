@@ -51,7 +51,7 @@ window.STUDY_CONFIG = Object.freeze({
     allowedPointer: "fine"
   },
   stimulusLanguage: "Korean",
-  dataEndpoint: "",
+  dataEndpoint: "https://script.google.com/macros/s/AKfycbwCkDi4hN8c3k5TyoazXkReX0tgZ5pwGtAD0cgwMQA9ib2-d4gI9L7lwGsgdk2xAKr89Q/exec",
   googleSheetUrl: "",
   redirects: {
     complete: "",
