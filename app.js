@@ -37,6 +37,7 @@ const storageKey = [
 let state = createInitialState();
 let assignment = null;
 let activeFlush = null;
+let suppressUnloadSave = false;
 const stimulusCache = new Map();
 
 function cleanIdentifier(value) {
@@ -95,6 +96,13 @@ function loadLocal() {
   } catch (error) {
     return null;
   }
+}
+
+function resetPreview() {
+  if (!isPreview) return;
+  suppressUnloadSave = true;
+  localStorage.removeItem(storageKey);
+  window.location.reload();
 }
 
 function setView(html, options = {}) {
@@ -1299,10 +1307,7 @@ function renderPreviewComplete() {
       '<p>No Prolific redirect occurred, no remote data was written, and no participant-facing log is available in preview mode.</p>' +
       '<div class="actions"><button class="button" id="reset-preview">Reset preview</button></div></section>'
   );
-  document.getElementById("reset-preview").addEventListener("click", () => {
-    localStorage.removeItem(storageKey);
-    window.location.reload();
-  });
+  document.getElementById("reset-preview").addEventListener("click", resetPreview);
 }
 
 function renderResume() {
@@ -1325,10 +1330,7 @@ function renderResume() {
       renderAssignmentLoadError(error);
     }
   });
-  document.getElementById("restart-button")?.addEventListener("click", () => {
-    localStorage.removeItem(storageKey);
-    window.location.reload();
-  });
+  document.getElementById("restart-button")?.addEventListener("click", resetPreview);
 }
 
 function renderAlreadyComplete() {
@@ -1341,10 +1343,7 @@ function renderAlreadyComplete() {
       "</div></section>"
   );
   document.getElementById("return-complete").addEventListener("click", () => redirectTo(CONFIG.redirects.complete));
-  document.getElementById("reset-preview")?.addEventListener("click", () => {
-    localStorage.removeItem(storageKey);
-    window.location.reload();
-  });
+  document.getElementById("reset-preview")?.addEventListener("click", resetPreview);
 }
 
 async function terminateEarly(reason) {
@@ -1532,7 +1531,9 @@ window.addEventListener("online", () => {
   flushUploads().catch(() => {});
 });
 window.addEventListener("offline", () => recordEvent("connection_offline"));
-window.addEventListener("beforeunload", () => saveLocal());
+window.addEventListener("beforeunload", () => {
+  if (!suppressUnloadSave) saveLocal();
+});
 document.addEventListener("fullscreenchange", () => {
   if (state.consentedAt) recordEvent(document.fullscreenElement ? "fullscreen_entered" : "fullscreen_exited");
 });
