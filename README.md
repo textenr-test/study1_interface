@@ -1,59 +1,90 @@
 # Text Enrichment Reader Study
 
-Static GitHub Pages experiment for a 30-reader Prolific study.
+Static GitHub Pages experiment for a 30-reader Prolific study. Study version: `2026-08-25-v7`.
 
-## What is implemented
+## Study design
 
-- English participant interface with consent, device validation, eligibility screening, a display-specific color-vision check, and two-attempt comprehension checks.
-- Two practice trials, 38 timed main trials, a halfway break, and explicit attention checks after trials 12 and 26.
-- 750 ms fixation and 1,000 ms simultaneous exposure. Both document versions use the same scale, retain the source 900 px layout, and are preloaded before timing begins. The interface measures each rendered document, fits to the longer member of the pair, and excludes only unused bottom whitespace so no text is clipped.
-- Repeated 6-condition Latin-square assignment across 30 server-assigned slots. Each document-condition pair is rated by exactly five readers when slots 1–30 complete.
-- Per-participant randomized trial order, exact left/right balancing, normalized −3…+3 enriched-version ratings, local recovery, timing interruption detection, and detailed quality logs.
-- Google Apps Script collector for atomic slot allocation, Google Sheet logging, idempotent trial/event records, final-save confirmation, and cross-device resume for the same Prolific session.
+- 38 Korean-language documents and six enriched conditions: D1, D2, W, D3, D4, and D5.
+- Every participant completes 114 main trials in three sets of 38 and sees three distinct enriched versions of every document.
+- Two required 60-second breaks follow trials 38 and 76. A clearly labeled attention check appears once per set after trials 12, 50, and 88; the required responses are +1, +3, and +1.
+- Every trial uses a 750 ms fixation, a 1,000 ms simultaneous baseline/enriched display, and a −3…+3 left-to-right rating that is normalized to the enriched version.
+- The longer member of each pair determines one shared scale. Only unused bottom whitespace is excluded from fitting; document text is never cropped.
 
-## Important launch status
+All 30 participant allocations are pre-generated and checked into `assignments/` rather than sampled in the browser. The allocation satisfies all protocol constraints:
 
-The page is safe to deploy for researcher preview, but live Prolific entry is intentionally blocked until these values are filled in study-config.js:
+- 3 distinct conditions per participant-document.
+- 19 occurrences of every condition per participant.
+- 15 readers per document-condition pair.
+- 5 readers per document-condition-set cell.
+- 6 co-occurrences per document for every unordered condition pair.
+- 6 or 7 occurrences per participant-set-condition cell.
+- 19 baseline-left and 19 baseline-right trials in every participant-set.
+- 7/8 or 8/7 side crossing within every document-condition pair.
+- Different document positions across sets and no overlap between the last five documents of one set and first five of the next.
 
-1. dataEndpoint — deployed Google Apps Script web-app URL.
-2. redirects.complete
-3. redirects.screenedOut
-4. redirects.noConsent
-5. redirects.failedAttention
+The committed master allocation contains 3,420 rows (`30 × 3 × 38`).
 
-The Drive batch_output excerpts contain Korean text in all 38 documents, while the interface is English. The current eligibility flow intentionally screens out participants who report Korean as a native or comfortably used language. This supports a visual-first-impression task without Korean-language comprehension, but the choice must remain aligned with the approved protocol and analysis plan.
+## Stimuli
+
+`stimuli/` contains 38 self-contained JSON packages and 266 HTML stimuli imported from the Google Drive folder named `final output`. `scripts/import-final-output.mjs` verifies every HTML file against the SHA-256 recorded in its source manifest before packaging it. `stimuli/index.json` records the package hashes and source metadata.
+
+The current source validation statuses are 35 pass and 3 warning. Review `P6_DOC_A`, `P13_DOC_A`, and `P13_DOC_B` before analysis.
+
+## Data pipeline
+
+The browser queues each response immediately. A trial leaves the local retry queue only after the private Google Apps Script collector confirms that both representations were written:
+
+- `Trials`: flat, CSV-ready canonical record.
+- `TrialJSON`: the same canonical record serialized as JSON.
+- `Participants`: allocation, resumable progress, and screening/quality summaries.
+- `Events`: attention attempts, breaks, timing interruptions, connectivity, screen-outs, and completion.
+
+Before either break, the browser blocks until the server confirms every global trial index through 38 or 76. Final completion requires all indices 1–114, exactly 38 rows per set, three passed attention checks, two completed breaks, and the final event.
+
+`logs/final-trial-log-template.csv` and `logs/final-trial-log-template.json` are the pre-saved final schemas. `setupStudyWorkbook()` also creates empty `text-enrichment-final-log.csv` and `.json` files next to the private spreadsheet; they are refreshed after each completed participant. The collector exposes no public read or export route.
+
+## Launch status
+
+Researcher preview works without remote writes. Live Prolific entry remains intentionally blocked until these values are filled in `study-config.js`:
+
+1. `dataEndpoint`
+2. `redirects.complete`
+3. `redirects.screenedOut`
+4. `redirects.noConsent`
+
+The interface screens out anyone who reports Korean as a native or comfortably used language. Keep this exclusion aligned with the approved protocol, preregistration, recruitment copy, and analysis plan.
 
 ## Local checks
 
-    npm test
-    python3 -m http.server 4173
+```sh
+npm test
+python3 -m http.server 4173
+```
 
 Preview:
 
-    http://localhost:4173/?preview=1&slot=1
+```text
+http://localhost:4173/?preview=1&slot=1
+```
 
-Fast flow check:
+Fast automated-flow preview:
 
-    http://localhost:4173/?preview=1&slot=1&fast=1
+```text
+http://localhost:4173/?preview=1&slot=1&fast=1
+```
 
-Preview mode never writes remote data, never redirects to Prolific, and does not expose a downloadable participant log.
+Preview mode never writes remote data, never redirects to Prolific, and exposes no participant-facing log.
 
 ## Repository structure
 
-- index.html, styles.css, app.js — participant interface.
-- assignment.js — deterministic study allocation.
-- study-config.js — study manifest, timings, endpoint, and completion paths.
-- stimuli/ — one self-contained JSON package per document plus index.json.
-- apps-script/ — Google Sheet collector.
-- docs/prolific-setup.md — launch checklist and participant-facing copy.
-- tests/ and scripts/ — balance and stimulus integrity checks.
+- `app.js`, `styles.css`, `index.html`: participant interface.
+- `study-config.js`: study version, timings, endpoints, checks, and breaks.
+- `assignment.js`: validated loading of immutable slot files.
+- `assignments/`: master CSV/JSON plus 30 participant slot files.
+- `stimuli/`: Drive `final output` stimulus packages.
+- `logs/`: canonical CSV/JSON log templates.
+- `apps-script/`: private Google Sheet collector and export pipeline.
+- `docs/prolific-setup.md`: deployment checklist.
+- `tests/`, `scripts/`: design, schema, UI, and stimulus integrity checks.
 
-## Privacy and deployment notes
-
-- Do not place OAuth credentials, Google API keys, researcher tokens, or private admin secrets in this public repository.
-- The Google Sheet should remain restricted to authorized researchers. The Apps Script exposes append/resume/confirmation operations only; it has no public export endpoint.
-- Full trial and event records are retained in the researcher-only Google Sheet, including fitted content height and removed bottom-whitespace metrics for stimulus QA. Participant recovery storage excludes completed response and event histories; only progress and any temporarily unsent queue are retained locally.
-- GitHub Pages is public. Anyone who knows the URL can download the stimuli. Use a private study host instead if stimulus embargo or access control is required.
-- Prolific IDs are pseudonymous identifiers. Keep exports restricted and follow the approved retention and deletion plan.
-
-See docs/prolific-setup.md before launching.
+Do not put credentials or private researcher tokens in this public repository. GitHub Pages serves code and stimuli only; all participant data must remain in the restricted researcher-controlled Sheet and Drive exports.

@@ -1,0 +1,188 @@
+{
+  "schema_version": "text-enrichment-allocation-index-v2",
+  "study_version": "2026-08-25-v7",
+  "assignment_version": "n30-three-versions-v1",
+  "allocation_sha256": "0bacb95e28ffca93cdb7b6ffc512b971c77988d34e072eba8260bf9e77ad77cc",
+  "participant_slots": [
+    {
+      "participant_slot": 1,
+      "allocation_id": "n30-three-versions-v1-slot-01",
+      "file": "slots/slot-01.json",
+      "allocation_sha256": "bdd724a6ec63bb3ff0094f7d8397a6e73a5e89ba9c3e62b97018ed716add3870"
+    },
+    {
+      "participant_slot": 2,
+      "allocation_id": "n30-three-versions-v1-slot-02",
+      "file": "slots/slot-02.json",
+      "allocation_sha256": "07dbb7582fa53f8113be0d7a03199819de6d2a4043012dadcd9c6ca15b02458f"
+    },
+    {
+      "participant_slot": 3,
+      "allocation_id": "n30-three-versions-v1-slot-03",
+      "file": "slots/slot-03.json",
+      "allocation_sha256": "c3d3539d2802f2ba70fd2b1a5affbadec8043610f3f5ab70cb436812aa739c43"
+    },
+    {
+      "participant_slot": 4,
+      "allocation_id": "n30-three-versions-v1-slot-04",
+      "file": "slots/slot-04.json",
+      "allocation_sha256": "57264cf0e96395d89a2593ef7bda7e248789cd79f56ced4609698008e32fecac"
+    },
+    {
+      "participant_slot": 5,
+      "allocation_id": "n30-three-versions-v1-slot-05",
+      "file": "slots/slot-05.json",
+      "allocation_sha256": "44aa6022918330534bd7e116477d61c579e76f922f4d30782ab9df806c2465ee"
+    },
+    {
+      "participant_slot": 6,
+      "allocation_id": "n30-three-versions-v1-slot-06",
+      "file": "slots/slot-06.json",
+      "allocation_sha256": "208668703e55c950d7bdc814a9c51fb783e7b147e5f745a84ceb54c685a4937e"
+    },
+    {
+      "participant_slot": 7,
+      "allocation_id": "n30-three-versions-v1-slot-07",
+      "file": "slots/slot-07.json",
+      "allocation_sha256": "a1f39d657f521e2e6d11626e6d6f2d7d259a68badfcb19ad65a1b1aa59382611"
+    },
+    {
+      "participant_slot": 8,
+      "allocation_id": "n30-three-versions-v1-slot-08",
+      "file": "slots/slot-08.json",
+      "allocation_sha256": "5f98ff97ef3251191748f2d6eb03564fe2b97a3ce903a0e0e534bd2d53834414"
+    },
+    {
+      "participant_slot": 9,
+      "allocation_id": "n30-three-versions-v1-slot-09",
+      "file": "slots/slot-09.json",
+      "allocation_sha256": "886645e3907a1f65d00f8fb561165a7b50603aa8dcc90810f11b2af5e1f7c98d"
+    },
+    {
+      "participant_slot": 10,
+      "allocation_id": "n30-three-versions-v1-slot-10",
+      "file": "slots/slot-10.json",
+      "allocation_sha256": "b71ef80aa67ee112e5d5e73b4d25d2de93e22a1dea2ac7086baecf5cc26d1564"
+    },
+    {
+      "participant_slot": 11,
+      "allocation_id": "n30-three-versions-v1-slot-11",
+      "file": "slots/slot-11.json",
+      "allocation_sha256": "7bcca8218cc0c498a4b8fdb8bda16aaa99c45682c82f7c1fe8ebdc29b84d189d"
+    },
+    {
+      "participant_slot": 12,
+      "allocation_id": "n30-three-versions-v1-slot-12",
+      "file": "slots/slot-12.json",
+      "allocation_sha256": "5b9986a54e67729e3fa1beae978b9290916f51a5bc9bc091e5937253288cf36b"
+    },
+    {
+      "participant_slot": 13,
+      "allocation_id": "n30-three-versions-v1-slot-13",
+      "file": "slots/slot-13.json",
+      "allocation_sha256": "2593bf9a1855a29b95e6f2b5f694674830bc2e7e7b8f39d55b8a597d4ee4cfbe"
+    },
+    {
+      "participant_slot": 14,
+      "allocation_id": "n30-three-versions-v1-slot-14",
+      "file": "slots/slot-14.json",
+      "allocation_sha256": "83974ea6a060dfa9170eaff6267c9da0297636234ea4557af2ed99f2e1725256"
+    },
+    {
+      "participant_slot": 15,
+      "allocation_id": "n30-three-versions-v1-slot-15",
+      "file": "slots/slot-15.json",
+      "allocation_sha256": "df0420ecbc2926fcff444ded2c1a2ec8d8cd8920ab26a71e5292fb68f9ac7f8b"
+    },
+    {
+      "participant_slot": 16,
+      "allocation_id": "n30-three-versions-v1-slot-16",
+      "file": "slots/slot-16.json",
+      "allocation_sha256": "3983be7337d6ef7aee1db23f5f34598007104df6f8eae684dde5da28d85cb9a6"
+    },
+    {
+      "participant_slot": 17,
+      "allocation_id": "n30-three-versions-v1-slot-17",
+      "file": "slots/slot-17.json",
+      "allocation_sha256": "a115eaa0bbd4ea7b2a730f18c3bde29a550f2f40f1c40ed46e661f8fbe789400"
+    },
+    {
+      "participant_slot": 18,
+      "allocation_id": "n30-three-versions-v1-slot-18",
+      "file": "slots/slot-18.json",
+      "allocation_sha256": "6075f82a2c6a760171695757e3ee86dbc39877b898cbbff3bea200f8e304aef7"
+    },
+    {
+      "participant_slot": 19,
+      "allocation_id": "n30-three-versions-v1-slot-19",
+      "file": "slots/slot-19.json",
+      "allocation_sha256": "611198b32a8bd62db4fe5f5e29e488ffae0d733c2b967781dc7d422a0a51fd9c"
+    },
+    {
+      "participant_slot": 20,
+      "allocation_id": "n30-three-versions-v1-slot-20",
+      "file": "slots/slot-20.json",
+      "allocation_sha256": "2782a2eb99b9170551dab42b9ad7358e40a69cf83fda609fdff0cb29ed7fd671"
+    },
+    {
+      "participant_slot": 21,
+      "allocation_id": "n30-three-versions-v1-slot-21",
+      "file": "slots/slot-21.json",
+      "allocation_sha256": "6fd57eb7ea909e223d4bcb1f310216449bfe090f4e9050d1c8349484b3806a1e"
+    },
+    {
+      "participant_slot": 22,
+      "allocation_id": "n30-three-versions-v1-slot-22",
+      "file": "slots/slot-22.json",
+      "allocation_sha256": "39d2f4616f8028d8693872848bda6f6ab8523eda5e73b2a6cbb4ce84659e0d8c"
+    },
+    {
+      "participant_slot": 23,
+      "allocation_id": "n30-three-versions-v1-slot-23",
+      "file": "slots/slot-23.json",
+      "allocation_sha256": "260a5897b4d5c9e78502717d4f21a4024ddc9e28eb8413f1a92ec40e1e62e3bc"
+    },
+    {
+      "participant_slot": 24,
+      "allocation_id": "n30-three-versions-v1-slot-24",
+      "file": "slots/slot-24.json",
+      "allocation_sha256": "d8e1581885f5c928f350da202639242e47304725241cd9ae7446dd931885a5eb"
+    },
+    {
+      "participant_slot": 25,
+      "allocation_id": "n30-three-versions-v1-slot-25",
+      "file": "slots/slot-25.json",
+      "allocation_sha256": "b555f49f0b1780e6837af606e74063e9d8d36b6d9b14a3232fa8a149757a2916"
+    },
+    {
+      "participant_slot": 26,
+      "allocation_id": "n30-three-versions-v1-slot-26",
+      "file": "slots/slot-26.json",
+      "allocation_sha256": "4567d4f31e48fe4541e23f31d85f0a0b9fdb6f737c7d75797df39a19dc5adcae"
+    },
+    {
+      "participant_slot": 27,
+      "allocation_id": "n30-three-versions-v1-slot-27",
+      "file": "slots/slot-27.json",
+      "allocation_sha256": "88a1f025b3cc85fd55c4a05ea5c98bcfcb4a0f67a07d8ff5f67a0c2570b82b77"
+    },
+    {
+      "participant_slot": 28,
+      "allocation_id": "n30-three-versions-v1-slot-28",
+      "file": "slots/slot-28.json",
+      "allocation_sha256": "300447743db0a064f350729396c9465652710ccba02fb4d82c9f2c7cdeb77705"
+    },
+    {
+      "participant_slot": 29,
+      "allocation_id": "n30-three-versions-v1-slot-29",
+      "file": "slots/slot-29.json",
+      "allocation_sha256": "cdf8bbe2ad5eccf0ffe60c885954b6a9724b6322707d91fd511e5c715fe77430"
+    },
+    {
+      "participant_slot": 30,
+      "allocation_id": "n30-three-versions-v1-slot-30",
+      "file": "slots/slot-30.json",
+      "allocation_sha256": "7923b9c4dbdc612d0b9f20722149ffeb0199f685025e774825c9b3bf6dacab0d"
+    }
+  ]
+}

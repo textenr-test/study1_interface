@@ -1,9 +1,12 @@
 window.STUDY_CONFIG = Object.freeze({
-  version: "2026-08-20-v6",
+  version: "2026-08-25-v7",
   title: "Visual First-Impression Study",
   targetParticipants: 30,
-  trialCount: 38,
-  assignmentSeed: "text-enrichment-reader-v1",
+  trialCount: 114,
+  setCount: 3,
+  trialsPerSet: 38,
+  assignmentVersion: "n30-three-versions-v1",
+  assignmentSeed: "text-enrichment-reader-n30-v2",
   conditionOrder: [
     "D1_derived",
     "D2_derived",
@@ -35,8 +38,13 @@ window.STUDY_CONFIG = Object.freeze({
     exposureMs: 1000,
     redirectDelayMs: 900
   },
-  attentionAfterTrials: [12, 26],
-  breakAfterTrial: 19,
+  attentionChecks: [
+    { afterTrial: 12, response: 1 },
+    { afterTrial: 50, response: 3 },
+    { afterTrial: 88, response: 1 }
+  ],
+  breakAfterTrials: [38, 76],
+  minimumBreakMs: 60000,
   device: {
     minimumWidth: 1200,
     minimumHeight: 650,

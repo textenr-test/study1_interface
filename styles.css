@@ -201,6 +201,24 @@ select, textarea, input[type="text"] {
 .plate-card { border: 1px solid var(--line); border-radius: 11px; padding: 16px; }
 .plate-card canvas { width: 100%; aspect-ratio: 1; display: block; border-radius: 50%; margin-bottom: 14px; background: #eee; }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.break-countdown {
+  min-height: 1.5em;
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .instruction-flow {
   list-style: none;
   padding: 0;

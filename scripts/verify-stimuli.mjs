@@ -31,11 +31,20 @@ for (const filename of files) {
   if (data.viewport_width !== 900 || !Number.isFinite(data.viewport_height)) {
     throw new Error(data.doc_id + " has invalid viewport metadata");
   }
+  if (data.source_folder !== "Google Drive/final output") {
+    throw new Error(data.doc_id + " does not identify Google Drive/final output as its source");
+  }
   for (const [key, html] of Object.entries(data.html)) {
     if (!/^<!DOCTYPE html>/i.test(html.trim())) throw new Error(data.doc_id + "/" + key + " is not complete HTML");
     if (/<script\b/i.test(html)) throw new Error(data.doc_id + "/" + key + " contains a script");
     if (/<(img|link)\b[^>]+(?:src|href)=["']https?:/i.test(html)) {
       throw new Error(data.doc_id + "/" + key + " contains an external resource");
+    }
+    const conditionId = key.replace(/\.html$/, "");
+    const sourceHash = data.source_html_sha256?.[conditionId];
+    const actualHash = crypto.createHash("sha256").update(html).digest("hex");
+    if (!sourceHash || sourceHash !== actualHash) {
+      throw new Error(data.doc_id + "/" + key + " does not match its final-output source hash");
     }
   }
   manifest.push({
@@ -45,6 +54,9 @@ for (const filename of files) {
     viewport_width: data.viewport_width,
     viewport_height: data.viewport_height,
     validation_status: data.validation_status,
+    source_pipeline_version: data.source_pipeline_version,
+    source_folder: data.source_folder,
+    source_html_sha256: data.source_html_sha256,
     condition_meta: data.condition_meta,
     sha256: crypto.createHash("sha256").update(raw).digest("hex")
   });
@@ -52,7 +64,7 @@ for (const filename of files) {
 
 const nextManifest = {
     generated_at: new Date().toISOString(),
-    source: "Google Drive/batch_output",
+    source: "Google Drive/final output",
     document_count: manifest.length,
     enriched_conditions_per_document: 6,
     documents: manifest

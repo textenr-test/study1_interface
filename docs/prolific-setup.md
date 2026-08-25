@@ -1,12 +1,12 @@
 # Prolific setup and launch checklist
 
-This checklist is written for the August 2026 Prolific study builder and should be rechecked immediately before publication.
+This checklist applies to study version `2026-08-25-v7` and assignment version `n30-three-versions-v1`.
 
-## 1. Confirm the stimulus-language eligibility decision
+## 1. Confirm the language-eligibility decision
 
-All 38 current Drive batch_output documents are in Korean and the interface is English. The current eligibility flow asks for native and comfortably used languages, then screens out anyone who reports Korean. This is intended to isolate immediate visual impressions from Korean-language comprehension. Confirm that this exclusion is consistent with the approved protocol, preregistration, Prolific description, and analysis plan before launch.
+All 38 documents imported from Google Drive `final output` are in Korean and the interface is in English. The in-study screener asks for native and comfortably used languages and screens out anyone who reports Korean. Confirm that this visual-first-impression design is consistent with the approved protocol, preregistration, public description, and analysis plan.
 
-## 2. Suggested Prolific study details
+## 2. Suggested study copy
 
 **Public title**
 
@@ -14,113 +14,109 @@ All 38 current Drive batch_output documents are in Korean and the interface is E
 
 **Study description**
 
-> In this study, you will briefly view two differently formatted versions of the same online article excerpt and rate which version would motivate you more to continue reading based on its visual appearance. The task includes a short eligibility section, two practice trials, 38 timed comparisons, a short halfway break, and two clearly labeled attention checks. It takes about 10–12 minutes.
+> You will briefly view two differently formatted versions of the same online article and rate which visual appearance would motivate you more to continue reading. The task contains two practice trials and 114 timed comparisons in three sets of 38, with two required 60-second breaks and one clearly labeled attention check per set. Allow approximately 20–25 minutes; the final estimate and reward should be based on a realistic pilot.
 
 **Eligibility and device notice**
 
-> Laptop or desktop only; no phones or tablets. Use a maximized browser window at 100% zoom and be prepared to enter full-screen mode. You must have normal or corrected-to-normal vision, pass a brief display-specific color-vision check, read creator-led newsletters/blogs or similar text publications at least weekly, and not speak Korean. Study instructions are in English. No audio, camera, microphone, or download is required.
+> Laptop or desktop only; no phones or tablets. Use a maximized browser window at 100% zoom and be prepared to enter full-screen mode. You must have normal or corrected-to-normal vision, pass a brief display-specific color-vision check, read creator-led newsletters/blogs or similar text publications at least weekly, and not speak Korean. Instructions are in English. No audio, camera, microphone, or download is required.
 
 **Participant-facing data note**
 
 > We record your Prolific participant, study, and session IDs; preference ratings and response times; display/browser information needed to assess timed presentation quality; and study-quality checks. We do not ask for your name or email address.
 
-## 3. Audience and compatibility settings
+## 3. Prolific configuration
 
-1. Set **Data collection type** to **External Study Link**.
-2. Select **Desktop** only in device compatibility.
-3. Repeat the desktop-only requirement in the public description. Prolific's device setting is an indicator and the experiment validates it again at the start.
-4. Use Prolific prescreeners where exact matches exist. Keep the in-study custom questions for the study-specific weekly-reading and language-exclusion criteria.
-5. Enable **Custom screening** and budget screen-out slots separately from the 30 completed places.
+1. Use an external study link and enable desktop compatibility only.
+2. Repeat the laptop/desktop requirement in the public description; the interface validates it again.
+3. Configure custom screening and the appropriate paid screen-out path before publishing.
+4. Create successful-completion, screen-out, and no-consent return paths.
+5. Paste the full URLs into `redirects.complete`, `redirects.screenedOut`, and `redirects.noConsent` in `study-config.js`.
 
-## 4. Study URL and parameters
+Live URL:
 
-Use:
+```text
+https://textenr-test.github.io/study1_interface/?PROLIFIC_PID={{%PROLIFIC_PID%}}&STUDY_ID={{%STUDY_ID%}}&SESSION_ID={{%SESSION_ID%}}
+```
 
-    https://textenr-test.github.io/study1_interface/?PROLIFIC_PID={{%PROLIFIC_PID%}}&STUDY_ID={{%STUDY_ID%}}&SESSION_ID={{%SESSION_ID%}}
+Never use `preview=1` in the live Prolific URL.
 
-The interface requires and records all three parameters:
+## 4. Task and quality-check behavior
 
-- PROLIFIC_PID
-- STUDY_ID
-- SESSION_ID
+- Two practice trials precede the main study.
+- Main trials 1–38 form Set 1, 39–76 Set 2, and 77–114 Set 3.
+- Attention checks appear after global trials 12, 50, and 88 and require +1, +3, and +1 respectively.
+- Incorrect attention responses are logged, but the task remains locked until the instructed value is selected.
+- A server checkpoint must confirm trials 1–38 before the first break and 1–76 before the second break.
+- Each break is locked for at least 60 seconds and its start/completion is logged.
+- Final completion requires all 114 trial indices, 38 rows in each set, all three attention checks, both breaks, and the final event.
 
-Do not use the researcher-preview query parameters in the live Prolific link.
+## 5. Create the private collector workbook
 
-## 5. Completion paths
+Use a fresh workbook for the v7 schema.
 
-Create the paths below in Prolific **before** publishing, then paste each complete redirect URL into study-config.js.
-
-| Interface key | Prolific completion path | Recommended action |
-| --- | --- | --- |
-| redirects.complete | Successful completion | Approve according to the study's review setting |
-| redirects.screenedOut | Screened out | Built-in custom screen-out payment |
-| redirects.noConsent | No consent | Request a return; never reject for no consent |
-| redirects.failedAttention | Safety fallback | Normally unreachable because each check must be answered correctly before proceeding |
-
-The two attention checks are explicit instructed-response items after trials 12 and 26. The first requires **+1** and the second requires **+3**. An incorrect attempt is logged in the researcher-only Events sheet, but the participant remains on the check until selecting the instructed response. Only a correct response advances the study.
-
-Comprehension checks appear before the main task, stay on the same page as the instructions, use multiple-choice responses, and allow two attempts. Participants who fail twice are sent to the early screen-out path; they are not rejected.
-
-## 6. Google Sheet collector
-
-1. Open the study Google Sheet.
+1. Open the private research Google Sheet.
 2. Select **Extensions → Apps Script**.
-3. Replace Code.gs with apps-script/Code.gs.
-4. Run setupStudyWorkbook() once and approve the requested spreadsheet permissions.
-5. In **Project Settings → Script properties**, add:
-   - STUDY_VERSION = 2026-08-20-v6
-   - MAX_SLOTS = 30
-   - SPREADSHEET_ID only if the script is not bound to the target spreadsheet.
-6. Select **Deploy → New deployment → Web app**.
-7. Execute as the spreadsheet owner and allow access to anyone with the deployment link.
-8. Copy the /exec deployment URL into study-config.js as dataEndpoint.
-9. Keep spreadsheet sharing restricted to authorized research personnel.
+3. Replace `Code.gs` with `apps-script/Code.gs`.
+4. In **Project Settings → Script properties**, set:
+   - `STUDY_VERSION = 2026-08-25-v7`
+   - `SPREADSHEET_ID` only if the script is not bound to the target Sheet.
+   - `EXPORT_FOLDER_ID` only if CSV/JSON exports should be placed in a different restricted Drive folder.
+5. Run `setupStudyWorkbook()` once and authorize Spreadsheet and Drive access.
+6. Confirm the function creates these tabs:
+   - `Participants`
+   - `Trials`
+   - `TrialJSON`
+   - `Events`
+   - `README`
+7. Confirm it creates `text-enrichment-final-log.csv` and `text-enrichment-final-log.json` in the configured restricted folder.
+8. Deploy as a web app, executing as the spreadsheet owner, accessible to anyone with the deployment link.
+9. Paste the `/exec` URL into `study-config.js` as `dataEndpoint` and redeploy the interface.
 
-The collector creates/uses four tabs:
+Each trial is written idempotently to both `Trials` and `TrialJSON`. The browser confirms both writes before removing the record from its retry queue. The CSV/JSON Drive exports refresh after every successful participant completion; an authorized researcher can run `exportStudyLogs()` for an on-demand refresh. The public web endpoint does not expose the Sheet or export files.
 
-- Participants — one row per attempted participant and resumable state.
-- Trials — one row per analyzed main-trial response.
-- Events — attention checks, timing interruptions, connectivity, screen-out, and final-save records.
-- README — data dictionary and analysis notes.
+Slots are not released automatically. If a participant abandons an allocated slot and the protocol permits replacement, an authorized researcher may run:
 
-The native Google Sheet can be downloaded as .xlsx or per-tab CSV by the manager.
+```js
+releaseIncompleteSlot("PROLIFIC_PID", "STUDY_ID")
+```
 
-## 7. Payment and timing
+This preserves any partial trial rows for audit, marks the participant as released, and makes the immutable slot available again. Analyze completed participants only so exactly one completion represents each slot.
 
-Run a realistic pilot before fixing the duration and reward.
+## 6. Verify allocation and stimulus files
 
-- Current estimated duration: **10–12 minutes**.
-- Prolific's current absolute minimum is **£6 / $8 per hour**.
-- Prolific currently recommends at least **£9 / $12 per hour**.
-- At the recommended rate, 12 minutes corresponds to **£1.80 / $2.40**.
-- For a custom screener lasting one minute or less, Prolific's current minimum fixed screen-out reward is **£0.10 / $0.14**.
+Run:
 
-Use the pilot's median time to revise the estimate and reward before the main launch.
+```sh
+npm test
+```
 
-## 8. Required prelaunch tests
+The allocation test must confirm:
 
-1. Run npm test.
-2. Complete researcher previews for slots 1, 6, 7, 12, 25, and 30.
-3. Confirm the Google Sheet records:
-   - URL parameters,
-   - one participant allocation,
-   - trial response and normalized rating,
-   - actual exposure duration,
-   - display scale and viewport,
-   - attention results,
-   - final event.
-4. Interrupt one trial by changing tabs; confirm the attempt is discarded and repeated.
-5. Close and reopen with the same Prolific parameters; confirm resume.
-6. Test each completion path in a Prolific preview.
-7. Pilot with **5–10 participants**, as Prolific recommends, before opening 30 main-study places.
-8. Review the three source-pipeline warnings before analysis: P6_DOC_A, P13_DOC_A, and P13_DOC_B.
+- 30 slot files and 3,420 master rows.
+- 114 trials per slot and 38 per set.
+- three distinct conditions per participant-document.
+- participant-condition total 19.
+- document-condition total 15.
+- document-condition-set total 5.
+- document-condition-pair co-occurrence 6.
+- participant-set-condition frequency 6 or 7.
+- participant-set side balance 19/19.
+- document-condition side balance 7/8 or 8/7.
+- cross-set document-order constraints.
 
-## 9. Official Prolific references
+The stimulus test must confirm 38 packages, 266 complete HTML files, the `Google Drive/final output` provenance, and package hashes. Review source warnings for `P6_DOC_A`, `P13_DOC_A`, and `P13_DOC_B` before analysis.
 
-- URL parameters and completion redirects: https://researcher-help.prolific.com/en/articles/445178-what-survey-experimental-software-is-compatible-with-prolific
-- In-study screening and completion paths: https://researcher-help.prolific.com/en/articles/445165-can-i-screen-participants-within-my-study
-- Custom screening and screen-out payments: https://researcher-help.prolific.com/en/articles/445155-how-to-use-custom-screening-to-recruit-specific-participants
-- Attention and comprehension checks: https://researcher-help.prolific.com/en/articles/445153-prolific-s-attention-and-comprehension-check-policy
-- Device restrictions: https://researcher-help.prolific.com/en/articles/445149-how-do-i-restrict-participation-to-certain-devices
-- Pilot studies: https://researcher-help.prolific.com/en/articles/445167-how-do-i-run-a-pilot-study-on-prolific
-- Participant payment: https://researcher-help.prolific.com/en/articles/445266-how-much-should-i-pay-participants
+## 7. End-to-end prelaunch checks
+
+1. Complete fast researcher previews for slots 1, 6, 7, 12, 25, and 30.
+2. Complete at least one full-duration preview without `fast=1`, including both 60-second breaks.
+3. In a staging collector, verify one response appears in both `Trials` and `TrialJSON` with the same `event_id`.
+4. Verify the first checkpoint reports 38/38 and the second 76/76 before the break begins.
+5. Change tabs during a timed display and confirm that attempt is discarded and repeated.
+6. Close and reopen the same Prolific session and confirm allocation, set position, break state, and unsent queue resume correctly.
+7. Confirm final completion reports 114 trials and set counts `[38, 38, 38]`.
+8. Confirm the private CSV and JSON exports contain the completed participant’s 114 rows.
+9. Test consent decline, eligibility screen-out, missing-parameter, device-failure, and successful-completion routes.
+10. Pilot the full study before fixing the advertised duration and reward; recheck Prolific’s current payment and screening guidance at launch time.
+
+Keep the Sheet, exported logs, and any downloaded analysis files restricted according to the approved retention plan.

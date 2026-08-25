@@ -1,7 +1,8 @@
-import { buildAssignment, hashString, mulberry32 } from "./assignment.js";
-import { containsKoreanLanguage } from "./eligibility.js";
-import { expectedAttentionResponse } from "./attention.js";
-import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js";
+import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-25-v7";
+import { containsKoreanLanguage } from "./eligibility.js?v=2026-08-25-v7";
+import { expectedAttentionResponse } from "./attention.js?v=2026-08-25-v7";
+import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-25-v7";
+import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-25-v7";
 
 const CONFIG = window.STUDY_CONFIG;
 const app = document.getElementById("app");
@@ -17,6 +18,7 @@ const timings = {
   exposureMs: isFastPreview ? 120 : CONFIG.timings.exposureMs,
   redirectDelayMs: CONFIG.timings.redirectDelayMs
 };
+const minimumBreakMs = isFastPreview ? 500 : CONFIG.minimumBreakMs;
 
 const prolific = {
   participantId: cleanIdentifier(params.get("PROLIFIC_PID")),
@@ -52,8 +54,8 @@ function createInitialState() {
     startedAt: null,
     completedAt: null,
     slot: null,
-    cohort: null,
-    cohortPosition: null,
+    allocationId: null,
+    assignmentVersion: null,
     eligibility: null,
     colorTest: null,
     comprehension: { attempts: 0, passed: false },
@@ -61,9 +63,11 @@ function createInitialState() {
     practiceIndex: 0,
     practiceComplete: false,
     trialCursor: 0,
-    responses: [],
     attentionChecks: [],
-    breakTaken: false,
+    attentionAttempts: {},
+    eventSequence: 0,
+    breaks: [],
+    checkpointedSets: [],
     postStudy: null,
     events: [],
     pendingUploads: []
@@ -73,7 +77,7 @@ function createInitialState() {
 function saveLocal() {
   if (!state.consentedAt && state.status !== "complete") return;
   try {
-    const recoveryState = { ...state, responses: [], events: [] };
+    const recoveryState = { ...state, events: [] };
     localStorage.setItem(storageKey, JSON.stringify(recoveryState));
   } catch (error) {
     console.warn("Local save failed", error);
@@ -130,8 +134,9 @@ function nextFrame() {
 }
 
 function recordEvent(type, detail = {}) {
+  state.eventSequence = Number(state.eventSequence || 0) + 1;
   const event = {
-    eventId: makeEventId("event", type + ":" + state.events.length),
+    eventId: makeEventId("event", type + ":" + state.eventSequence + ":" + Date.now()),
     participantId: state.participantId,
     sessionId: state.sessionId,
     type,
@@ -147,7 +152,9 @@ function recordEvent(type, detail = {}) {
 
 function makeEventId(kind, suffix) {
   const base = [CONFIG.version, state.sessionId || "preview", kind, suffix].join(":");
-  return kind + "_" + hashString(base).toString(16).padStart(8, "0");
+  const first = hashString(base).toString(16).padStart(8, "0");
+  const second = hashString("secondary:" + base).toString(16).padStart(8, "0");
+  return kind + "_" + first + second;
 }
 
 function collectScreenInfo() {
@@ -187,7 +194,8 @@ function deviceIsEligible(info) {
 
 function configProblems() {
   const problems = [];
-  if (!CONFIG || CONFIG.docIds.length !== 38 || CONFIG.conditionOrder.length !== 6) {
+  if (!CONFIG || CONFIG.docIds.length !== 38 || CONFIG.conditionOrder.length !== 6
+    || CONFIG.trialCount !== 114 || CONFIG.setCount !== 3 || CONFIG.trialsPerSet !== 38) {
     problems.push("The study manifest is incomplete.");
   }
   if (!isPreview) {
@@ -195,7 +203,7 @@ function configProblems() {
       problems.push("The Prolific URL parameters are missing.");
     }
     if (!CONFIG.dataEndpoint) problems.push("The data endpoint has not been configured.");
-    ["complete", "screenedOut", "noConsent", "failedAttention"].forEach((key) => {
+    ["complete", "screenedOut", "noConsent"].forEach((key) => {
       if (!CONFIG.redirects[key]) problems.push("The Prolific " + key + " redirect has not been configured.");
     });
   }
@@ -240,7 +248,7 @@ function renderWelcome() {
   setView(
     '<section class="card compact-card">' +
       '<h1>Study information</h1>' +
-      '<p>You will complete 38 brief visual comparisons. The study takes about 10–12 minutes.</p>' +
+      '<p>You will complete 114 brief visual comparisons in three sets. The study takes about 20–25 minutes.</p>' +
       '<div class="device-requirement" role="note"><strong>Device requirement</strong>' +
         '<span>This study can only be completed on a laptop or desktop computer using a mouse or trackpad. Mobile phones and tablets are not supported.</span></div>' +
       '<h2>Before you agree</h2>' +
@@ -340,7 +348,7 @@ function renderColorTest() {
       '<p>Some article versions use color. Enter the number you see in the dot pattern. This brief display-specific check is for study eligibility only and is not a medical diagnosis.</p>' +
       '<form id="color-form">' +
         '<div class="plate-grid">' +
-          plateCard(0, "Plate 2") +
+          plateCard(0) +
         "</div>" +
         '<div id="color-error" class="notice error hidden" role="alert"></div>' +
         '<div class="actions right"><button class="button" type="submit">Check and continue</button></div>' +
@@ -369,11 +377,10 @@ function renderColorTest() {
   });
 }
 
-function plateCard(index, label) {
-  return '<div class="plate-card"><canvas id="plate-' + index + '" width="280" height="280" aria-label="' +
-    escapeHtml(label) + ' color-dot number plate"></canvas><label for="plate-answer-' + index + '"><strong>' +
-    escapeHtml(label) + '</strong></label><input id="plate-answer-' + index + '" type="text" inputmode="numeric" autocomplete="off" maxlength="2" required aria-label="Number in ' +
-    escapeHtml(label) + '"></div>';
+function plateCard(index) {
+  return '<div class="plate-card"><canvas id="plate-' + index + '" width="280" height="280" aria-label="Color-dot number pattern"></canvas>' +
+    '<label class="visually-hidden" for="plate-answer-' + index + '">Number shown in the color-dot pattern</label>' +
+    '<input id="plate-answer-' + index + '" type="text" inputmode="numeric" autocomplete="off" maxlength="2" required aria-label="Number shown in the color-dot pattern"></div>';
 }
 
 function drawPlate(canvas, definition) {
@@ -505,15 +512,15 @@ async function allocateParticipantSlot() {
       throw new Error(allocation?.error || "No study slot is available.");
     }
     state.slot = Number(allocation.slot);
-    assignment = buildAssignment({
-      participantSlot: state.slot,
-      participantId: state.participantId || "preview-" + state.slot,
-      docIds: CONFIG.docIds,
-      conditionOrder: CONFIG.conditionOrder,
-      assignmentSeed: CONFIG.assignmentSeed
-    });
-    state.cohort = assignment.cohort;
-    state.cohortPosition = assignment.cohortPosition;
+    assignment = await loadCurrentAssignment(state.slot);
+    if (allocation.allocationId && allocation.allocationId !== assignment.allocationId) {
+      throw new Error("The server allocation does not match the pre-generated slot file.");
+    }
+    if (allocation.assignmentVersion && allocation.assignmentVersion !== assignment.assignmentVersion) {
+      throw new Error("The server and browser assignment versions do not match.");
+    }
+    state.allocationId = assignment.allocationId;
+    state.assignmentVersion = assignment.assignmentVersion;
     state.startedAt = state.startedAt || nowIso();
     state.status = "eligible";
 
@@ -525,10 +532,9 @@ async function allocateParticipantSlot() {
         studyId: prolific.studyId,
         sessionId: prolific.sessionId,
         slot: Number(allocation.slot),
-        cohort: assignment.cohort,
-        cohortPosition: assignment.cohortPosition,
+        allocationId: assignment.allocationId,
+        assignmentVersion: assignment.assignmentVersion,
         pendingUploads: state.pendingUploads || [],
-        responses: state.responses || [],
         events: state.events || []
       });
     }
@@ -538,6 +544,14 @@ async function allocateParticipantSlot() {
   } catch (error) {
     renderBackendError(error);
   }
+}
+
+function loadCurrentAssignment(participantSlot) {
+  return loadParticipantAssignment({
+    participantSlot: Number(participantSlot),
+    studyVersion: CONFIG.version,
+    assignmentVersion: CONFIG.assignmentVersion
+  });
 }
 
 function parseBackendState(value) {
@@ -645,7 +659,7 @@ function renderMainIntro() {
   setHeader("Main study");
   setView(
     '<section class="card compact-card"><h1>Main Study</h1>' +
-      '<p>A short break appears halfway through. Two clearly labeled attention checks are included. Your progress is saved after every response.</p>' +
+      '<p>You will complete 114 comparisons in three sets of 38. A required 60-second break follows Set 1 and Set 2, and one clearly labeled attention check appears in each set. Every response is saved automatically.</p>' +
       '<div class="actions"><button class="button" id="begin-main">Begin main study</button></div></section>'
   );
   document.getElementById("begin-main").addEventListener("click", () => {
@@ -657,7 +671,7 @@ function renderMainIntro() {
 
 async function fetchStimulus(docId) {
   if (stimulusCache.has(docId)) return stimulusCache.get(docId);
-  const request = fetch("./stimuli/" + encodeURIComponent(docId) + ".json", { cache: "force-cache" })
+  const request = fetch("./stimuli/" + encodeURIComponent(docId) + ".json?v=" + encodeURIComponent(CONFIG.version), { cache: "force-cache" })
     .then((response) => {
       if (!response.ok) throw new Error("Could not load " + docId);
       return response.json();
@@ -673,30 +687,79 @@ function prefetchNext() {
 
 async function continueMain() {
   if (!assignment && state.slot) {
-    assignment = buildAssignment({
-      participantSlot: state.slot,
-      participantId: state.participantId || "preview-" + state.slot,
-      docIds: CONFIG.docIds,
-      conditionOrder: CONFIG.conditionOrder,
-      assignmentSeed: CONFIG.assignmentSeed
-    });
+    try {
+      assignment = await loadCurrentAssignment(state.slot);
+    } catch (error) {
+      renderAssignmentLoadError(error);
+      return;
+    }
   }
   setHeader("Main study", true);
-  const completed = state.trialCursor;
-  const firstCheckDue = completed >= CONFIG.attentionAfterTrials[0] && !state.attentionChecks.some((x) => x.afterTrial === CONFIG.attentionAfterTrials[0]);
-  const secondCheckDue = completed >= CONFIG.attentionAfterTrials[1] && !state.attentionChecks.some((x) => x.afterTrial === CONFIG.attentionAfterTrials[1]);
-  if (firstCheckDue) return renderAttentionCheck(CONFIG.attentionAfterTrials[0]);
-  if (completed >= CONFIG.breakAfterTrial && !state.breakTaken) return renderBreak();
-  if (secondCheckDue) return renderAttentionCheck(CONFIG.attentionAfterTrials[1]);
-  if (completed >= CONFIG.trialCount) return renderPostStudy();
+  const action = nextStudyAction(state, CONFIG);
+  if (action.type === "attention") return renderAttentionCheck(action.afterTrial);
+  if (action.type === "break") return prepareSetBreak(action.afterTrial);
+  if (action.type === "post_study") return renderPostStudy();
 
-  const trial = assignment.trials[completed];
+  const trial = assignment.trials[state.trialCursor];
   try {
     const doc = await fetchStimulus(trial.docId);
     prefetchNext();
     runStimulusTrial(trial, doc, 1);
   } catch (error) {
     renderStimulusLoadError(error);
+  }
+}
+
+function renderAssignmentLoadError(error) {
+  setHeader("Allocation problem", true);
+  setView(
+    '<section class="card compact-card"><h1>Your assigned study set could not be loaded.</h1>' +
+      '<p>Your progress is safe. Check the connection and try again.</p>' +
+      '<div class="notice error">' + escapeHtml(error.message) + '</div>' +
+      '<div class="actions"><button class="button" id="retry-assignment">Try again</button></div></section>'
+  );
+  document.getElementById("retry-assignment").addEventListener("click", continueMain);
+}
+
+async function prepareSetBreak(afterTrial) {
+  const setId = afterTrial / CONFIG.trialsPerSet;
+  if (state.checkpointedSets.includes(setId)) {
+    renderBreak(afterTrial);
+    return;
+  }
+  setHeader("Saving set", true);
+  setView(
+    '<section class="card compact-card" aria-busy="true"><h1>Saving Set ' + escapeHtml(String(setId)) + '…</h1>' +
+      '<p>Keep this page open while all ' + escapeHtml(String(afterTrial)) + ' submitted responses are confirmed.</p></section>'
+  );
+  try {
+    await flushUploads();
+    if (!isPreview) {
+      const checkpoint = await jsonp(CONFIG.dataEndpoint, {
+        action: "checkpoint",
+        participant_id: state.participantId,
+        study_id: state.studyId,
+        session_id: state.sessionId,
+        expected_trials: afterTrial,
+        study_version: CONFIG.version
+      }, 15000);
+      if (!checkpoint?.ok || !checkpoint.complete || Number(checkpoint.confirmedTrials) !== afterTrial) {
+        const confirmed = Number(checkpoint?.confirmedTrials || 0);
+        throw new Error(`The server confirmed ${confirmed} of ${afterTrial} responses.`);
+      }
+    }
+    state.checkpointedSets.push(setId);
+    saveLocal();
+    renderBreak(afterTrial);
+  } catch (error) {
+    setHeader("Save interrupted", true);
+    setView(
+      '<section class="card compact-card"><h1>Set ' + escapeHtml(String(setId)) + ' is not fully saved yet.</h1>' +
+        '<p>Check the connection and retry. The next set will remain locked until all responses are confirmed.</p>' +
+        '<div class="notice error">' + escapeHtml(error.message) + '</div>' +
+        '<div class="actions"><button class="button" id="retry-checkpoint">Retry save</button></div></section>'
+    );
+    document.getElementById("retry-checkpoint").addEventListener("click", () => prepareSetBreak(afterTrial));
   }
 }
 
@@ -959,30 +1022,31 @@ function renderRating(trial, doc, metrics) {
     const normalizedRating = trial.enrichedSide === "right" ? selected : -selected;
     const conditionMeta = doc.condition_meta?.[trial.conditionId] || {};
     const record = {
-      eventId: makeEventId("trial", trial.docId + ":" + trial.conditionId),
+      eventId: makeEventId("trial", trial.allocationId + ":" + trial.globalTrialIndex),
       participantId: state.participantId,
       studyId: state.studyId,
       sessionId: state.sessionId,
       participantSlot: state.slot,
-      cohort: state.cohort,
-      cohortPosition: state.cohortPosition,
-      docId: trial.docId,
+      allocationId: trial.allocationId,
+      setId: trial.setId,
+      setTrialIndex: trial.setTrialIndex,
+      globalTrialIndex: trial.globalTrialIndex,
+      documentId: trial.docId,
       sourceDocumentId: doc.source_document_id || null,
       validationStatus: doc.validation_status || null,
       conditionId: trial.conditionId,
-      enrichedFile: CONFIG.conditionFiles[trial.conditionId],
-      analysisDegree: conditionMeta.display_order ?? trial.conditionIndex + 1,
+      enrichedFile: trial.enrichedFile,
+      degreeValue: trial.degreeValue,
       visualCoverage: conditionMeta.ink_mass_ratio ?? null,
       targetCoverage: conditionMeta.target_ink_mass_ratio ?? null,
       retainedFactorCount: conditionMeta.retained_factor_count ?? null,
       baselineSide: trial.baselineSide,
       enrichedSide: trial.enrichedSide,
-      assignmentSlot: trial.assignmentSlot,
-      trialOrder: trial.trialOrder,
-      randomizationSeed: assignment.trialSeed,
+      documentExposureNumber: trial.documentExposureNumber,
+      randomizationSeed: trial.randomizationSeed,
       spatialRating: selected,
       rating: normalizedRating,
-      responseTimeMs,
+      responseTime: responseTimeMs,
       plannedFixationMs: metrics.plannedFixationMs,
       plannedExposureMs: metrics.plannedExposureMs,
       actualExposureMs: metrics.actualExposureMs,
@@ -1001,8 +1065,8 @@ function renderRating(trial, doc, metrics) {
     };
     state.trialCursor += 1;
     state.status = "in_progress";
-    saveLocal();
     queueRemote("trial", { record });
+    saveLocal();
     continueMain();
   });
 }
@@ -1015,8 +1079,8 @@ function spatialLabel(value) {
 }
 
 function renderAttentionCheck(afterTrial) {
-  const instructedResponse = expectedAttentionResponse(afterTrial, CONFIG.attentionAfterTrials);
-  const displayResponse = "+" + String(instructedResponse);
+  const instructedResponse = expectedAttentionResponse(afterTrial, CONFIG.attentionChecks);
+  const displayResponse = (instructedResponse > 0 ? "+" : "") + String(instructedResponse);
   setHeader("Attention check", true);
   setView(
     '<section class="card compact-card"><h1>Please follow the instruction below.</h1>' +
@@ -1030,7 +1094,7 @@ function renderAttentionCheck(afterTrial) {
       '<div class="actions right"><button class="button" id="submit-attention" disabled>Submit</button></div></section>'
   );
   let selected = null;
-  let attempt = 0;
+  let attempt = Number(state.attentionAttempts[afterTrial] || 0);
   document.querySelectorAll(".rating-option").forEach((button) => {
     button.addEventListener("click", () => {
       selected = Number(button.dataset.value);
@@ -1040,10 +1104,13 @@ function renderAttentionCheck(afterTrial) {
   });
   document.getElementById("submit-attention").addEventListener("click", () => {
     attempt += 1;
+    state.attentionAttempts[afterTrial] = attempt;
+    saveLocal();
     const passed = selected === instructedResponse;
     const result = {
       eventId: makeEventId("attention", String(afterTrial) + ":" + String(attempt)),
       afterTrial,
+      setId: Math.floor((afterTrial - 1) / CONFIG.trialsPerSet) + 1,
       attempt,
       instructedResponse,
       response: selected,
@@ -1066,17 +1133,43 @@ function renderAttentionCheck(afterTrial) {
   });
 }
 
-function renderBreak() {
-  setHeader("Halfway break", true);
-  setView(
-    '<section class="card compact-card"><h1>Take a short break.</h1>' +
-      '<p>You have completed 19 of 38 comparisons. Rest your eyes briefly, then continue when ready.</p>' +
-      '<div class="actions"><button class="button" id="continue-after-break">Continue</button></div></section>'
-  );
-  document.getElementById("continue-after-break").addEventListener("click", () => {
-    state.breakTaken = true;
+function renderBreak(afterTrial) {
+  const setId = afterTrial / CONFIG.trialsPerSet;
+  let breakRecord = state.breaks.find((item) => item.afterTrial === afterTrial);
+  if (!breakRecord) {
+    breakRecord = { afterTrial, setId, startedAt: nowIso(), completedAt: null };
+    state.breaks.push(breakRecord);
     saveLocal();
-    recordEvent("break_completed");
+    recordEvent("break_started", { setId, afterTrial, minimumBreakMs: CONFIG.minimumBreakMs });
+  }
+  setHeader("Break", true);
+  setView(
+    '<section class="card compact-card"><h1>Take a 60-second break.</h1>' +
+      '<p>You completed Set ' + escapeHtml(String(setId)) + ' of 3 (' + escapeHtml(String(afterTrial)) + ' of 114 comparisons). Rest your eyes before starting the next set.</p>' +
+      '<p class="break-countdown" id="break-countdown" aria-live="polite"></p>' +
+      '<div class="actions"><button class="button" id="continue-after-break" disabled>Continue to Set ' + escapeHtml(String(setId + 1)) + '</button></div></section>'
+  );
+  const button = document.getElementById("continue-after-break");
+  const countdown = document.getElementById("break-countdown");
+  const started = Date.parse(breakRecord.startedAt);
+  let timer = null;
+  const update = () => {
+    const remaining = remainingBreakMs(breakRecord.startedAt, Date.now(), minimumBreakMs);
+    countdown.textContent = remaining > 0
+      ? `You can continue in ${Math.ceil(remaining / 1000)} seconds.`
+      : "The break is complete. Continue when you are ready.";
+    button.disabled = remaining > 0;
+    if (remaining <= 0 && timer) window.clearInterval(timer);
+  };
+  timer = window.setInterval(update, 250);
+  update();
+  button.addEventListener("click", () => {
+    if (Date.now() - started < minimumBreakMs) return;
+    window.clearInterval(timer);
+    breakRecord.completedAt = nowIso();
+    saveLocal();
+    recordEvent("break_completed", { setId, afterTrial, elapsedMs: Date.now() - started });
+    queueRemote("snapshot", { reason: `break-${setId}-completed` });
     continueMain();
   });
 }
@@ -1119,11 +1212,19 @@ function renderSubmit() {
 }
 
 async function submitFinal() {
-  const button = document.getElementById("final-submit");
+  const button = document.getElementById("final-submit") || document.getElementById("retry-final");
+  if (!finalStateIsComplete(state, CONFIG)) {
+    setView(
+      '<section class="card compact-card"><h1>The study record is incomplete.</h1>' +
+        '<p>The task cannot be submitted until all trials, attention checks, and required breaks are complete.</p>' +
+        '<div class="actions"><button class="button" id="return-to-study">Return to study</button></div></section>'
+    );
+    document.getElementById("return-to-study").addEventListener("click", continueMain);
+    return;
+  }
   button.disabled = true;
   button.textContent = "Saving…";
-  const failures = state.attentionChecks.filter((item) => !item.passed).length;
-  const outcome = failures >= 2 ? "failed_attention" : "complete";
+  const outcome = "complete";
   const finalEventId = makeEventId("final", outcome);
   state.status = outcome;
   state.completedAt = nowIso();
@@ -1133,7 +1234,7 @@ async function submitFinal() {
     outcome,
     summary: {
       completedTrials: state.trialCursor,
-      attentionFailures: failures,
+      attentionChecksPassed: state.attentionChecks.length,
       postStudy: state.postStudy,
       completedAt: state.completedAt
     }
@@ -1149,7 +1250,9 @@ async function submitFinal() {
         event_id: finalEventId,
         study_version: CONFIG.version
       }, 12000);
-      if (!confirmation?.ok || !confirmation.confirmed) throw new Error("The final save could not be confirmed.");
+      if (!confirmation?.ok || !confirmation.confirmed || Number(confirmation.trialCount) !== CONFIG.trialCount) {
+        throw new Error("The final save and all 114 trial rows could not be confirmed.");
+      }
     }
     state.status = "complete";
     saveLocal();
@@ -1157,7 +1260,7 @@ async function submitFinal() {
       renderPreviewComplete();
       return;
     }
-    redirectTo(failures >= 2 ? CONFIG.redirects.failedAttention : CONFIG.redirects.complete);
+    redirectTo(CONFIG.redirects.complete);
   } catch (error) {
     state.status = "upload_error";
     saveLocal();
@@ -1195,18 +1298,15 @@ function renderResume() {
       (isPreview ? '<button class="button secondary" id="restart-button">Restart preview</button>' : "") +
       "</div></section>"
   );
-  document.getElementById("resume-button").addEventListener("click", () => {
-    assignment = buildAssignment({
-      participantSlot: Number(state.slot),
-      participantId: state.participantId || "preview-" + state.slot,
-      docIds: CONFIG.docIds,
-      conditionOrder: CONFIG.conditionOrder,
-      assignmentSeed: CONFIG.assignmentSeed
-    });
-    requestStudyFullscreen().finally(() => {
+  document.getElementById("resume-button").addEventListener("click", async () => {
+    try {
+      assignment = await loadCurrentAssignment(Number(state.slot));
+      await requestStudyFullscreen();
       if (!state.practiceComplete) renderPracticeIntro();
       else continueMain();
-    });
+    } catch (error) {
+      renderAssignmentLoadError(error);
+    }
   });
   document.getElementById("restart-button")?.addEventListener("click", () => {
     localStorage.removeItem(storageKey);
@@ -1261,8 +1361,8 @@ function queueRemote(kind, body = {}) {
       studyId: state.studyId,
       sessionId: state.sessionId,
       slot: state.slot,
-      cohort: state.cohort,
-      cohortPosition: state.cohortPosition
+      allocationId: state.allocationId,
+      assignmentVersion: state.assignmentVersion
     },
     participantSummary: participantSummary(),
     resumeState: resumableState(),
@@ -1281,7 +1381,7 @@ function participantSummary() {
     completedAt: state.completedAt,
     lastSeenAt: nowIso(),
     completedTrials: state.trialCursor,
-    attentionFailures: state.attentionChecks.filter((item) => !item.passed).length,
+    attentionChecksPassed: state.attentionChecks.length,
     eligibility: state.eligibility,
     colorTest: state.colorTest,
     comprehension: state.comprehension,
@@ -1297,8 +1397,8 @@ function resumableState() {
     startedAt: state.startedAt,
     completedAt: state.completedAt,
     slot: state.slot,
-    cohort: state.cohort,
-    cohortPosition: state.cohortPosition,
+    allocationId: state.allocationId,
+    assignmentVersion: state.assignmentVersion,
     eligibility: state.eligibility,
     colorTest: state.colorTest,
     comprehension: state.comprehension,
@@ -1307,7 +1407,10 @@ function resumableState() {
     practiceComplete: state.practiceComplete,
     trialCursor: state.trialCursor,
     attentionChecks: state.attentionChecks,
-    breakTaken: state.breakTaken,
+    attentionAttempts: state.attentionAttempts,
+    eventSequence: state.eventSequence || 0,
+    breaks: state.breaks,
+    checkpointedSets: state.checkpointedSets,
     postStudy: state.postStudy
   };
 }
@@ -1329,6 +1432,20 @@ async function flushUploads() {
           headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
           body
         });
+        if (["trial", "event"].includes(item.payload.kind)) {
+          const confirmation = await jsonp(CONFIG.dataEndpoint, {
+            action: "confirm_record",
+            record_type: item.payload.kind,
+            participant_id: state.participantId,
+            study_id: state.studyId,
+            session_id: state.sessionId,
+            event_id: item.id,
+            study_version: CONFIG.version
+          }, 10000);
+          if (!confirmation?.ok || !confirmation.confirmed) {
+            throw new Error(`The ${item.payload.kind} record was not confirmed.`);
+          }
+        }
         state.pendingUploads.shift();
         attempts = 0;
         saveLocal();

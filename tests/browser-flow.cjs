@@ -41,11 +41,11 @@ const path = require("node:path");
 
   let safety = 0;
   let attentionIndex = 0;
-  while (safety < 80) {
+  while (safety < 180) {
     safety += 1;
     if (await page.locator("#post-form").count()) break;
     if (await page.locator("#submit-attention").count()) {
-      const expected = attentionIndex === 0 ? "1" : "3";
+      const expected = ["1", "3", "1"][attentionIndex];
       await page.click('.rating-option[data-value="' + expected + '"]');
       await page.click("#submit-attention");
       attentionIndex += 1;
@@ -75,15 +75,16 @@ const path = require("node:path");
     const key = Object.keys(localStorage).find((value) => value.startsWith("te-reader-study:"));
     return JSON.parse(localStorage.getItem(key));
   });
-  if (stored.trialCursor !== 38) throw new Error("Expected 38 trials, found " + stored.trialCursor);
-  if (stored.responses.length !== 0) throw new Error("Completed response logs must not persist in participant storage");
-  if (stored.attentionChecks.length !== 2) throw new Error("Expected two attention checks");
+  if (stored.trialCursor !== 114) throw new Error("Expected 114 trials, found " + stored.trialCursor);
+  if ("responses" in stored) throw new Error("Completed response logs must not persist in participant storage");
+  if (stored.attentionChecks.length !== 3) throw new Error("Expected three attention checks");
+  if (stored.breaks.filter((item) => item.completedAt).length !== 2) throw new Error("Expected two completed breaks");
   if (errors.length) throw new Error(errors.join("\n"));
 
   console.log(JSON.stringify({
     status: stored.status,
     completedTrials: stored.trialCursor,
-    locallyStoredResponseRecords: stored.responses.length,
+    locallyStoredResponseRecords: 0,
     attentionChecks: stored.attentionChecks.length,
     screenshots: [
       path.resolve("/tmp/reader-study-consent.png"),
