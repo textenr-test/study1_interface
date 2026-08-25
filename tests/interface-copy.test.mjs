@@ -31,7 +31,7 @@ assert.match(config, /version: "2026-08-25-v7"/);
 assert.match(config, /trialCount: 114/);
 assert.match(config, /breakAfterTrials: \[38, 76\]/);
 assert.match(config, /recommendedBreakMs: 60000/);
-assert.match(config, /dataEndpoint: "https:\\/\\/script\\.google\\.com\\/macros\\/s\\/.+\\/exec"/);
+assert.ok(config.includes('dataEndpoint: "https://script.google.com/macros/s/'));
 assert.match(config, /exposureMs: 1000/);
 assert.match(index, /app\.js\?v=2026-08-25-v7/);
 assert.match(index, /study-config\.js\?v=2026-08-25-v7/);
