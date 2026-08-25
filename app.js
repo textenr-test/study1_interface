@@ -1,8 +1,8 @@
-import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-25-v7";
-import { containsKoreanLanguage } from "./eligibility.js?v=2026-08-25-v7";
-import { expectedAttentionResponse } from "./attention.js?v=2026-08-25-v7";
-import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-25-v7";
-import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-25-v7";
+import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-25-optional-break";
+import { containsKoreanLanguage } from "./eligibility.js?v=2026-08-25-optional-break";
+import { expectedAttentionResponse } from "./attention.js?v=2026-08-25-optional-break";
+import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-25-optional-break";
+import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-25-optional-break";
 
 const CONFIG = window.STUDY_CONFIG;
 const app = document.getElementById("app");
@@ -18,7 +18,7 @@ const timings = {
   exposureMs: isFastPreview ? 120 : CONFIG.timings.exposureMs,
   redirectDelayMs: CONFIG.timings.redirectDelayMs
 };
-const minimumBreakMs = isFastPreview ? 500 : CONFIG.minimumBreakMs;
+const recommendedBreakMs = isFastPreview ? 500 : CONFIG.recommendedBreakMs;
 
 const prolific = {
   participantId: cleanIdentifier(params.get("PROLIFIC_PID")),
@@ -659,7 +659,7 @@ function renderMainIntro() {
   setHeader("Main study");
   setView(
     '<section class="card compact-card"><h1>Main Study</h1>' +
-      '<p>You will complete 114 comparisons in three sets of 38. A required 60-second break follows Set 1 and Set 2, and one clearly labeled attention check appears in each set. Every response is saved automatically.</p>' +
+      '<p>You will complete 114 comparisons in three sets of 38. An optional 60-second break is offered after Set 1 and Set 2, and one clearly labeled attention check appears in each set. Every response is saved automatically.</p>' +
       '<div class="actions"><button class="button" id="begin-main">Begin main study</button></div></section>'
   );
   document.getElementById("begin-main").addEventListener("click", () => {
@@ -1140,35 +1140,45 @@ function renderBreak(afterTrial) {
     breakRecord = { afterTrial, setId, startedAt: nowIso(), completedAt: null };
     state.breaks.push(breakRecord);
     saveLocal();
-    recordEvent("break_started", { setId, afterTrial, minimumBreakMs: CONFIG.minimumBreakMs });
+    recordEvent("break_started", { setId, afterTrial, recommendedBreakMs: CONFIG.recommendedBreakMs });
   }
   setHeader("Break", true);
   setView(
-    '<section class="card compact-card"><h1>Take a 60-second break.</h1>' +
-      '<p>You completed Set ' + escapeHtml(String(setId)) + ' of 3 (' + escapeHtml(String(afterTrial)) + ' of 114 comparisons). Rest your eyes before starting the next set.</p>' +
+    '<section class="card compact-card"><h1>Optional break</h1>' +
+      '<p>You completed Set ' + escapeHtml(String(setId)) + ' of 3 (' + escapeHtml(String(afterTrial)) + ' of 114 comparisons). We recommend resting your eyes for 60 seconds, but you may continue whenever you are ready.</p>' +
       '<p class="break-countdown" id="break-countdown" aria-live="polite"></p>' +
-      '<div class="actions"><button class="button" id="continue-after-break" disabled>Continue to Set ' + escapeHtml(String(setId + 1)) + '</button></div></section>'
+      '<div class="actions"><button class="button" id="continue-after-break">Skip break and continue to Set ' + escapeHtml(String(setId + 1)) + '</button></div></section>'
   );
   const button = document.getElementById("continue-after-break");
   const countdown = document.getElementById("break-countdown");
   const started = Date.parse(breakRecord.startedAt);
   let timer = null;
   const update = () => {
-    const remaining = remainingBreakMs(breakRecord.startedAt, Date.now(), minimumBreakMs);
+    const remaining = remainingBreakMs(breakRecord.startedAt, Date.now(), recommendedBreakMs);
     countdown.textContent = remaining > 0
-      ? `You can continue in ${Math.ceil(remaining / 1000)} seconds.`
-      : "The break is complete. Continue when you are ready.";
-    button.disabled = remaining > 0;
+      ? `Recommended break: ${Math.ceil(remaining / 1000)} seconds remaining.`
+      : "The recommended 60-second break is complete.";
+    button.textContent = remaining > 0
+      ? `Skip break and continue to Set ${setId + 1}`
+      : `Continue to Set ${setId + 1}`;
     if (remaining <= 0 && timer) window.clearInterval(timer);
   };
   timer = window.setInterval(update, 250);
   update();
   button.addEventListener("click", () => {
-    if (Date.now() - started < minimumBreakMs) return;
     window.clearInterval(timer);
+    const elapsedMs = Math.max(0, Date.now() - started);
     breakRecord.completedAt = nowIso();
+    breakRecord.elapsedMs = elapsedMs;
+    breakRecord.skipped = elapsedMs < CONFIG.recommendedBreakMs;
     saveLocal();
-    recordEvent("break_completed", { setId, afterTrial, elapsedMs: Date.now() - started });
+    recordEvent("break_completed", {
+      setId,
+      afterTrial,
+      elapsedMs,
+      recommendedBreakMs: CONFIG.recommendedBreakMs,
+      skipped: breakRecord.skipped
+    });
     queueRemote("snapshot", { reason: `break-${setId}-completed` });
     continueMain();
   });
@@ -1216,7 +1226,7 @@ async function submitFinal() {
   if (!finalStateIsComplete(state, CONFIG)) {
     setView(
       '<section class="card compact-card"><h1>The study record is incomplete.</h1>' +
-        '<p>The task cannot be submitted until all trials, attention checks, and required breaks are complete.</p>' +
+        '<p>The task cannot be submitted until all trials, attention checks, and both break screens are complete.</p>' +
         '<div class="actions"><button class="button" id="return-to-study">Return to study</button></div></section>'
     );
     document.getElementById("return-to-study").addEventListener("click", continueMain);

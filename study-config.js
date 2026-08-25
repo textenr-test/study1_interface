@@ -44,7 +44,7 @@ window.STUDY_CONFIG = Object.freeze({
     { afterTrial: 88, response: 1 }
   ],
   breakAfterTrials: [38, 76],
-  minimumBreakMs: 60000,
+  recommendedBreakMs: 60000,
   device: {
     minimumWidth: 1200,
     minimumHeight: 650,
