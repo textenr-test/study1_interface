@@ -11,6 +11,10 @@
  * read-data route. Spreadsheet and Drive-file access remain controlled by the owner.
  */
 
+const COLLECTOR_VERSION = "2026-08-26-v8";
+const SCHEMA_VERSION = "text-enrichment-trial-log-v2";
+const MAX_BATCH_SIZE = 8;
+
 const STUDY_DESIGN = Object.freeze({
   participants: 30,
   sets: 3,
@@ -103,7 +107,15 @@ function doGet(e) {
     const action = String(e.parameter.action || "health");
     let result;
     if (action === "health") {
-      result = { ok: true, service: "text-enrichment-reader-study", timestamp: new Date().toISOString() };
+      result = {
+        ok: true,
+        service: "text-enrichment-reader-study",
+        collectorVersion: COLLECTOR_VERSION,
+        studyVersion: configuredStudyVersion_(),
+        assignmentVersion: STUDY_DESIGN.assignmentVersion,
+        schemaVersion: SCHEMA_VERSION,
+        timestamp: new Date().toISOString()
+      };
     } else if (action === "reserve") {
       result = reserveSlot_(e.parameter);
     } else if (action === "confirm") {
@@ -124,8 +136,9 @@ function doGet(e) {
 function doPost(e) {
   try {
     const raw = e.parameter.payload || (e.postData && e.postData.contents) || "";
-    if (!raw || raw.length > 350000) throw new Error("Invalid or oversized payload.");
-    return output_(storePayload_(JSON.parse(raw)), "");
+    if (!raw || raw.length > 500000) throw new Error("Invalid or oversized payload.");
+    const payload = JSON.parse(raw);
+    return output_(payload.kind === "batch" ? storePayloadBatch_(payload) : storePayload_(payload), "");
   } catch (error) {
     return output_({ ok: false, error: String(error && error.message || error) }, "");
   }
@@ -331,7 +344,7 @@ function storePayload_(payload) {
     }
     if (payload.kind === "screenout") {
       appendEvent_(spreadsheet, {
-        eventId: payload.finalEventId || eventIdFromPayload_(payload, "screenout"),
+        eventId: payload.finalEventId || payload.requestId || eventIdFromPayload_(payload, "screenout"),
         type: "screenout",
         timestamp: new Date().toISOString(),
         detail: { reason: payload.reason || "", outcome: payload.outcome || "screened_out" }
@@ -378,6 +391,216 @@ function storePayload_(payload) {
     updateParticipantFields_(participantSheet, participantRow._rowNumber, update);
 
     return { ok: true, kind: payload.kind };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function storePayloadBatch_(batch) {
+  if (!batch || typeof batch !== "object") throw new Error("Batch payload must be an object.");
+  if (batch.collectorVersion !== COLLECTOR_VERSION) throw new Error("Collector release mismatch.");
+  const batchId = safeIdentifier_(batch.batchId, "batch_id");
+  const items = Array.isArray(batch.items) ? batch.items : [];
+  if (!items.length || items.length > MAX_BATCH_SIZE) throw new Error("Invalid batch size.");
+
+  const batchParticipant = batch.participant || {};
+  const identity = validateIdentity_({
+    participant_id: batchParticipant.participantId,
+    study_id: batchParticipant.studyId,
+    session_id: batchParticipant.sessionId
+  });
+  const studyVersion = verifyStudyVersion_(batch.studyVersion);
+  const allowedKinds = new Set(["snapshot", "trial", "event", "final", "screenout"]);
+  items.forEach(function(payload) {
+    if (!payload || typeof payload !== "object" || !allowedKinds.has(payload.kind)) {
+      throw new Error("Unsupported payload kind in batch.");
+    }
+    if (verifyStudyVersion_(payload.studyVersion) !== studyVersion) throw new Error("Batch study version mismatch.");
+    const participant = payload.participant || {};
+    const itemIdentity = validateIdentity_({
+      participant_id: participant.participantId,
+      study_id: participant.studyId,
+      session_id: participant.sessionId
+    });
+    if (itemIdentity.participantId !== identity.participantId
+      || itemIdentity.studyId !== identity.studyId
+      || itemIdentity.sessionId !== identity.sessionId) {
+      throw new Error("Mixed participant identities are not allowed in one batch.");
+    }
+  });
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    const spreadsheet = getSpreadsheet_();
+    const participantSheet = getOrCreateSheet_(spreadsheet, SHEET_NAMES.participants);
+    ensureHeaders_(participantSheet, HEADERS.Participants);
+    const participantTable = readTable_(participantSheet);
+    let participantRow = participantTable.rows.find(function(row) {
+      return row.participant_id === identity.participantId
+        && row.study_id === identity.studyId
+        && row.study_version === studyVersion;
+    });
+
+    if (!participantRow) {
+      if (items.some(function(payload) { return ["trial", "final", "snapshot"].includes(payload.kind); })) {
+        throw new Error("Participant slot has not been reserved.");
+      }
+      const blank = blankRow_(HEADERS.Participants);
+      Object.assign(blank, {
+        participant_id: identity.participantId,
+        session_id: identity.sessionId,
+        study_id: identity.studyId,
+        status: items.some(function(payload) { return payload.kind === "screenout"; }) ? "screened_out" : "pre_allocation",
+        last_seen_at: new Date().toISOString(),
+        completed_trials: 0,
+        attention_checks_passed: 0,
+        study_version: studyVersion
+      });
+      appendObjectRow_(participantSheet, HEADERS.Participants, blank);
+      blank._rowNumber = participantSheet.getLastRow();
+      participantRow = blank;
+    }
+    if (participantRow.session_id !== identity.sessionId) throw new Error("Session mismatch.");
+    items.forEach(function(payload) {
+      validateParticipantAllocation_(participantRow, payload.participant || {}, payload.kind);
+    });
+
+    const hasTrials = items.some(function(payload) { return payload.kind === "trial"; });
+    const hasEvents = items.some(function(payload) {
+      return ["event", "screenout", "final"].includes(payload.kind);
+    });
+    const trialSheet = hasTrials ? getOrCreateSheet_(spreadsheet, SHEET_NAMES.trials) : null;
+    const jsonSheet = hasTrials ? getOrCreateSheet_(spreadsheet, SHEET_NAMES.trialJson) : null;
+    const eventSheet = hasEvents ? getOrCreateSheet_(spreadsheet, SHEET_NAMES.events) : null;
+    if (trialSheet) ensureHeaders_(trialSheet, HEADERS.Trials);
+    if (jsonSheet) ensureHeaders_(jsonSheet, HEADERS.TrialJSON);
+    if (eventSheet) ensureHeaders_(eventSheet, HEADERS.Events);
+
+    const knownTrialIds = trialSheet ? identityEventIds_(trialSheet, identity) : new Set();
+    const knownJsonIds = jsonSheet ? identityEventIds_(jsonSheet, identity) : new Set();
+    const knownEventIds = eventSheet ? identityEventIds_(eventSheet, identity) : new Set();
+    const trialRows = [];
+    const jsonRows = [];
+    const eventRows = [];
+    const finalPayloads = [];
+    const confirmations = [];
+
+    items.forEach(function(payload) {
+      if (payload.kind === "trial") {
+        const canonical = validateTrialRecord_(payload.record || {}, studyVersion, participantRow);
+        let stored = canonical;
+        if (!knownTrialIds.has(canonical.event_id)) {
+          trialRows.push(canonical);
+          knownTrialIds.add(canonical.event_id);
+        } else if (!knownJsonIds.has(canonical.event_id)) {
+          stored = findIdentityEvent_(trialSheet, canonical.event_id, identity) || canonical;
+        }
+        if (!knownJsonIds.has(canonical.event_id)) {
+          jsonRows.push({
+            event_id: canonical.event_id,
+            participant_id: identity.participantId,
+            session_id: identity.sessionId,
+            study_id: identity.studyId,
+            global_trial_index: canonical.global_trial_index,
+            record_json: JSON.stringify(objectFromHeaders_(HEADERS.Trials, stored)),
+            received_at: stored.received_at,
+            study_version: studyVersion
+          });
+          knownJsonIds.add(canonical.event_id);
+        }
+        if (payload.confirmationMode !== "checkpoint") {
+          confirmations.push({ type: "trial", eventId: canonical.event_id });
+        }
+      }
+      if (payload.kind === "event") {
+        const eventRow = eventObject_(payload.event || {}, payload, identity);
+        if (!knownEventIds.has(eventRow.event_id)) {
+          eventRows.push(eventRow);
+          knownEventIds.add(eventRow.event_id);
+        }
+        confirmations.push({ type: "event", eventId: eventRow.event_id });
+      }
+      if (payload.kind === "screenout") {
+        const screenoutRow = eventObject_({
+          eventId: payload.finalEventId || payload.requestId || eventIdFromPayload_(payload, "screenout"),
+          type: "screenout",
+          timestamp: new Date().toISOString(),
+          detail: { reason: payload.reason || "", outcome: payload.outcome || "screened_out" }
+        }, payload, identity);
+        if (!knownEventIds.has(screenoutRow.event_id)) {
+          eventRows.push(screenoutRow);
+          knownEventIds.add(screenoutRow.event_id);
+        }
+      }
+      if (payload.kind === "final") finalPayloads.push(payload);
+    });
+
+    appendObjectRows_(trialSheet, HEADERS.Trials, trialRows);
+    appendObjectRows_(jsonSheet, HEADERS.TrialJSON, jsonRows);
+    appendObjectRows_(eventSheet, HEADERS.Events, eventRows);
+
+    const finalRows = [];
+    finalPayloads.forEach(function(payload) {
+      const audit = completionAudit_(spreadsheet, identity);
+      if (!audit.complete) {
+        throw new Error("Final submission rejected: 114 trials, three attention checks, and two breaks were not all confirmed.");
+      }
+      const finalRow = eventObject_({
+        eventId: payload.finalEventId,
+        type: "final",
+        timestamp: payload.participantSummary && payload.participantSummary.completedAt || new Date().toISOString(),
+        detail: Object.assign({}, payload.summary || {}, { serverAudit: audit })
+      }, payload, identity);
+      if (!knownEventIds.has(finalRow.event_id)) {
+        finalRows.push(finalRow);
+        knownEventIds.add(finalRow.event_id);
+      }
+    });
+    appendObjectRows_(eventSheet, HEADERS.Events, finalRows);
+
+    const latestPayload = items[items.length - 1];
+    const latestParticipant = latestPayload.participant || {};
+    const summary = latestPayload.participantSummary || {};
+    const update = {
+      participant_slot: latestParticipant.slot != null ? latestParticipant.slot : participantRow.participant_slot,
+      allocation_id: latestParticipant.allocationId || participantRow.allocation_id,
+      assignment_version: latestParticipant.assignmentVersion || participantRow.assignment_version,
+      status: latestPayload.outcome || summary.status || participantRow.status,
+      consented_at: summary.consentedAt || participantRow.consented_at,
+      started_at: summary.startedAt || participantRow.started_at,
+      completed_at: summary.completedAt || participantRow.completed_at,
+      last_seen_at: summary.lastSeenAt || new Date().toISOString(),
+      completed_trials: summary.completedTrials != null ? summary.completedTrials : participantRow.completed_trials,
+      attention_checks_passed: summary.attentionChecksPassed != null ? summary.attentionChecksPassed : participantRow.attention_checks_passed,
+      eligibility_json: jsonCell_(summary.eligibility),
+      color_test_json: jsonCell_(summary.colorTest),
+      comprehension_json: jsonCell_(summary.comprehension),
+      device_json: jsonCell_(summary.device),
+      state_json: jsonCell_(latestPayload.resumeState),
+      study_version: studyVersion
+    };
+    const finalPayload = finalPayloads.length ? finalPayloads[finalPayloads.length - 1] : null;
+    const screenoutPayload = items.slice().reverse().find(function(payload) { return payload.kind === "screenout"; });
+    if (finalPayload) {
+      update.status = "complete";
+      update.completed_at = finalPayload.participantSummary && finalPayload.participantSummary.completedAt || new Date().toISOString();
+      update.final_event_id = finalPayload.finalEventId || "";
+    } else if (screenoutPayload) {
+      update.status = screenoutPayload.outcome || "screened_out";
+    }
+    updateParticipantFields_(participantSheet, participantRow._rowNumber, update);
+    confirmations.forEach(function(item) {
+      rememberRecordConfirmation_(item.type, item.eventId, identity);
+    });
+
+    return {
+      ok: true,
+      kind: "batch",
+      batchId: batchId,
+      acceptedItems: items.length,
+      writes: { trials: trialRows.length, trialJson: jsonRows.length, events: eventRows.length + finalRows.length }
+    };
   } finally {
     lock.releaseLock();
   }
@@ -484,11 +707,16 @@ function validateTrialRecord_(record, studyVersion, participantRow) {
 }
 
 function appendEvent_(spreadsheet, event, payload, identity) {
-  const eventId = safeIdentifier_(event.eventId || eventIdFromPayload_(payload, event.type || "event"), "event_id");
   const sheet = getOrCreateSheet_(spreadsheet, SHEET_NAMES.events);
   ensureHeaders_(sheet, HEADERS.Events);
-  if (findIdentityEvent_(sheet, eventId, identity)) return;
-  appendObjectRow_(sheet, HEADERS.Events, {
+  const row = eventObject_(event, payload, identity);
+  if (findIdentityEvent_(sheet, row.event_id, identity)) return;
+  appendObjectRow_(sheet, HEADERS.Events, row);
+}
+
+function eventObject_(event, payload, identity) {
+  const eventId = safeIdentifier_(event.eventId || payload.requestId || eventIdFromPayload_(payload, event.type || "event"), "event_id");
+  return {
     event_id: eventId,
     participant_id: identity.participantId,
     session_id: identity.sessionId,
@@ -499,7 +727,7 @@ function appendEvent_(spreadsheet, event, payload, identity) {
     completed_trials: payload.participantSummary && payload.participantSummary.completedTrials,
     detail_json: jsonCell_(event.detail || event),
     study_version: payload.studyVersion
-  });
+  };
 }
 
 function trialCompleteness_(identity, expected) {
@@ -587,7 +815,7 @@ function exportStudyLogs() {
     return HEADERS.Trials.map(function(header) { return record[header]; });
   })).map(function(row) { return row.map(csvCell_).join(","); }).join("\n") + "\n";
   const json = JSON.stringify({
-    schema_version: "text-enrichment-trial-log-v2",
+    schema_version: SCHEMA_VERSION,
     study_version: configuredStudyVersion_(),
     exported_at: new Date().toISOString(),
     record_count: records.length,
@@ -643,6 +871,15 @@ function validateParticipantAllocation_(participantRow, participant, kind) {
 
 function allocationIdForSlot_(slot) {
   return STUDY_DESIGN.assignmentVersion + "-slot-" + String(slot).padStart(2, "0");
+}
+
+function identityEventIds_(sheet, identity) {
+  if (sheet.getLastRow() < 2) return new Set();
+  // Event IDs include the study/session identity and are the idempotency key. Reading
+  // column A once avoids scanning the wide Trials table for every item in a batch.
+  return new Set(sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues()
+    .map(function(row) { return String(row[0]); })
+    .filter(Boolean));
 }
 
 function findIdentityEvent_(sheet, eventId, identity) {
@@ -752,7 +989,15 @@ function readSelectedTable_(sheet, selectedHeaders) {
 }
 
 function appendObjectRow_(sheet, headers, object) {
-  sheet.appendRow(headers.map(function(header) { return safeCell_(object[header]); }));
+  appendObjectRows_(sheet, headers, [object]);
+}
+
+function appendObjectRows_(sheet, headers, objects) {
+  if (!sheet || !objects || !objects.length) return;
+  const values = objects.map(function(object) {
+    return headers.map(function(header) { return safeCell_(object[header]); });
+  });
+  sheet.getRange(sheet.getLastRow() + 1, 1, values.length, headers.length).setValues(values);
 }
 
 function updateParticipantFields_(sheet, rowNumber, fields) {

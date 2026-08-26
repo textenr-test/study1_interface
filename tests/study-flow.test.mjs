@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "../study-flow.js";
+import { finalStateIsComplete, initialStudyAction, nextStudyAction, remainingBreakMs } from "../study-flow.js";
 
 const config = {
   trialCount: 114,
@@ -49,4 +49,11 @@ assert.equal(remainingBreakMs(startedAt, Date.parse(startedAt) + 15000, 60000), 
 assert.equal(remainingBreakMs(startedAt, Date.parse(startedAt) + 60000, 60000), 0);
 assert.equal(remainingBreakMs("invalid", Date.now(), 60000), 60000);
 
-console.log("Three-set flow, attention gates, two breaks, and final-completion gate verified.");
+assert.equal(initialStudyAction(null), "start");
+assert.equal(initialStudyAction({ status: "upload_error", slot: null }), "allocate");
+assert.equal(initialStudyAction({ status: "upload_error", slot: 4 }), "resume");
+assert.equal(initialStudyAction({ status: "in_progress", slot: 4 }), "resume");
+assert.equal(initialStudyAction({ status: "complete" }), "complete");
+assert.equal(initialStudyAction({ status: "screened_out", earlyExit: { reason: "eligibility_criteria" } }), "early_exit");
+
+console.log("Startup recovery, three-set flow, attention gates, breaks, and completion verified.");

@@ -11,8 +11,6 @@ const path = require("node:path");
   page.on("pageerror", (error) => errors.push("pageerror: " + error.message));
   page.on("console", (message) => {
     if (message.type() !== "error") return;
-    if (message.text().includes("assets/fonts/local-fonts.css")) return;
-    if (message.text().includes("Failed to load resource") && message.text().includes("404")) return;
     errors.push("console: " + message.text());
   });
 

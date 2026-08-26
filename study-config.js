@@ -1,5 +1,6 @@
 window.STUDY_CONFIG = Object.freeze({
   version: "2026-08-25-v7",
+  releaseVersion: "2026-08-26-v8",
   title: "First-Impression Study",
   targetParticipants: 30,
   trialCount: 114,
@@ -46,11 +47,20 @@ window.STUDY_CONFIG = Object.freeze({
   breakAfterTrials: [38, 76],
   recommendedBreakMs: 60000,
   network: {
-    dataRequestTimeoutMs: 60000
+    dataRequestTimeoutMs: 60000,
+    healthCheckTimeoutMs: 15000,
+    postRequestTimeoutMs: 45000,
+    uploadBatchSize: 8,
+    uploadFlushDelayMs: 5000
+  },
+  collector: {
+    service: "text-enrichment-reader-study",
+    version: "2026-08-26-v8",
+    schemaVersion: "text-enrichment-trial-log-v2"
   },
   device: {
-    minimumWidth: 1200,
-    minimumHeight: 650,
+    minimumWidth: 1024,
+    minimumHeight: 600,
     allowedPointer: "fine"
   },
   stimulusLanguage: "Korean",

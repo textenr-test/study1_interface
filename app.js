@@ -1,9 +1,10 @@
-import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-26-v7-data-timeout";
-import { containsKoreanLanguage } from "./eligibility.js?v=2026-08-26-v7-data-timeout";
-import { expectedAttentionResponse } from "./attention.js?v=2026-08-26-v7-data-timeout";
-import { resolveEarlyExitRoute } from "./exit-routing.js?v=2026-08-26-v7-data-timeout";
-import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-26-v7-data-timeout";
-import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-26-v7-data-timeout";
+import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-26-v8";
+import { containsKoreanLanguage, deviceIsEligible } from "./eligibility.js?v=2026-08-26-v8";
+import { expectedAttentionResponse } from "./attention.js?v=2026-08-26-v8";
+import { resolveEarlyExitRoute } from "./exit-routing.js?v=2026-08-26-v8";
+import { buildUploadBatch, collectorHealthProblems, postFormWithTimeout } from "./network.js?v=2026-08-26-v8";
+import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-26-v8";
+import { finalStateIsComplete, initialStudyAction, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-26-v8";
 
 const CONFIG = window.STUDY_CONFIG;
 const app = document.getElementById("app");
@@ -37,6 +38,8 @@ const storageKey = [
 let state = createInitialState();
 let assignment = null;
 let activeFlush = null;
+let scheduledFlush = null;
+let collectorSupportsBatch = false;
 let suppressUnloadSave = false;
 const stimulusCache = new Map();
 
@@ -195,14 +198,6 @@ function collectScreenInfo() {
   };
 }
 
-function deviceIsEligible(info) {
-  const mobileAgent = /Android|iPhone|iPad|iPod|Mobile/i.test(info.userAgent);
-  return !mobileAgent
-    && info.innerWidth >= CONFIG.device.minimumWidth
-    && info.innerHeight >= CONFIG.device.minimumHeight
-    && info.pointerFine;
-}
-
 function configProblems() {
   const problems = [];
   if (!CONFIG || CONFIG.docIds.length !== 38 || CONFIG.conditionOrder.length !== 6
@@ -233,7 +228,7 @@ function renderConfigurationError(problems) {
   );
 }
 
-function init() {
+async function init() {
   const problems = configProblems();
   if (problems.length) {
     renderConfigurationError(problems);
@@ -241,22 +236,93 @@ function init() {
   }
 
   const saved = loadLocal();
-  if (saved?.earlyExit?.reason) {
+  const initialAction = initialStudyAction(saved);
+  if (initialAction === "early_exit") {
     state = Object.assign(createInitialState(), saved);
     renderEarlyExit(saved.earlyExit.reason);
     return;
   }
-  if (saved && ["eligible", "in_progress", "ready_to_submit", "upload_error"].includes(saved.status)) {
+  if (initialAction === "allocate") {
     state = Object.assign(createInitialState(), saved);
-    renderResume();
+    renderCollectorCheck();
+    try {
+      await detectCollectorCompatibility(true);
+      await allocateParticipantSlot();
+    } catch (error) {
+      renderCollectorCompatibilityError(error, () => init());
+    }
     return;
   }
-  if (saved && saved.status === "complete") {
+  if (initialAction === "resume") {
+    state = Object.assign(createInitialState(), saved);
+    renderResume();
+    detectCollectorCompatibility(false).catch(() => {});
+    return;
+  }
+  if (initialAction === "complete") {
     state = Object.assign(createInitialState(), saved);
     renderAlreadyComplete();
     return;
   }
-  renderWelcome();
+  if (isPreview) {
+    renderWelcome();
+    return;
+  }
+  renderCollectorCheck();
+  try {
+    await detectCollectorCompatibility(true);
+    renderWelcome();
+  } catch (error) {
+    renderCollectorCompatibilityError(error, () => init());
+  }
+}
+
+function renderCollectorCheck() {
+  setHeader("Checking study service");
+  setView(
+    '<section class="card compact-card" aria-busy="true">' +
+      '<h1>Preparing the study…</h1><p class="muted">Checking the secure data service.</p></section>'
+  );
+}
+
+async function detectCollectorCompatibility(required) {
+  if (isPreview) {
+    collectorSupportsBatch = false;
+    return true;
+  }
+  try {
+    const health = await jsonp(CONFIG.dataEndpoint, {
+      action: "health",
+      release_version: CONFIG.releaseVersion,
+      cache_bust: Date.now()
+    }, CONFIG.network.healthCheckTimeoutMs);
+    const problems = collectorHealthProblems(health, {
+      service: CONFIG.collector.service,
+      collectorVersion: CONFIG.collector.version,
+      studyVersion: CONFIG.version,
+      assignmentVersion: CONFIG.assignmentVersion,
+      schemaVersion: CONFIG.collector.schemaVersion
+    });
+    collectorSupportsBatch = problems.length === 0;
+    if (problems.length && required) throw new Error(problems.join(" "));
+    return collectorSupportsBatch;
+  } catch (error) {
+    collectorSupportsBatch = false;
+    if (required) throw error;
+    console.warn("Collector compatibility check failed; using the legacy upload protocol.", error);
+    return false;
+  }
+}
+
+function renderCollectorCompatibilityError(error, retry) {
+  setHeader("Study service unavailable");
+  setView(
+    '<section class="card compact-card"><h1>This study is temporarily unavailable.</h1>' +
+      '<p>The study page and its data service are not running the same release. No response data has been collected. Try again shortly; if this continues, return the submission and message the researcher.</p>' +
+      '<div class="notice error">' + escapeHtml(error.message || "The data service could not be verified.") + '</div>' +
+      '<div class="actions"><button class="button" id="retry-health">Try again</button></div></section>'
+  );
+  document.getElementById("retry-health").addEventListener("click", retry);
 }
 
 function renderWelcome() {
@@ -308,7 +374,7 @@ function acceptConsent() {
   state.screen = collectScreenInfo();
   saveLocal();
   recordEvent("consent_given");
-  if (!isPreview && !deviceIsEligible(state.screen)) {
+  if (!isPreview && !deviceIsEligible(state.screen, CONFIG.device)) {
     terminateEarly("incompatible_device");
     return;
   }
@@ -688,10 +754,14 @@ function renderMainIntro() {
 
 async function fetchStimulus(docId) {
   if (stimulusCache.has(docId)) return stimulusCache.get(docId);
-  const request = fetch("./stimuli/" + encodeURIComponent(docId) + ".json?v=" + encodeURIComponent(CONFIG.version), { cache: "force-cache" })
+  const request = fetch("./stimuli/" + encodeURIComponent(docId) + ".json?v=" + encodeURIComponent(CONFIG.releaseVersion), { cache: "no-store" })
     .then((response) => {
       if (!response.ok) throw new Error("Could not load " + docId);
       return response.json();
+    })
+    .catch((error) => {
+      stimulusCache.delete(docId);
+      throw error;
     });
   stimulusCache.set(docId, request);
   return request;
@@ -906,9 +976,18 @@ function prepareSrcdoc(html) {
   const clean = String(html || "")
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
     .replace(/\son[a-z]+\s*=\s*(["']).*?\1/gi, "")
-    .replace(/<base\b[^>]*>/gi, "");
-  const policy = '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src data:">';
-  return clean.includes("<head>") ? clean.replace("<head>", "<head>" + policy) : policy + clean;
+    .replace(/<base\b[^>]*>/gi, "")
+    .replace(/<link\b[^>]*data-reproducible-fonts=["'][^"']*["'][^>]*>/gi, "");
+  const fontUrl = new URL(
+    "./assets/fonts/local-fonts.css?v=" + encodeURIComponent(CONFIG.releaseVersion),
+    window.location.href
+  ).href;
+  const policy = '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\' \'self\' https://fonts.googleapis.com; img-src data:; font-src \'self\' data: https://fonts.gstatic.com https://hangeul.pstatic.net">';
+  const fontLink = '<link rel="stylesheet" href="' + escapeHtml(fontUrl) + '" data-reproducible-fonts="true">';
+  const additions = policy + fontLink;
+  return /<head(?:\s[^>]*)?>/i.test(clean)
+    ? clean.replace(/<head(\s[^>]*)?>/i, (match) => match + additions)
+    : additions + clean;
 }
 
 function loadFrame(frame, srcdoc) {
@@ -1379,11 +1458,37 @@ function queueRemote(kind, body = {}) {
     },
     participantSummary: participantSummary(),
     resumeState: resumableState(),
-    ...body
+    ...body,
+    requestId: id
   };
   state.pendingUploads.push({ id, payload });
   saveLocal();
-  flushUploads().catch(() => {});
+  const immediate = !collectorSupportsBatch
+    || state.pendingUploads.length >= CONFIG.network.uploadBatchSize
+    || ["final", "screenout"].includes(kind)
+    || requiresImmediateConfirmation({ id, payload });
+  scheduleUploadFlush(immediate);
+}
+
+function scheduleUploadFlush(immediate = false) {
+  if (scheduledFlush) {
+    window.clearTimeout(scheduledFlush);
+    scheduledFlush = null;
+  }
+  if (immediate) {
+    flushUploads().catch(() => {});
+    return;
+  }
+  scheduledFlush = window.setTimeout(() => {
+    scheduledFlush = null;
+    flushUploads().catch(() => {});
+  }, CONFIG.network.uploadFlushDelayMs);
+}
+
+function clearScheduledFlush() {
+  if (!scheduledFlush) return;
+  window.clearTimeout(scheduledFlush);
+  scheduledFlush = null;
 }
 
 function participantSummary() {
@@ -1430,25 +1535,33 @@ function resumableState() {
 
 async function flushUploads() {
   if (!CONFIG.dataEndpoint || isPreview) return;
+  clearScheduledFlush();
   if (activeFlush) return activeFlush;
   activeFlush = (async () => {
     let attempts = 0;
     while (state.pendingUploads.length) {
-      const item = state.pendingUploads[0];
+      const batchMode = collectorSupportsBatch;
+      const chunkSize = batchMode ? CONFIG.network.uploadBatchSize : 1;
+      const chunk = state.pendingUploads.slice(0, chunkSize);
+      const uploadPayload = batchMode
+        ? buildUploadBatch(chunk, {
+            batchId: makeEventId("batch", chunk.map((item) => item.id).join(":")),
+            collectorVersion: CONFIG.collector.version,
+            studyVersion: CONFIG.version,
+            participant: chunk[0].payload.participant
+          })
+        : chunk[0].payload;
       try {
-        const body = new URLSearchParams({ payload: JSON.stringify(item.payload) });
-        await fetch(CONFIG.dataEndpoint, {
-          method: "POST",
-          mode: "no-cors",
-          credentials: "omit",
-          referrerPolicy: "no-referrer",
-          headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-          body
+        await postFormWithTimeout(
+          (...requestArguments) => window.fetch(...requestArguments),
+          CONFIG.dataEndpoint,
+          uploadPayload,
+          CONFIG.network.postRequestTimeoutMs
+        );
+        chunk.forEach((item) => {
+          if (item.payload.kind === "trial") rememberUnconfirmedTrial(item);
         });
-        if (item.payload.kind === "trial") {
-          rememberUnconfirmedTrial(item);
-        }
-        if (requiresImmediateConfirmation(item)) {
+        for (const item of chunk.filter(requiresImmediateConfirmation)) {
           const confirmation = await jsonp(CONFIG.dataEndpoint, {
             action: "confirm_record",
             record_type: item.payload.kind,
@@ -1462,7 +1575,7 @@ async function flushUploads() {
             throw new Error(`The ${item.payload.kind} record was not confirmed.`);
           }
         }
-        state.pendingUploads.shift();
+        state.pendingUploads.splice(0, chunk.length);
         attempts = 0;
         saveLocal();
       } catch (error) {

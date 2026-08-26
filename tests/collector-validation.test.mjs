@@ -5,12 +5,17 @@ import { TRIAL_LOG_HEADERS } from "../log-schema.js";
 
 const source = fs.readFileSync(new URL("../apps-script/Code.gs", import.meta.url), "utf8");
 const context = { console, Set, Map, Date, JSON, Number, String, Object, Boolean, Math, RegExp, Array };
-vm.runInNewContext(source + "\nglobalThis.__HEADERS = HEADERS;", context, { filename: "Code.gs" });
+vm.runInNewContext(source + "\nglobalThis.__HEADERS = HEADERS; globalThis.__COLLECTOR_VERSION = COLLECTOR_VERSION; globalThis.__SCHEMA_VERSION = SCHEMA_VERSION; globalThis.__MAX_BATCH_SIZE = MAX_BATCH_SIZE;", context, { filename: "Code.gs" });
 assert.deepEqual(Array.from(context.__HEADERS.Trials), TRIAL_LOG_HEADERS);
 assert.deepEqual(Array.from(context.__HEADERS.TrialJSON), [
   "event_id", "participant_id", "session_id", "study_id", "global_trial_index", "record_json",
   "received_at", "study_version"
 ]);
+assert.equal(context.__COLLECTOR_VERSION, "2026-08-26-v8");
+assert.equal(context.__SCHEMA_VERSION, "text-enrichment-trial-log-v2");
+assert.equal(context.__MAX_BATCH_SIZE, 8);
+assert.match(source, /payload\.kind === "batch" \? storePayloadBatch_\(payload\) : storePayload_\(payload\)/);
+assert.doesNotMatch(source, /sheet\.appendRow\(/);
 
 const participantRow = {
   participant_id: "P001",
@@ -128,4 +133,28 @@ context.updateParticipantFields_(participantSheet, 2, { status: "complete", comp
 assert.equal(participantWrites, 1);
 assert.deepEqual(participantValues[0], ["P001", "complete", 114]);
 
-console.log("Collector canonicalization, batched participant update, and final 114-row audit verified.");
+let bulkWrite;
+const bulkSheet = {
+  getLastRow: () => 4,
+  getRange: (row, column, rowCount, columnCount) => ({
+    setValues: (values) => { bulkWrite = { row, column, rowCount, columnCount, values }; }
+  })
+};
+context.appendObjectRows_(bulkSheet, ["event_id", "rating"], [
+  { event_id: "trial_a", rating: 1 },
+  { event_id: "trial_b", rating: -1 }
+]);
+assert.equal(bulkWrite.row, 5);
+assert.equal(bulkWrite.rowCount, 2);
+assert.deepEqual(bulkWrite.values, [["trial_a", 1], ["trial_b", -1]]);
+
+const eventRow = context.eventObject_({ type: "screenout" }, {
+  kind: "screenout",
+  requestId: "screenout_0123456789abcdef",
+  studyVersion: "2026-08-25-v7",
+  participant: { slot: "" },
+  participantSummary: { completedTrials: 0 }
+}, identity);
+assert.equal(eventRow.event_id, "screenout_0123456789abcdef");
+
+console.log("Collector health metadata, bulk writes, idempotency, canonicalization, and final audit verified.");

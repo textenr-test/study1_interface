@@ -27,3 +27,13 @@ export function finalStateIsComplete(state, config) {
     && state.attentionChecks.filter((item) => item.passed).length === config.attentionChecks.length
     && state.breaks.filter((item) => item.completedAt).length === config.breakAfterTrials.length;
 }
+
+export function initialStudyAction(saved) {
+  if (saved?.earlyExit?.reason) return "early_exit";
+  if (saved?.status === "upload_error" && !saved.slot) return "allocate";
+  if (saved && ["eligible", "in_progress", "ready_to_submit", "upload_error"].includes(saved.status)) {
+    return "resume";
+  }
+  if (saved?.status === "complete") return "complete";
+  return "start";
+}
