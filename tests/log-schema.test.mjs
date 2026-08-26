@@ -32,5 +32,7 @@ assert.match(collector, /TrialJSON/);
 assert.match(collector, /function exportStudyLogs\(/);
 assert.match(collector, /action === "checkpoint"/);
 assert.match(collector, /action === "confirm_record"/);
+assert.doesNotMatch(collector, /if \(payload\.kind === "final"\) \{\s+try \{\s+exportStudyLogs\(\)/);
+assert.match(collector, /rowRange\.setValues\(\[values\]\)/);
 
 console.log("CSV/JSON trial-log templates and collector pipeline schema verified.");

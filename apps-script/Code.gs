@@ -82,8 +82,8 @@ function setupStudyWorkbook() {
       ["Side balance", "Within every participant-set, D0 appears left 19 times and right 19 times. Every document-condition pair is crossed 7/8 or 8/7 across 15 readers."],
       ["Rating direction", "rating: −3 means enriched much less preferred, 0 no difference, +3 enriched much more preferred. spatial_rating is the raw left-to-right response."],
       ["Timing", "750 ms fixation, 1,000 ms simultaneous display, three attention checks (+1, +3, +1), and 60-second breaks after trials 38 and 76."],
-      ["Checkpoint policy", "Trials are appended idempotently. The interface confirms each row, checks all 38/76 rows before each break, and confirms all 114 rows before completion."],
-      ["Exports", "text-enrichment-final-log.csv and text-enrichment-final-log.json are created at setup and refreshed after each completed participant. Run exportStudyLogs() for an on-demand refresh."],
+      ["Checkpoint policy", "Trials are appended idempotently. The interface verifies trials in batches at 38, 76, and 114 responses and automatically retries only missing rows."],
+      ["Exports", "text-enrichment-final-log.csv and text-enrichment-final-log.json are created at setup. Run exportStudyLogs() after collection for an on-demand refresh; participant completion never waits for a full export."],
       ["Slot policy", "Slots are never released automatically. Use releaseIncompleteSlot() deliberately if an incomplete allocation must be reassigned; retain partial rows for audit and analyze completed slots only."],
       ["Stimulus warnings", "P6_DOC_A, P13_DOC_A, and P13_DOC_B have source-pipeline validation_status=warning and require analysis review."],
       ["Privacy", "Keep the spreadsheet and exported files restricted to authorized research personnel. The web endpoint has no public export route."],
@@ -219,6 +219,9 @@ function confirmRecord_(parameters) {
   const eventId = safeIdentifier_(parameters.event_id, "event_id");
   const type = String(parameters.record_type || "");
   if (!["trial", "event"].includes(type)) throw new Error("Invalid record_type.");
+  if (recordConfirmationCache_().get(recordConfirmationKey_(type, eventId, identity)) === "1") {
+    return { ok: true, confirmed: true, eventId: eventId, recordType: type, cached: true };
+  }
   const spreadsheet = getSpreadsheet_();
   const sheet = getOrCreateSheet_(spreadsheet, type === "trial" ? SHEET_NAMES.trials : SHEET_NAMES.events);
   ensureHeaders_(sheet, type === "trial" ? HEADERS.Trials : HEADERS.Events);
@@ -255,7 +258,10 @@ function confirmFinal_(parameters) {
   const eventSheet = getOrCreateSheet_(spreadsheet, SHEET_NAMES.events);
   ensureHeaders_(eventSheet, HEADERS.Events);
   const event = findIdentityEvent_(eventSheet, eventId, identity);
-  const complete = completionAudit_(spreadsheet, identity);
+  const eventDetail = event ? parseJsonCell_(event.detail_json) : {};
+  const complete = eventDetail.serverAudit && eventDetail.serverAudit.complete
+    ? eventDetail.serverAudit
+    : completionAudit_(spreadsheet, identity);
   return {
     ok: true,
     confirmed: Boolean(event) && complete.complete,
@@ -313,8 +319,16 @@ function storePayload_(payload) {
     if (participantRow.session_id !== identity.sessionId) throw new Error("Session mismatch.");
     validateParticipantAllocation_(participantRow, participant, payload.kind);
 
-    if (payload.kind === "trial") appendTrial_(spreadsheet, payload, identity, participantRow);
-    if (payload.kind === "event") appendEvent_(spreadsheet, payload.event || {}, payload, identity);
+    if (payload.kind === "trial") {
+      appendTrial_(spreadsheet, payload, identity, participantRow);
+      if (payload.confirmationMode !== "checkpoint") {
+        rememberRecordConfirmation_("trial", payload.record && payload.record.eventId, identity);
+      }
+    }
+    if (payload.kind === "event") {
+      appendEvent_(spreadsheet, payload.event || {}, payload, identity);
+      rememberRecordConfirmation_("event", payload.event && payload.event.eventId, identity);
+    }
     if (payload.kind === "screenout") {
       appendEvent_(spreadsheet, {
         eventId: payload.finalEventId || eventIdFromPayload_(payload, "screenout"),
@@ -363,18 +377,6 @@ function storePayload_(payload) {
     if (payload.kind === "screenout") update.status = payload.outcome || "screened_out";
     updateParticipantFields_(participantSheet, participantRow._rowNumber, update);
 
-    if (payload.kind === "final") {
-      try {
-        exportStudyLogs();
-      } catch (error) {
-        appendEvent_(spreadsheet, {
-          eventId: eventIdFromPayload_(payload, "export_error"),
-          type: "export_error",
-          timestamp: new Date().toISOString(),
-          detail: { message: String(error && error.message || error) }
-        }, payload, identity);
-      }
-    }
     return { ok: true, kind: payload.kind };
   } finally {
     lock.releaseLock();
@@ -387,10 +389,6 @@ function appendTrial_(spreadsheet, payload, identity, participantRow) {
   const sheet = getOrCreateSheet_(spreadsheet, SHEET_NAMES.trials);
   ensureHeaders_(sheet, HEADERS.Trials);
   const existingEvent = findIdentityEvent_(sheet, canonical.event_id, identity);
-  const existingIndex = findTrialAtGlobalIndex_(sheet, identity, canonical.global_trial_index);
-  if (existingIndex && existingIndex.event_id !== canonical.event_id) {
-    throw new Error("A conflicting response already exists for this global trial index.");
-  }
   const stored = existingEvent || canonical;
   if (!existingEvent) appendObjectRow_(sheet, HEADERS.Trials, canonical);
 
@@ -507,7 +505,9 @@ function appendEvent_(spreadsheet, event, payload, identity) {
 function trialCompleteness_(identity, expected) {
   const sheet = getOrCreateSheet_(getSpreadsheet_(), SHEET_NAMES.trials);
   ensureHeaders_(sheet, HEADERS.Trials);
-  const indices = new Set(readTable_(sheet).rows
+  const indices = new Set(readSelectedTable_(sheet, [
+    "participant_id", "session_id", "study_id", "global_trial_index"
+  ]).rows
     .filter(function(row) {
       return row.participant_id === identity.participantId
         && row.session_id === identity.sessionId
@@ -525,7 +525,9 @@ function trialCompleteness_(identity, expected) {
 function completionAudit_(spreadsheet, identity) {
   const trialSheet = getOrCreateSheet_(spreadsheet, SHEET_NAMES.trials);
   ensureHeaders_(trialSheet, HEADERS.Trials);
-  const rows = readTable_(trialSheet).rows.filter(function(row) {
+  const rows = readSelectedTable_(trialSheet, [
+    "participant_id", "session_id", "study_id", "global_trial_index", "set_id"
+  ]).rows.filter(function(row) {
     return row.participant_id === identity.participantId
       && row.session_id === identity.sessionId
       && row.study_id === identity.studyId;
@@ -662,25 +664,6 @@ function findIdentityEvent_(sheet, eventId, identity) {
   return null;
 }
 
-function findTrialAtGlobalIndex_(sheet, identity, globalTrialIndex) {
-  if (sheet.getLastRow() < 2) return null;
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
-  const indexColumn = headers.indexOf("global_trial_index") + 1;
-  const matches = sheet.getRange(2, indexColumn, sheet.getLastRow() - 1, 1)
-    .createTextFinder(String(globalTrialIndex))
-    .matchEntireCell(true)
-    .findAll();
-  for (let index = 0; index < matches.length; index += 1) {
-    const values = sheet.getRange(matches[index].getRow(), 1, 1, headers.length).getValues()[0];
-    const row = {};
-    headers.forEach(function(header, column) { row[header] = values[column]; });
-    if (row.participant_id === identity.participantId
-      && row.study_id === identity.studyId
-      && row.session_id === identity.sessionId) return row;
-  }
-  return null;
-}
-
 function eventIdFromPayload_(payload, label) {
   const participant = payload.participant || {};
   const value = [payload.studyVersion, participant.sessionId, label, new Date().getTime()].join(":");
@@ -747,18 +730,57 @@ function readTable_(sheet) {
   return { headers: headers, rows: rows };
 }
 
+function readSelectedTable_(sheet, selectedHeaders) {
+  if (sheet.getLastRow() < 1) return { headers: selectedHeaders, rows: [] };
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  const columns = selectedHeaders.map(function(header) {
+    const column = headers.indexOf(header);
+    if (column < 0) throw new Error("Missing required column " + header + " in " + sheet.getName() + ".");
+    return column;
+  });
+  if (sheet.getLastRow() < 2) return { headers: selectedHeaders, rows: [] };
+  const width = Math.max.apply(null, columns) + 1;
+  const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, width).getValues();
+  const rows = values.map(function(valuesRow, index) {
+    const row = { _rowNumber: index + 2 };
+    selectedHeaders.forEach(function(header, selectedIndex) {
+      row[header] = valuesRow[columns[selectedIndex]];
+    });
+    return row;
+  });
+  return { headers: selectedHeaders, rows: rows };
+}
+
 function appendObjectRow_(sheet, headers, object) {
   sheet.appendRow(headers.map(function(header) { return safeCell_(object[header]); }));
 }
 
 function updateParticipantFields_(sheet, rowNumber, fields) {
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  const rowRange = sheet.getRange(rowNumber, 1, 1, headers.length);
+  const values = rowRange.getValues()[0];
+  let changed = false;
   Object.keys(fields).forEach(function(key) {
     const column = headers.indexOf(key);
     if (column >= 0 && fields[key] !== undefined) {
-      sheet.getRange(rowNumber, column + 1).setValue(safeCell_(fields[key]));
+      values[column] = safeCell_(fields[key]);
+      changed = true;
     }
   });
+  if (changed) rowRange.setValues([values]);
+}
+
+function recordConfirmationCache_() {
+  return CacheService.getScriptCache();
+}
+
+function recordConfirmationKey_(type, eventId, identity) {
+  return ["record", type, identity.participantId, identity.studyId, identity.sessionId, eventId].join(":");
+}
+
+function rememberRecordConfirmation_(type, eventId, identity) {
+  if (!eventId) return;
+  recordConfirmationCache_().put(recordConfirmationKey_(type, eventId, identity), "1", 21600);
 }
 
 function validateIdentity_(parameters) {

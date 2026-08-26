@@ -100,6 +100,7 @@ const eventRows = [
 context.getOrCreateSheet_ = (_spreadsheet, name) => ({ name });
 context.ensureHeaders_ = () => {};
 context.readTable_ = (sheet) => ({ rows: sheet.name === "Trials" ? trialRows : eventRows });
+context.readSelectedTable_ = (sheet) => ({ rows: sheet.name === "Trials" ? trialRows : eventRows });
 const audit = context.completionAudit_({}, identity);
 assert.equal(audit.complete, true);
 assert.deepEqual(Array.from(audit.setCounts), [38, 38, 38]);
@@ -108,4 +109,23 @@ assert.equal(audit.completedBreaks, 2);
 trialRows.pop();
 assert.equal(context.completionAudit_({}, identity).complete, false);
 
-console.log("Collector canonicalization, trial validation, and final 114-row audit verified.");
+let participantWrites = 0;
+const headerValues = [["participant_id", "status", "completed_trials"]];
+const participantValues = [["P001", "in_progress", 49]];
+const participantSheet = {
+  getLastColumn: () => 3,
+  getRange: (row) => row === 1
+    ? { getValues: () => headerValues }
+    : {
+        getValues: () => participantValues,
+        setValues: (values) => {
+          participantWrites += 1;
+          participantValues[0] = values[0];
+        }
+      }
+};
+context.updateParticipantFields_(participantSheet, 2, { status: "complete", completed_trials: 114 });
+assert.equal(participantWrites, 1);
+assert.deepEqual(participantValues[0], ["P001", "complete", 114]);
+
+console.log("Collector canonicalization, batched participant update, and final 114-row audit verified.");

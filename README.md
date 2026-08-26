@@ -32,7 +32,7 @@ The current source validation statuses are 35 pass and 3 warning. Review `P6_DOC
 
 ## Data pipeline
 
-The browser queues each response immediately. A trial leaves the local retry queue only after the private Google Apps Script collector confirms that both representations were written:
+The browser queues each response immediately and keeps the current set's trial payloads in local recovery storage. At trials 38, 76, and 114, the private Google Apps Script collector checks the whole batch; the browser retries only missing rows and clears the local payloads after the checkpoint succeeds. Each accepted trial is written in two representations:
 
 - `Trials`: flat, CSV-ready canonical record.
 - `TrialJSON`: the same canonical record serialized as JSON.
@@ -41,7 +41,7 @@ The browser queues each response immediately. A trial leaves the local retry que
 
 Before either break screen, the browser blocks until the server confirms every global trial index through 38 or 76. Final completion requires all indices 1–114, exactly 38 rows per set, three passed attention checks, two acknowledged break screens, and the final event.
 
-`logs/final-trial-log-template.csv` and `logs/final-trial-log-template.json` are the pre-saved final schemas. `setupStudyWorkbook()` also creates empty `text-enrichment-final-log.csv` and `.json` files next to the private spreadsheet; they are refreshed after each completed participant. The collector exposes no public read or export route.
+`logs/final-trial-log-template.csv` and `logs/final-trial-log-template.json` are the pre-saved final schemas. `setupStudyWorkbook()` also creates empty `text-enrichment-final-log.csv` and `.json` files next to the private spreadsheet. Run `exportStudyLogs()` after collection or when an authorized researcher needs a refreshed export; participant completion does not regenerate the full files. The collector exposes no public read or export route.
 
 ## Launch status
 

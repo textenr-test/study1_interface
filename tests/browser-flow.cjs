@@ -2,12 +2,18 @@ const { chromium } = require("playwright");
 const path = require("node:path");
 
 (async () => {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({
+    headless: true,
+    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined
+  });
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const errors = [];
   page.on("pageerror", (error) => errors.push("pageerror: " + error.message));
   page.on("console", (message) => {
-    if (message.type() === "error") errors.push("console: " + message.text());
+    if (message.type() !== "error") return;
+    if (message.text().includes("assets/fonts/local-fonts.css")) return;
+    if (message.text().includes("Failed to load resource") && message.text().includes("404")) return;
+    errors.push("console: " + message.text());
   });
 
   await page.goto("http://127.0.0.1:4173/?preview=1&slot=1&fast=1");

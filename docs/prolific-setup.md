@@ -77,7 +77,7 @@ Use a fresh workbook for the v7 schema.
 8. Deploy as a web app, executing as the spreadsheet owner, accessible to anyone with the deployment link.
 9. Paste the `/exec` URL into `study-config.js` as `dataEndpoint` and redeploy the interface.
 
-Each trial is written idempotently to both `Trials` and `TrialJSON`. The browser confirms both writes before removing the record from its retry queue. The CSV/JSON Drive exports refresh after every successful participant completion; an authorized researcher can run `exportStudyLogs()` for an on-demand refresh. The public web endpoint does not expose the Sheet or export files.
+Each trial is written idempotently to both `Trials` and `TrialJSON`. The browser keeps each set's trial payloads locally until the 38/76/114 checkpoint confirms the complete batch, and automatically retries only missing rows. CSV/JSON Drive exports are not regenerated during participant submission; an authorized researcher should run `exportStudyLogs()` after collection or whenever an on-demand refresh is needed. The public web endpoint does not expose the Sheet or export files.
 
 Slots are not released automatically. If a participant abandons an allocated slot and the protocol permits replacement, an authorized researcher may run:
 

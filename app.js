@@ -1,9 +1,9 @@
-import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-25-v7-prolific-paths";
-import { containsKoreanLanguage } from "./eligibility.js?v=2026-08-25-v7-prolific-paths";
-import { expectedAttentionResponse } from "./attention.js?v=2026-08-25-v7-prolific-paths";
-import { resolveEarlyExitRoute } from "./exit-routing.js?v=2026-08-25-v7-prolific-paths";
-import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-25-v7-prolific-paths";
-import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-25-v7-prolific-paths";
+import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-26-v7-save-performance";
+import { containsKoreanLanguage } from "./eligibility.js?v=2026-08-26-v7-save-performance";
+import { expectedAttentionResponse } from "./attention.js?v=2026-08-26-v7-save-performance";
+import { resolveEarlyExitRoute } from "./exit-routing.js?v=2026-08-26-v7-save-performance";
+import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-26-v7-save-performance";
+import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-26-v7-save-performance";
 
 const CONFIG = window.STUDY_CONFIG;
 const app = document.getElementById("app");
@@ -73,7 +73,8 @@ function createInitialState() {
     checkpointedSets: [],
     postStudy: null,
     events: [],
-    pendingUploads: []
+    pendingUploads: [],
+    unconfirmedTrials: []
   };
 }
 
@@ -550,6 +551,7 @@ async function allocateParticipantSlot() {
         allocationId: assignment.allocationId,
         assignmentVersion: assignment.assignmentVersion,
         pendingUploads: state.pendingUploads || [],
+        unconfirmedTrials: state.unconfirmedTrials || [],
         events: state.events || []
       });
     }
@@ -748,21 +750,7 @@ async function prepareSetBreak(afterTrial) {
       '<p>Keep this page open while all ' + escapeHtml(String(afterTrial)) + ' submitted responses are confirmed.</p></section>'
   );
   try {
-    await flushUploads();
-    if (!isPreview) {
-      const checkpoint = await jsonp(CONFIG.dataEndpoint, {
-        action: "checkpoint",
-        participant_id: state.participantId,
-        study_id: state.studyId,
-        session_id: state.sessionId,
-        expected_trials: afterTrial,
-        study_version: CONFIG.version
-      }, 15000);
-      if (!checkpoint?.ok || !checkpoint.complete || Number(checkpoint.confirmedTrials) !== afterTrial) {
-        const confirmed = Number(checkpoint?.confirmedTrials || 0);
-        throw new Error(`The server confirmed ${confirmed} of ${afterTrial} responses.`);
-      }
-    }
+    await confirmTrialCheckpoint(afterTrial, 15000);
     state.checkpointedSets.push(setId);
     saveLocal();
     renderBreak(afterTrial);
@@ -1251,20 +1239,21 @@ async function submitFinal() {
   button.textContent = "Saving…";
   const outcome = "complete";
   const finalEventId = makeEventId("final", outcome);
-  state.status = outcome;
-  state.completedAt = nowIso();
-  saveLocal();
-  queueRemote("final", {
-    finalEventId,
-    outcome,
-    summary: {
-      completedTrials: state.trialCursor,
-      attentionChecksPassed: state.attentionChecks.length,
-      postStudy: state.postStudy,
-      completedAt: state.completedAt
-    }
-  });
   try {
+    await confirmTrialCheckpoint(CONFIG.trialCount, 20000);
+    state.status = outcome;
+    state.completedAt = nowIso();
+    saveLocal();
+    queueRemote("final", {
+      finalEventId,
+      outcome,
+      summary: {
+        completedTrials: state.trialCursor,
+        attentionChecksPassed: state.attentionChecks.length,
+        postStudy: state.postStudy,
+        completedAt: state.completedAt
+      }
+    });
     await flushUploads();
     if (!isPreview) {
       const confirmation = await jsonp(CONFIG.dataEndpoint, {
@@ -1379,6 +1368,7 @@ function queueRemote(kind, body = {}) {
   const payload = {
     kind,
     studyVersion: CONFIG.version,
+    confirmationMode: "checkpoint",
     participant: {
       participantId: state.participantId,
       studyId: state.studyId,
@@ -1455,7 +1445,10 @@ async function flushUploads() {
           headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
           body
         });
-        if (["trial", "event"].includes(item.payload.kind)) {
+        if (item.payload.kind === "trial") {
+          rememberUnconfirmedTrial(item);
+        }
+        if (requiresImmediateConfirmation(item)) {
           const confirmation = await jsonp(CONFIG.dataEndpoint, {
             action: "confirm_record",
             record_type: item.payload.kind,
@@ -1484,6 +1477,68 @@ async function flushUploads() {
   } finally {
     activeFlush = null;
   }
+}
+
+function rememberUnconfirmedTrial(item) {
+  if (!state.unconfirmedTrials.some((trial) => trial.id === item.id)) {
+    state.unconfirmedTrials.push(item);
+  }
+}
+
+function requiresImmediateConfirmation(item) {
+  if (item.payload.kind !== "event") return false;
+  return ["attention_check", "break_completed"].includes(item.payload.event?.type);
+}
+
+function retryMissingTrials(missingIndices) {
+  const missing = new Set(missingIndices.map(Number));
+  const pendingIds = new Set(state.pendingUploads.map((item) => item.id));
+  const retryItems = state.unconfirmedTrials.filter((item) => (
+    missing.has(Number(item.payload.record?.globalTrialIndex)) && !pendingIds.has(item.id)
+  ));
+  if (retryItems.length !== missing.size) {
+    throw new Error("A missing response could not be recovered from this device.");
+  }
+  state.pendingUploads.unshift(...retryItems);
+  saveLocal();
+}
+
+function clearConfirmedTrials(expectedTrials) {
+  state.unconfirmedTrials = state.unconfirmedTrials.filter((item) => (
+    Number(item.payload.record?.globalTrialIndex) > expectedTrials
+  ));
+  saveLocal();
+}
+
+async function confirmTrialCheckpoint(expectedTrials, timeoutMs) {
+  if (isPreview || !CONFIG.dataEndpoint) {
+    clearConfirmedTrials(expectedTrials);
+    return;
+  }
+  let confirmedTrials = 0;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    await flushUploads();
+    const checkpoint = await jsonp(CONFIG.dataEndpoint, {
+      action: "checkpoint",
+      participant_id: state.participantId,
+      study_id: state.studyId,
+      session_id: state.sessionId,
+      expected_trials: expectedTrials,
+      study_version: CONFIG.version
+    }, timeoutMs);
+    confirmedTrials = Number(checkpoint?.confirmedTrials || 0);
+    if (checkpoint?.ok && checkpoint.complete && confirmedTrials === expectedTrials) {
+      clearConfirmedTrials(expectedTrials);
+      return;
+    }
+    const missing = Array.isArray(checkpoint?.missingGlobalTrialIndices)
+      ? checkpoint.missingGlobalTrialIndices.map(Number)
+      : [];
+    if (!checkpoint?.ok || !missing.length || attempt === 3) break;
+    retryMissingTrials(missing);
+    await sleep(400 * attempt);
+  }
+  throw new Error(`The server confirmed ${confirmedTrials} of ${expectedTrials} responses.`);
 }
 
 function jsonp(endpoint, query, timeoutMs = 10000) {
