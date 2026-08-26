@@ -45,6 +45,9 @@ window.STUDY_CONFIG = Object.freeze({
   ],
   breakAfterTrials: [38, 76],
   recommendedBreakMs: 60000,
+  network: {
+    dataRequestTimeoutMs: 60000
+  },
   device: {
     minimumWidth: 1200,
     minimumHeight: 650,
