@@ -1,9 +1,9 @@
-import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-26-v7-save-performance";
-import { containsKoreanLanguage } from "./eligibility.js?v=2026-08-26-v7-save-performance";
-import { expectedAttentionResponse } from "./attention.js?v=2026-08-26-v7-save-performance";
-import { resolveEarlyExitRoute } from "./exit-routing.js?v=2026-08-26-v7-save-performance";
-import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-26-v7-save-performance";
-import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-26-v7-save-performance";
+import { hashString, loadParticipantAssignment, mulberry32 } from "./assignment.js?v=2026-08-26-v7-data-timeout";
+import { containsKoreanLanguage } from "./eligibility.js?v=2026-08-26-v7-data-timeout";
+import { expectedAttentionResponse } from "./attention.js?v=2026-08-26-v7-data-timeout";
+import { resolveEarlyExitRoute } from "./exit-routing.js?v=2026-08-26-v7-data-timeout";
+import { calculateStimulusFit, choosePairContentHeight, resolveMeasuredHeight } from "./stimulus-fit.js?v=2026-08-26-v7-data-timeout";
+import { finalStateIsComplete, nextStudyAction, remainingBreakMs } from "./study-flow.js?v=2026-08-26-v7-data-timeout";
 
 const CONFIG = window.STUDY_CONFIG;
 const app = document.getElementById("app");
@@ -522,7 +522,7 @@ async function allocateParticipantSlot() {
         study_id: state.studyId,
         session_id: state.sessionId,
         study_version: CONFIG.version
-      });
+      }, CONFIG.network.dataRequestTimeoutMs);
     }
     if (!allocation?.ok || !allocation.slot) {
       throw new Error(allocation?.error || "No study slot is available.");
@@ -750,7 +750,7 @@ async function prepareSetBreak(afterTrial) {
       '<p>Keep this page open while all ' + escapeHtml(String(afterTrial)) + ' submitted responses are confirmed.</p></section>'
   );
   try {
-    await confirmTrialCheckpoint(afterTrial, 15000);
+    await confirmTrialCheckpoint(afterTrial, CONFIG.network.dataRequestTimeoutMs);
     state.checkpointedSets.push(setId);
     saveLocal();
     renderBreak(afterTrial);
@@ -1240,7 +1240,7 @@ async function submitFinal() {
   const outcome = "complete";
   const finalEventId = makeEventId("final", outcome);
   try {
-    await confirmTrialCheckpoint(CONFIG.trialCount, 20000);
+    await confirmTrialCheckpoint(CONFIG.trialCount, CONFIG.network.dataRequestTimeoutMs);
     state.status = outcome;
     state.completedAt = nowIso();
     saveLocal();
@@ -1263,7 +1263,7 @@ async function submitFinal() {
         session_id: state.sessionId,
         event_id: finalEventId,
         study_version: CONFIG.version
-      }, 12000);
+      }, CONFIG.network.dataRequestTimeoutMs);
       if (!confirmation?.ok || !confirmation.confirmed || Number(confirmation.trialCount) !== CONFIG.trialCount) {
         throw new Error("The final save and all 114 trial rows could not be confirmed.");
       }
@@ -1457,7 +1457,7 @@ async function flushUploads() {
             session_id: state.sessionId,
             event_id: item.id,
             study_version: CONFIG.version
-          }, 10000);
+          }, CONFIG.network.dataRequestTimeoutMs);
           if (!confirmation?.ok || !confirmation.confirmed) {
             throw new Error(`The ${item.payload.kind} record was not confirmed.`);
           }
@@ -1541,7 +1541,7 @@ async function confirmTrialCheckpoint(expectedTrials, timeoutMs) {
   throw new Error(`The server confirmed ${confirmedTrials} of ${expectedTrials} responses.`);
 }
 
-function jsonp(endpoint, query, timeoutMs = 10000) {
+function jsonp(endpoint, query, timeoutMs = CONFIG.network.dataRequestTimeoutMs) {
   return new Promise((resolve, reject) => {
     const callback = "__te_callback_" + Math.random().toString(36).slice(2);
     const script = document.createElement("script");
